@@ -14,3 +14,12 @@ def debug(msg: str):
 
     if DEBUG:
         print(f"[debug]: {msg}")
+
+
+def debug_function(func):
+    def wrapper(*args, **kwargs):
+        debug(f"calling {func.__name__}")
+
+        return func(*args, **kwargs)
+
+    return wrapper
