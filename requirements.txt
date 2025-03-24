@@ -1,6 +1,5 @@
-transformers==4.49.0
-accelerate==1.5.2
+numpy
+pandas
 datasets
-bitsandbytes==0.42.0
-sentencepiece
-scikit-learn
+transformers
+bitsandbytes
