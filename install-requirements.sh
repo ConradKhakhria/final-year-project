@@ -1,26 +1,27 @@
 #!/bin/bash
-set -e  # Exit immediately if a command exits with a non-zero status
-set -x  # Print commands before executing
+set -e
 
-# Optional: Clear existing .venv and recreate
-# rm -rf .venv && python3.11 -m venv .venv && source .venv/bin/activate
+# === Load correct CUDA module manually BEFORE running this script ===
+# e.g., run in shell before:
+# module load cuda/11.8.0/gnu-10.2.0
 
-# Set environment variables for compilation
+# === Environment variables ===
+export CUDA_HOME=$CUDA_HOME
 export TORCH_CUDA_ARCH_LIST="7.0;8.0;8.6"
 export MAX_JOBS=4
 
-# Upgrade pip (important for PEP 517/518 builds like flash-attn)
-python3.11 -m pip install --upgrade pip
-
-# Install PyTorch with CUDA 11.8
-python3.11 -m pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 torchaudio==2.1.2+cu118 \
+# === Install PyTorch with matching CUDA ===
+python3.11 -m pip install torch==2.1.2+cu118 torchvision==0.16.2+cu118 torchaudio==2.1.2 \
   --index-url https://download.pytorch.org/whl/cu118
 
-# Install build tools required by flash-attn
-python3.11 -m pip install wheel setuptools packaging ninja
+# === Downgrade NumPy to avoid incompatibility with some builds ===
+python3.11 -m pip install "numpy<2"
 
-# Install the rest of your project dependencies
+# === Build tools required by flash-attn and other deps ===
+python3.11 -m pip install wheel packaging setuptools ninja
+
+# === Install remaining Python deps ===
 python3.11 -m pip install -r requirements.txt
 
-# Install flash-attn v2.4.2, compatible with torch 2.1 and CUDA 11.8
+# === Install FlashAttention (compiled C++/CUDA extension) ===
 python3.11 -m pip install "flash-attn==2.4.2" --no-build-isolation
