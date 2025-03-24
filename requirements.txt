@@ -4,4 +4,3 @@ torchaudio==2.1.2
 transformers==4.49.0
 accelerate==1.5.2
 bitsandbytes==0.45.3
-flash-attn==2.7.4.post1
