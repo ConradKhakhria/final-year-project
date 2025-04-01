@@ -13,7 +13,7 @@ source /etc/profile
 
 # Load required modules
 module unload python
-module load python3/3.11
+module load python3/3.9
 
 module -f unload compilers mpi gcc-libs
 module load beta-modules
@@ -32,4 +32,4 @@ source $HOME/ACFS/final-year-project/venv/bin/activate
 python3 experiment-1.py
 
 # move output to Scratch
-mv $TMPDIR/data $HOME/Scratc/fyp
+mv $TMPDIR/data $HOME/Scratch/fyp
