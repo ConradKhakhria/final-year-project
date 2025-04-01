@@ -1,7 +1,12 @@
 import itertools
 import json
 import numpy as np
+import os
+import sys
 import torch
+
+# Set path for local imports
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import config
 import dataset
