@@ -8,6 +8,8 @@
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
 
+# Load env
+source /etc/profile
 
 # Load required modules
 module -f unload compilers mpi gcc-libs
