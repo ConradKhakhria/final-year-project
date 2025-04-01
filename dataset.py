@@ -26,7 +26,9 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
     - y: list of dicts with values from y columns
     """
 
-    local_dataset_path = Path("data") / f"{dataset_name}_local.parquet"
+    dataset_cache_path = config.LT_TEMPORARY_DIR / "hf_cache" 
+    local_dataset_path = config.LT_TEMPORARY_DIR / "data" / f"{dataset_name}_local.parquet"
+
     local_dataset_path.parent.mkdir(parents=True, exist_ok=True)
 
     if local_dataset_path.exists():
@@ -34,7 +36,7 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
         df = pd.read_pickle(local_dataset_path)
     else:
         config.debug("Loading dataset from huggingface")
-        dataset = datasets.load_dataset(dataset_name, split="train")
+        dataset = datasets.load_dataset(dataset_name, split="train", cache_dir=str(dataset_cache_path))
         df = dataset.to_pandas()
 
         config.debug("Sorting dataset")
