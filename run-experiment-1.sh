@@ -17,6 +17,7 @@ module load python3/3.9-gnu-10.2.0
 module load cuda/11.3.1/gnu-10.2.0
 module load cudnn/8.2.1.32/cuda-11.3
 module load pytorch/1.11.0/gpu
+module load python3/3.11
 
 # change to temporary directory
 cd $TMPDIR
