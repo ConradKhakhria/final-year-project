@@ -29,7 +29,7 @@ cd $TMPDIR
 source $HOME/ACFS/final-year-project/venv/bin/activate
 
 # Run the script
-python3 experiment-1.py
+python3 $HOME/ACFS/final-year-project/experiment-1.py
 
 # move output to Scratch
 mv $TMPDIR/data $HOME/Scratch/fyp
