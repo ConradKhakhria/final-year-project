@@ -5,8 +5,9 @@
 #$ -l gpu=1
 #$ -l mem=8G
 #$ -pe smp 4
-#$ -o logs/$JOB_NAME_$JOB_ID.out
-#$ -e logs/$JOB_NAME_$JOB_ID.err
+#$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
+#$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
+
 
 # Load required modules
 module -f unload compilers mpi gcc-libs
