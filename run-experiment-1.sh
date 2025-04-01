@@ -18,8 +18,14 @@ module load cuda/11.3.1/gnu-10.2.0
 module load cudnn/8.2.1.32/cuda-11.3
 module load pytorch/1.11.0/gpu
 
+# change to temporary directory
+cd $TMPDIR
+
 # Optional: activate virtualenv or conda
 source $HOME/ACFS/final-year-project/venv/bin/activate
 
 # Run the script
 python experiment-1.py
+
+# move output to Scratch
+mv $TMPDIR/data $HOME/Scratc/fyp
