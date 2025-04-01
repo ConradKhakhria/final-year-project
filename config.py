@@ -1,5 +1,12 @@
+from pathlib import Path
+
+
 DEBUG = True
 MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+
+# directories
+LT_STORAGE_DIR = Path.home() / "ACFS" / "final-year-project"
+LT_TEMPORARY_DIR = Path.home() / "Scratch" / "fyp"
 
 
 # Some helper functions
