@@ -1,13 +1,5 @@
-Bootstrap: docker
-From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
-
-%labels
-    Author YourName
-    Version 1.0
-    Description PyTorch 1.11.0 container with CUDA 11.3.1 and cuDNN 8.2.1.32
-
 %post
-    # Update package lists and install required packages
+    export DEBIAN_FRONTEND=noninteractive
     apt-get update && apt-get install -y --no-install-recommends \
         python3.9 \
         python3.9-venv \
@@ -18,6 +10,10 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
         wget \
         git && \
     rm -rf /var/lib/apt/lists/*
+    
+    # Set default timezone if needed (optional)
+    ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
+    dpkg-reconfigure --frontend noninteractive tzdata
 
     # Make Python3.9 the default for python3
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
@@ -26,17 +22,7 @@ From: nvcr.io/nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
     python3 -m pip install --upgrade pip
 
     # Install PyTorch 1.11.0 (GPU version for CUDA 11.3) and its related libraries.
-    # Note: The official PyTorch pip package for CUDA 11.3 is available via the extra-index-url.
     python3 -m pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
 
-    # Install additional dependencies for your LLM workflow (Hugging Face libraries, numpy, pandas, etc.)
+    # Install additional dependencies for your LLM workflow
     python3 -m pip install transformers datasets numpy pandas
-
-%environment
-    # Set environment variables
-    export LC_ALL=C
-    export LANG=C
-
-%runscript
-    # This runscript allows you to execute python commands inside the container
-    exec python3 "$@"
