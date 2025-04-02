@@ -12,15 +12,12 @@
 source /etc/profile
 
 # Load required modules
-module unload python
-module load python3/3.9
+module purge
 
-module -f unload compilers mpi gcc-libs
-module load beta-modules
-module load gcc-libs/10.2.0
+module load pytorch/2.1.0/gpu
 module load cuda/11.3.1/gnu-10.2.0
 module load cudnn/8.2.1.32/cuda-11.3
-module load pytorch/1.11.0/gpu
+module load gcc-libs/10.2.0        
 
 # change to temporary directory
 cd $TMPDIR
@@ -32,4 +29,9 @@ source $HOME/ACFS/final-year-project/venv/bin/activate
 python3 $HOME/ACFS/final-year-project/experiment-1.py
 
 # move output to Scratch
-mv $TMPDIR/data $HOME/Scratch/fyp
+# Move output to persistent storage
+if [ -d "$TMPDIR/data" ]; then
+    mv $TMPDIR/data $HOME/Scratch/fyp/data_$JOB_ID
+else
+    echo "No data directory created."
+fi
