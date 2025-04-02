@@ -26,7 +26,7 @@ cd $TMPDIR
 source $HOME/ACFS/final-year-project/venv/bin/activate
 
 # Run the script
-python3 $HOME/ACFS/final-year-project/experiment-1.py
+$HOME/ACFS/final-year-project/venv/bin/python3 $HOME/ACFS/final-year-project/experiment-1.py
 
 # move output to Scratch
 # Move output to persistent storage
