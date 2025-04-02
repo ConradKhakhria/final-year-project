@@ -15,6 +15,7 @@ module purge
 module load pytorch/2.1.0/gpu
 
 unset PYTHONPATH
+export PYTHONPATH=$HOME/ACFS/final-year-project/venv/lib/python3.9/site-packages
 
 # change to temporary directory
 cd $TMPDIR
