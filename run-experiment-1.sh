@@ -19,13 +19,13 @@ unset PYTHONPATH
 # change to temporary directory
 cd $TMPDIR
 
-# Optional: activate virtualenv or conda
-source $HOME/ACFS/final-year-project/venv/bin/activate
+# # Optional: activate virtualenv or conda
+# source $HOME/ACFS/final-year-project/venv/bin/activate
 
 # Run the script
 $HOME/ACFS/final-year-project/venv/bin/python3 $HOME/ACFS/final-year-project/experiment-1.py
 
-# move output to Scratch
+# move output to Scratch2109728
 # Move output to persistent storage
 if [ -d "$TMPDIR/data" ]; then
     mv $TMPDIR/data $HOME/Scratch/fyp/data_$JOB_ID
