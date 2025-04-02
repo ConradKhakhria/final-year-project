@@ -8,16 +8,13 @@
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
 
-# Load env
-source /etc/profile
-
 # Load required modules
 module purge
+source /etc/profile
 
 module load pytorch/2.1.0/gpu
-module load cuda/11.3.1/gnu-10.2.0
-module load cudnn/8.2.1.32/cuda-11.3
-module load gcc-libs/10.2.0        
+
+unset PYTHONPATH
 
 # change to temporary directory
 cd $TMPDIR

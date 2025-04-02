@@ -1,5 +1,6 @@
-numpy
-pandas
-datasets
-transformers
-bitsandbytes
+numpy>=1.22.4
+pandas==1.4.3
+datasets==2.4.0
+transformers==4.18.0
+bitsandbytes==0.42.0
+urllib3==1.26.16
