@@ -9,9 +9,9 @@
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
 
 # Load required modules
-module purge
 source /etc/profile
 
+module purge
 module load pytorch/2.1.0/gpu
 
 unset PYTHONPATH
