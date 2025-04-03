@@ -8,19 +8,19 @@
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
 
-# Fix for "module: command not found"
+# Load Apptainer
 source /etc/profile
 module load apptainer
 
 echo "Running on node: $(hostname)"
 nvidia-smi || echo "No GPU detected"
 
-# Test environment and Python inside container
+# install numpy inside container if it's missing
 apptainer exec --nv -B $HOME/ACFS/final-year-project:/project \
   $HOME/ACFS/final-year-project/pytorch_container.sif \
-  python3 -m pip list
+  python3 -m pip install numpy
 
-# Run your experiment
+# run experiment
 apptainer exec --nv -B $HOME/ACFS/final-year-project:/project \
   $HOME/ACFS/final-year-project/pytorch_container.sif \
   python3 /project/experiment-1.py
