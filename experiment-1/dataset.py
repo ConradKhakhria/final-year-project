@@ -33,7 +33,7 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
 
     if local_dataset_path.exists():
         config.debug("Loading cached dataset")
-        df = pd.read_pickle(local_dataset_path)
+        df = pd.read_parquet(local_dataset_path)
     else:
         config.debug("Loading dataset from huggingface")
         dataset = datasets.load_dataset(dataset_name,
@@ -48,7 +48,7 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
             df = df.sort_values(f"{sort_axis}_length").reset_index(drop=True)
 
         config.debug(f"Caching dataset locally to {local_dataset_path}")
-        df.to_pickle(local_dataset_path)
+        df.to_parquet(local_dataset_path)
 
     config.debug("Selecting X and y columns")
     X = df[X_name].tolist()
