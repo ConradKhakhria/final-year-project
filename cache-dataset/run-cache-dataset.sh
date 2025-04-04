@@ -16,5 +16,5 @@ echo "Running on node: $(hostname)"
 # We bind the entire project directory so that both 'cache-dataset' and 'experiment-1' are available at /project.
 # Replace 'blog_authorship_corpus' with the desired dataset name if needed.
 apptainer exec -B $HOME/ACFS/final-year-project:/project \
-    $HOME/ACFS/final-year-project/pytorch_container.sif \
+    $HOME/ACFS/final-year-project/experiment-container.sif \
     python3 /project/cache-dataset/cache_dataset.py blog_authorship_corpus
