@@ -11,9 +11,6 @@
 source /etc/profile
 module load apptainer
 
-# comment this out if you're actually using the gpu
-module load pytorch/2.1.0/cpu
-
 echo "Running on node: $(hostname)"
 nvidia-smi || echo "No GPU detected"
 
