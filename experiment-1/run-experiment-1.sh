@@ -17,4 +17,4 @@ nvidia-smi || echo "No GPU detected"
 # run experiment
 apptainer exec --nv -B $HOME/ACFS/final-year-project:/project \
   $HOME/ACFS/final-year-project/experiment-container.sif \
-  python3 /project/experiment-1.py
+  python3 /project/experiment-1/experiment-1.py
