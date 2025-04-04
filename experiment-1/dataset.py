@@ -36,7 +36,10 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
         df = pd.read_pickle(local_dataset_path)
     else:
         config.debug("Loading dataset from huggingface")
-        dataset = datasets.load_dataset(dataset_name, split="train", cache_dir=str(dataset_cache_path))
+        dataset = datasets.load_dataset(dataset_name,
+                                        split="train",
+                                        cache_dir=str(dataset_cache_path),
+                                        trust_remote_code=True)
         df = dataset.to_pandas()
 
         config.debug("Sorting dataset")
