@@ -36,7 +36,7 @@ Stage: build
 
     # Install Python packages
     python3 -m pip install --upgrade -c /constraints.txt numpy
-    python3 -m pip install --upgrade -c /constraints.txt datasets transformers pyarrow
+    python3 -m pip install --upgrade -c /constraints.txt datasets transformers pyarrow sentencepiece scikit-learn
     python3 -m pip install --upgrade -c /constraints.txt "networkx<3.0"
     python3 -m pip install bitsandbytes==0.42.0
     python3 -m pip install --upgrade -c /constraints.txt torch==2.1.0+cu118 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
