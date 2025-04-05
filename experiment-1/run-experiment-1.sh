@@ -15,7 +15,7 @@ module load apptainer
 echo "Running on node: $(hostname)"
 nvidia-smi || echo "No GPU detected"
 
-export HF_TOKEN=$(cat $HOME/ACFS/final-year-project/hf-access-token.txt)
+export HF_TOKEN=$(cat $HOME/ACFS/final-year-project/new-hf-access-token.txt)
 
 # run experiment
 apptainer exec --nv \
