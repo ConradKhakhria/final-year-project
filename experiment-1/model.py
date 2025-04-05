@@ -1,4 +1,5 @@
 import json
+import os
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import time
 import torch
@@ -15,6 +16,8 @@ class SequenceModel:
         self.model_id = model_id
         self.pre_prompt = ""
 
+        self.hf_token = os.environ.get("HF_TOKEN")
+
         quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
@@ -27,12 +30,14 @@ class SequenceModel:
             device_map="cuda",
             quantization_config=quant_config,
             attn_implementation="flash_attention_2",  # Flash Attention 2
+            token=self.hf_token,
             torch_dtype=torch.bfloat16,
             trust_remote_code=True
         )
 
         config.debug("Creating tokenizer")
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_id, trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_id, token=self.hf_token,
+                                                       trust_remote_code=True)
         self.tokenizer.padding_side = "left"
         self.tokenizer.truncation_side = "left"
         self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
