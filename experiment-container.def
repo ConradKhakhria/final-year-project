@@ -34,7 +34,15 @@ Stage: build
 
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
 
+    # Install Python packages
     python3 -m pip install --upgrade -c /constraints.txt numpy
     python3 -m pip install --upgrade -c /constraints.txt datasets transformers pyarrow
     python3 -m pip install --upgrade -c /constraints.txt "networkx<3.0"
+    python3 -m pip install bitsandbytes==0.42.0
     python3 -m pip install --upgrade -c /constraints.txt torch==2.1.0+cu118 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+    # Force-reinstall numpy to be absolutely sure
+    python3 -m pip install --force-reinstall "numpy<2"
+
+    # Debug output of what got installed
+    python3 -m pip list | grep numpy
