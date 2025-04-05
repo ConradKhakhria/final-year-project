@@ -18,6 +18,8 @@ class SequenceModel:
 
         self.hf_token = os.environ.get("HF_TOKEN")
 
+        print(f"HF token = '{self.hf_token}'")
+
         quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
