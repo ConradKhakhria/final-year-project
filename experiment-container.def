@@ -34,15 +34,31 @@ Stage: build
 
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
 
-    # Install Python packages
-    python3 -m pip install --upgrade -c /constraints.txt numpy
-    python3 -m pip install --upgrade -c /constraints.txt datasets transformers pyarrow sentencepiece scikit-learn
-    python3 -m pip install --upgrade -c /constraints.txt "networkx<3.0"
-    python3 -m pip install bitsandbytes==0.42.0
-    python3 -m pip install --upgrade -c /constraints.txt torch==2.1.0+cu118 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    # Core dependencies (from constraints file)
+    python3 -m pip install --upgrade -c /constraints.txt \
+        numpy \
+        datasets \
+        transformers==4.49.0 \
+        pyarrow \
+        sentencepiece \
+        scikit-learn \
+        "networkx<3.0"
 
-    # Force-reinstall numpy to be absolutely sure
+    # bitsandbytes specifically for quantization
+    python3 -m pip install bitsandbytes==0.42.0
+
+    # PyTorch 2.1.0 + CUDA 11.8
+    python3 -m pip install --upgrade -c /constraints.txt \
+        torch==2.1.0+cu118 \
+        torchvision \
+        torchaudio \
+        --index-url https://download.pytorch.org/whl/cu118
+
+    # Extra safety: pin numpy < 2 just in case
     python3 -m pip install --force-reinstall "numpy<2"
 
-    # Debug output of what got installed
-    python3 -m pip list | grep numpy
+    echo "[INFO] Installed versions:"
+    python3 -m pip list | grep -E "numpy|torch|transformers|bitsandbytes"
+
+    echo "[INFO] Verifying Torch + NumPy compatibility..."
+    python3 -c "import torch, numpy; print(f'Torch version: {torch.__version__}, NumPy version: {numpy.__version__}')"
