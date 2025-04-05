@@ -18,9 +18,6 @@ if __name__ == "__main__":
     config.debug(f"CUDA device 0 name: {torch.cuda.get_device_name(0)}")
 
     df, X, y = dataset.load_dataset_locally("blog_authorship_corpus", "text", ["age", "gender"])
-
-    exit()
-
     m = model.SequenceModel(config.MODEL)
 
     m.set_pre_prompt("""You are an AI assistant which:
