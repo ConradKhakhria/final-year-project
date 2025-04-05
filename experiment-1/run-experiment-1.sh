@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -N fyp-gpu-container
 #$ -cwd
-#$ -l h_rt=00:05:00
+#$ -l h_rt=00:10:00
 #$ -l mem=4G
 #$ -l gpu=1
 #$ -pe smp 1
