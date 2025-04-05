@@ -7,6 +7,7 @@ import config
 
 
 class SequenceModel:
+    @config.debug_function
     def __init__(self, model_id: str):
         """
         Loads the named model and tokenizer
