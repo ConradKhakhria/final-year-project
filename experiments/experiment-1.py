@@ -6,7 +6,9 @@ import sys
 import torch
 
 # Set path for local imports
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+lib_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'lib'))
+if lib_dir not in sys.path:
+    sys.path.insert(0, lib_dir)
 
 import config
 import dataset
