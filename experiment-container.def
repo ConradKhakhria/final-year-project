@@ -46,6 +46,8 @@ Stage: build
         scikit-learn \
         "networkx<3.0"
 
+    python3 -m pip install --upgrade -c /constraints.txt "accelerate>=0.26.0"
+
     # Install bitsandbytes for quantization
     python3 -m pip install bitsandbytes==0.42.0
 
@@ -60,7 +62,7 @@ Stage: build
     python3 -m pip install --force-reinstall "numpy<2"
 
     echo "[INFO] Installed versions:"
-    python3 -m pip list | grep -E 'numpy|torch|transformers|bitsandbytes'
+    python3 -m pip list | grep -E 'numpy|torch|transformers|bitsandbytes|accelerate'
 
     echo "[INFO] Verifying Torch + NumPy compatibility..."
     python3 -c "import torch, numpy; print(f'Torch version: {torch.__version__}, NumPy version: {numpy.__version__}')"
