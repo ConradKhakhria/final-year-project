@@ -1,7 +1,7 @@
 import os
 import sys
 
-current_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'experiment-1'))
+current_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'lib'))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
