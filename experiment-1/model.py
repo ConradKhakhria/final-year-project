@@ -18,7 +18,7 @@ class SequenceModel:
         hf_token_path = config.LT_STORAGE_DIR / "hf-access-token.txt"
 
         with open(hf_token_path) as f:
-            self.hf_token = f.read.strip()
+            self.hf_token = f.read().strip()
 
         quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
