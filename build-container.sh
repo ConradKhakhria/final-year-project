@@ -7,4 +7,15 @@
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
 
-apptainer build --tmpdir=$HOME/Scratch/tmp experiment-container.sif experiment-container.def
+# Load Apptainer
+source /etc/profile
+module load apptainer
+
+echo "Running on node: $(hostname)"
+
+# Build the container:
+# --fakeroot: builds as if running as root (required for unprivileged builds)
+# -F / --force: overwrites any existing SIF file without prompting
+# --fix-perms: adjusts file permissions to avoid read/write issues
+# --tmpdir: uses your scratch space for temporary build files
+apptainer build --fakeroot -F --fix-perms --tmpdir=$HOME/Scratch/tmp experiment-container.sif experiment-container.def
