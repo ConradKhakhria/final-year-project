@@ -18,9 +18,8 @@ unset FAKEROOTKEY
 mkdir -p $HOME/Scratch/container
 
 # Build the diagnostic container as a sandbox image (directory)
-apptainer build --fakeroot --sandbox $HOME/Scratch/container/test-apptainer \
-    --tmpdir=$HOME/Scratch/tmp \
-    $HOME/ACFS/final-year-project/test-build/test-apptainer.def
+
+apptainer --tmpdir=$HOME/Scratch/tmp build --fakeroot --sandbox $HOME/Scratch/container/test-apptainer $HOME/ACFS/final-year-project/test-build/test-apptainer.def
 
 # Execute the sandbox container with fakeroot to display environment variables
 apptainer exec --fakeroot $HOME/Scratch/container/test-apptainer /bin/bash -c "echo 'Inside container:'; echo 'FAKEROOTKEY = ' \$FAKEROOTKEY; echo 'LD_PRELOAD = ' \$LD_PRELOAD"
