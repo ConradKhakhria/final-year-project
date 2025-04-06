@@ -17,10 +17,11 @@ echo "Running on node: $(hostname)"
 # --fakeroot: builds as if running as root (required for unprivileged builds)
 # -F / --force: overwrites any existing SIF file without prompting
 # --fix-perms: adjusts file permissions to avoid read/write issues
+# --bind: mounts $HOME/Scratch as /project inside the container
 # --tmpdir: uses your scratch space for temporary build files
 apptainer build \
-    --fakeroot -F --fix-perms --tmpdir=$HOME/Scratch/tmp \
-    $HOME/Scratch/container/experiment-container.sif     \
+    --fakeroot -F --fix-perms --bind $HOME/Scratch:/project --tmpdir=$HOME/Scratch/tmp \
+    $HOME/Scratch/container/experiment-container.sif \
     $HOME/ACFS/final-year-project/experiment-container.def
 
 echo "wowee finished building container"
