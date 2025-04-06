@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -N fyp-gpu-container
+#$ -N experiment-1
 #$ -cwd
 #$ -l h_rt=00:10:00
 #$ -l mem=4G
