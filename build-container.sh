@@ -13,7 +13,11 @@ module load apptainer
 
 export LD_PRELOAD=/etc/alternatives/libfakeroot.so
 
+export FAKEROOTKEY=$(uuidgen)
+
 echo "Running on node: $(hostname)"
+echo "FAKEROOTKEY is set to $FAKEROOTKEY"
+
 
 # Build the container:
 # --fakeroot: builds as if running as root (required for unprivileged builds)
