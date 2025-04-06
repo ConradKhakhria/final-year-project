@@ -143,18 +143,18 @@ class SequenceModel:
 
             # Generate batch outputs
             start = time.time()
-            output_tokens = self.model.generate(
-                input_ids=input_tokens["input_ids"],
-                attention_mask=input_tokens["attention_mask"],
-                max_new_tokens=50,
-                eos_token_id=self.tokenizer.eos_token_id,
-                pad_token_id=self.tokenizer.eos_token_id,
-                do_sample=False,
-    #            temperature=0.1,
-    #            top_p=0.95,
-                repetition_penalty=1.1,
-                use_cache=True
-            )
+            with torch.no_grad():
+                output_tokens = self.model.generate(
+                    input_ids=input_tokens["input_ids"],
+                    attention_mask=input_tokens["attention_mask"],
+                    max_new_tokens=50,
+                    eos_token_id=self.tokenizer.eos_token_id,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                    do_sample=False,
+                    repetition_penalty=1.1,
+                    use_cache=True
+                )
+
             torch.cuda.synchronize()
             config.debug(f"Model generation took {time.time() - start:.2f}s")
 
@@ -169,6 +169,9 @@ class SequenceModel:
                     outputs.append(decoded)
 
             config.debug(f"Decoding outputs took {time.time() - start:.2f}s")
+
+            del input_tokens, output_tokens
+            torch.cuda.empty_cache()
 
         config.debug(f"Total batched query time {time.time() - total_start:.2f}s")
         
