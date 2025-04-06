@@ -49,9 +49,6 @@ class SequenceModel:
         self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.model.resize_token_embeddings(len(self.tokenizer))
 
-        self.model.to("cuda")
-
-
 
     ########## MODEL QUERY ##########
 
