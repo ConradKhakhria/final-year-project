@@ -20,5 +20,7 @@ echo "Running on node: $(hostname)"
 # --tmpdir: uses your scratch space for temporary build files
 apptainer build \
     --fakeroot -F --fix-perms --tmpdir=$HOME/Scratch/tmp \
-    $HOME/Scratch/container/experiment-container.sif    \
-    $HOME/ACFS/final-year-projcet/experiment-container.def
+    $HOME/Scratch/container/experiment-container.sif     \
+    $HOME/ACFS/final-year-project/experiment-container.def
+
+echo "done"
