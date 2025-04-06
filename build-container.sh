@@ -11,7 +11,7 @@
 source /etc/profile
 module load apptainer
 
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libfakeroot.so.0
+export LD_PRELOAD=/etc/alternatives/libfakeroot.so
 
 echo "Running on node: $(hostname)"
 
