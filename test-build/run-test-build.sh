@@ -12,7 +12,9 @@ source /etc/profile
 module load apptainer
 
 # Build the diagnostic container with fakeroot
-apptainer build --fakeroot --tmpdir=$HOME/Scratch/tmp $HOME/Scratch/container/test.sif $HOME/ACFS/final-year-project/test.def
+apptainer build --fakeroot --tmpdir=$HOME/Scratch/tmp \
+    $HOME/Scratch/container/test/test-apptainer.sif   \
+    $HOME/ACFS/final-year-project/test-build/test-apptainer.def
 
 # Execute the container to see the diagnostic output
 apptainer exec --fakeroot $HOME/Scratch/container/test.sif
