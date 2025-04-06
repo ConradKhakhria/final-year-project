@@ -17,6 +17,7 @@ Stage: build
 
 %post
     # Create a directory for temporary files using your scratch space (ensure /project is bound)
+    mkdir -p /project
     mkdir -p /project/tmp/pip-cache /project/tmp/pip-tmp
     export TMPDIR=/project/tmp
     export PIP_CACHE_DIR=/project/tmp/pip-cache
