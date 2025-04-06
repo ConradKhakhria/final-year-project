@@ -2,7 +2,8 @@ from pathlib import Path
 
 
 DEBUG = True
-MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+#MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
 
 # directories
 LT_STORAGE_DIR = Path("/project")
