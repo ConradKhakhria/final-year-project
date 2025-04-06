@@ -58,7 +58,9 @@ Stage: build
         "networkx<3.0"
 
     python3 -m pip install --no-cache-dir --upgrade -c /constraints.txt "accelerate>=0.26.0"
-    python3 -m pip install --no-cache-dir bitsandbytes==0.42.0
+
+    python3 -m pip install --no-cache-dir bitsandbytes==0.43.2
+
     python3 -m pip install --no-cache-dir hatchling
 
     echo "[INFO] Installing PyTorch (CUDA 11.8 versions)"
