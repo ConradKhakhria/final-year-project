@@ -1,0 +1,12 @@
+Bootstrap: docker
+From: ubuntu:20.04
+
+%post
+  echo "Inside test container:"
+  echo "FAKEROOTKEY = $FAKEROOTKEY"
+  echo "LD_PRELOAD = $LD_PRELOAD"
+  echo "PATH = $PATH"
+  echo "Checking for libfakeroot:"
+  ldconfig -p | grep libfakeroot || echo "libfakeroot not found"
+  echo "Running nvidia-smi (if available):"
+  nvidia-smi || echo "nvidia-smi not available"

@@ -26,7 +26,7 @@ echo "FAKEROOTKEY is set to $FAKEROOTKEY"
 # --bind: mounts $HOME/Scratch as /project inside the container
 # --tmpdir: uses your scratch space for temporary build files
 apptainer build \
-    --fakeroot -F --fix-perms --bind $HOME/Scratch:/project --tmpdir=$HOME/Scratch/tmp \
+    --fakeroot -F --bind $HOME/Scratch:/project --tmpdir=$HOME/Scratch/tmp \
     $HOME/Scratch/container/experiment-container.sif \
     $HOME/ACFS/final-year-project/experiment-container.def
 
