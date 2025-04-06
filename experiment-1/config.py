@@ -24,9 +24,14 @@ def debug(msg: str):
 
 
 def debug_function(func):
-    def wrapper(*args, **kwargs):
-        debug(f"calling {func.__name__}")
+    import functools
 
-        return func(*args, **kwargs)
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        name = getattr(func, '__name__', str(func))
+        debug(f"calling {name}")
+        result = func(*args, **kwargs)
+        debug(f"{name} completed")
+        return result
 
     return wrapper
