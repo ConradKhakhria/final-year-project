@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -N test-apptainer
+#$ -N test-minimal
 #$ -cwd
 #$ -l h_rt=00:00:30
 #$ -l mem=2G
@@ -7,14 +7,15 @@
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
 
-# Load Apptainer
 source /etc/profile
 module load apptainer
 
-# Build the diagnostic container with fakeroot
-apptainer build --fakeroot --tmpdir=$HOME/Scratch/tmp \
-    $HOME/Scratch/container/test/test-apptainer.sif   \
-    $HOME/ACFS/final-year-project/test-build/test-apptainer.def
+# Remove any manual setting of LD_PRELOAD or FAKEROOTKEY:
+unset LD_PRELOAD
+unset FAKEROOTKEY
 
-# Execute the container to see the diagnostic output
-apptainer exec --fakeroot $HOME/Scratch/container/test.sif
+apptainer build --fakeroot --tmpdir=$HOME/Scratch/tmp \
+    $HOME/Scratch/container/minimal.sif \
+    $HOME/ACFS/final-year-project/minimal.def
+
+apptainer exec --fakeroot $HOME/Scratch/container/minimal.sif /bin/bash -c "echo 'Inside container:'; echo 'FAKEROOTKEY = ' \$FAKEROOTKEY; echo 'LD_PRELOAD = ' \$LD_PRELOAD"
