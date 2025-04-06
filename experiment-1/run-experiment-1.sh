@@ -12,14 +12,19 @@
 source /etc/profile
 module load apptainer
 
+# Set cache/temp just in case
+export APPTAINER_TMPDIR=$HOME/Scratch/tmp
+export APPTAINER_CACHEDIR=$HOME/Scratch/apptainer-cache
+
 echo "Running on node: $(hostname)"
 nvidia-smi || echo "No GPU detected"
 
+# Load Hugging Face token securely
 export HF_TOKEN=$(cat $HOME/ACFS/final-year-project/new-hf-access-token.txt)
 
-# run experiment
-apptainer exec --nv \
+# Run the experiment from the sandbox container with GPU enabled
+apptainer exec --fakeroot --nv \
   --env HF_TOKEN=$HF_TOKEN \
   -B $HOME/ACFS/final-year-project:/project \
-  $HOME/ACFS/final-year-project/experiment-container.sif \
+  $HOME/Scratch/container/experiment-container \
   python3 /project/experiment-1/experiment-1.py

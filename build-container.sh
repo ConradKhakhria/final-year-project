@@ -11,23 +11,18 @@
 source /etc/profile
 module load apptainer
 
-export LD_PRELOAD=/etc/alternatives/libfakeroot.so
+# Set cache and temp dirs to avoid quota and /tmp issues
+export APPTAINER_TMPDIR=$HOME/Scratch/tmp
+export APPTAINER_CACHEDIR=$HOME/Scratch/apptainer-cache
 
-export FAKEROOTKEY=$(uuidgen)
+# Clean up any previous sandbox container
+rm -rf $HOME/Scratch/container/experiment-container
 
 echo "Running on node: $(hostname)"
-echo "FAKEROOTKEY is set to $FAKEROOTKEY"
 
+# Build the sandbox container with fakeroot
+apptainer build --fakeroot --sandbox \
+  $HOME/Scratch/container/experiment-container \
+  $HOME/ACFS/final-year-project/experiment-container.def
 
-# Build the container:
-# --fakeroot: builds as if running as root (required for unprivileged builds)
-# -F / --force: overwrites any existing SIF file without prompting
-# --fix-perms: adjusts file permissions to avoid read/write issues
-# --bind: mounts $HOME/Scratch as /project inside the container
-# --tmpdir: uses your scratch space for temporary build files
-apptainer build \
-    --fakeroot -F --bind $HOME/Scratch:/project --tmpdir=$HOME/Scratch/tmp \
-    $HOME/Scratch/container/experiment-container.sif \
-    $HOME/ACFS/final-year-project/experiment-container.def
-
-echo "wowee finished building container"
+echo "Finished building sandbox container"
