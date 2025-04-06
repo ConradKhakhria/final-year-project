@@ -11,16 +11,12 @@ Stage: build
     export LC_ALL=C
     export LANG=C
     export PATH=/usr/local/bin:$PATH
+    export FAKEROOTKEY=static-key-12345
 
 %files
     $HOME/ACFS/final-year-project/constraints.txt /constraints.txt
 
 %post
-    # If FAKEROOTKEY is not defined in the container environment, generate one
-    if [ -z "$FAKEROOTKEY" ]; then
-        export FAKEROOTKEY=$(uuidgen)
-    fi
-
     # Create /project so that binding works (this will be bound to $HOME/Scratch)
     mkdir -p /project
 

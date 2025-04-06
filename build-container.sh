@@ -25,7 +25,7 @@ echo "FAKEROOTKEY is set to $FAKEROOTKEY"
 # --fix-perms: adjusts file permissions to avoid read/write issues
 # --bind: mounts $HOME/Scratch as /project inside the container
 # --tmpdir: uses your scratch space for temporary build files
-env FAKEROOTKEY=$FAKEROOTKEY LD_PRELOAD=/etc/alternatives/libfakeroot.so apptainer build \
+apptainer build \
     --fakeroot -F --fix-perms --bind $HOME/Scratch:/project --tmpdir=$HOME/Scratch/tmp \
     $HOME/Scratch/container/experiment-container.sif \
     $HOME/ACFS/final-year-project/experiment-container.def
