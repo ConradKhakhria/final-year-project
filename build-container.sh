@@ -23,4 +23,4 @@ apptainer build \
     $HOME/Scratch/container/experiment-container.sif     \
     $HOME/ACFS/final-year-project/experiment-container.def
 
-echo "done"
+echo "wowee finished building container"
