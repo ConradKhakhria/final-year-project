@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -N build-apptainer
 #$ -cwd
-#$ -l h_rt=00:10:00
+#$ -l h_rt=00:15:00
 #$ -l mem=20G
 #$ -pe smp 2
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
