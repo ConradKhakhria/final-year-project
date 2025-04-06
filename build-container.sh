@@ -18,4 +18,7 @@ echo "Running on node: $(hostname)"
 # -F / --force: overwrites any existing SIF file without prompting
 # --fix-perms: adjusts file permissions to avoid read/write issues
 # --tmpdir: uses your scratch space for temporary build files
-apptainer build --fakeroot -F --fix-perms --tmpdir=$HOME/Scratch/tmp experiment-container.sif experiment-container.def
+apptainer build \
+    --fakeroot -F --fix-perms --tmpdir=$HOME/Scratch/tmp \
+    $HOME/Scratch/container/experiment-container.sif    \
+    $HOME/ACFS/final-year-projcet/experiment-container.def
