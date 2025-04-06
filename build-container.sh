@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -N fyp-gpu-container
+#$ -N build-apptainer
 #$ -cwd
 #$ -l h_rt=00:10:00
 #$ -l mem=20G
