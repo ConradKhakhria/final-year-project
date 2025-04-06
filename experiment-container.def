@@ -52,7 +52,7 @@ Stage: build
     python3 -m pip install bitsandbytes==0.42.0
 
     # Install flash_attn for Flash Attention 2 support
-    python3 -m pip install flash_attn
+    python3 -m pip install flash_attn --no-build-isolation
 
     # Install PyTorch and compatible torchvision and torchaudio for CUDA 11.8
     python3 -m pip install --upgrade -c /constraints.txt \
