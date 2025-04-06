@@ -11,6 +11,8 @@
 source /etc/profile
 module load apptainer
 
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libfakeroot.so.0
+
 echo "Running on node: $(hostname)"
 
 # Build the container:
