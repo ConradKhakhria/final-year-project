@@ -10,16 +10,23 @@
 source /etc/profile
 module load apptainer
 
+export APPTAINER_TMPDIR=$HOME/Scratch/tmp
+export APPTAINER_CACHEDIR=$HOME/Scratch/apptainer-cache
+
 # Remove any manual setting of LD_PRELOAD or FAKEROOTKEY:
 unset LD_PRELOAD
 unset FAKEROOTKEY
 
 # Ensure the output directory exists:
 mkdir -p $HOME/Scratch/container
+rm -rf $HOME/Scratch/container/test-apptainer
 
-# Build the diagnostic container as a sandbox image (directory)
+# Build sandbox container (required because fakeroot won't work with SIF on your system)
+apptainer build --fakeroot --sandbox \
+  $HOME/Scratch/container/test-apptainer \
+  $HOME/ACFS/final-year-project/test-build/test-apptainer.def
 
-apptainer --tmpdir=$HOME/Scratch/tmp build --fakeroot --sandbox $HOME/Scratch/container/test-apptainer $HOME/ACFS/final-year-project/test-build/test-apptainer.def
-
-# Execute the sandbox container with fakeroot to display environment variables
-apptainer exec --fakeroot $HOME/Scratch/container/test-apptainer /bin/bash -c "echo 'Inside container:'; echo 'FAKEROOTKEY = ' \$FAKEROOTKEY; echo 'LD_PRELOAD = ' \$LD_PRELOAD"
+# Run the sandbox with fakeroot
+apptainer exec --fakeroot \
+  $HOME/Scratch/container/test-apptainer \
+  /bin/bash -c "echo 'Inside container:'; echo 'FAKEROOTKEY = ' \$FAKEROOTKEY; echo 'LD_PRELOAD = ' \$LD_PRELOAD"
