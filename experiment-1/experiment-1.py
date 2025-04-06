@@ -37,7 +37,7 @@ If you are unsure of the classification for age or gender, guess.""")
     X_test = X[subset_offset : subset_offset + subset_size]
     y_test = y[subset_offset : subset_offset + subset_size]
 
-    outputs = m.query_sequence_batched(X_test, batch_size=16)
+    outputs = m.query_sequence_batched(X_test, batch_size=8)
     json_outputs = m.extract_json(outputs)
 
     for i in range(len(outputs)):
