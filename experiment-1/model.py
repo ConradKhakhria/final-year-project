@@ -31,7 +31,6 @@ class SequenceModel:
             device_map="cuda",
             torch_dtype=torch.float16,
             quantization_config=quant_config,
-#            attn_implementation="flash_attention_2",
             use_auth_token=self.hf_token,
             trust_remote_code=True
         )
