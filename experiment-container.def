@@ -51,6 +51,8 @@ Stage: build
     # Install bitsandbytes for quantization
     python3 -m pip install bitsandbytes==0.42.0
 
+    python3 -m pip install hatchling
+
     # Install Flash Attention 2 with the necessary nvcc, using --no-build-isolation
     python3 -m pip install flash_attn --no-build-isolation --no-binary :all:
 
