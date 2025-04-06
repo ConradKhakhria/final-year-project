@@ -61,9 +61,6 @@ Stage: build
     python3 -m pip install --no-cache-dir bitsandbytes==0.42.0
     python3 -m pip install --no-cache-dir hatchling
 
-    echo "[INFO] Installing Flash Attention 2"
-    python3 -m pip install --no-cache-dir flash_attn --no-build-isolation --no-binary :all:
-
     echo "[INFO] Installing PyTorch (CUDA 11.8 versions)"
     python3 -m pip install --no-cache-dir --upgrade -c /constraints.txt \
         torch==2.1.0+cu118 \
@@ -75,7 +72,7 @@ Stage: build
     python3 -m pip install --no-cache-dir --force-reinstall "numpy<2"
 
     echo "[INFO] Final package versions:"
-    python3 -m pip list | grep -E 'numpy|torch|transformers|bitsandbytes|accelerate|flash_attn'
+    python3 -m pip list | grep -E 'numpy|torch|transformers|bitsandbytes|accelerate'
 
     echo "[INFO] Verifying Torch + NumPy compatibility..."
     python3 -c "import torch, numpy; print(f'Torch version: {torch.__version__}, NumPy version: {numpy.__version__}')"
