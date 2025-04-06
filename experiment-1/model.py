@@ -122,6 +122,8 @@ class SequenceModel:
 
         # Process inputs in batches
         for batch_start in range(0, len(inputs), batch_size):
+            config.debug(f"Running batch {batch_start // batch_size} of {len(inputs) // batch_size}")
+
             batch = inputs[batch_start : batch_start + batch_size]
 
             # Build full prompt for each input
