@@ -4,6 +4,7 @@
 #$ -l h_rt=00:10:00
 #$ -l mem=4G
 #$ -l gpu=1
+#$ -ac allow=L
 #$ -pe smp 1
 #$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
