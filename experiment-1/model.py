@@ -178,8 +178,7 @@ class SequenceModel:
 
 
     @config.debug_function
-    @classmethod
-    def extract_json(cls, outputs: list[str]) -> list[dict]:
+    def extract_json(self, outputs: list[str]) -> list[dict]:
         """ 
         Attempts to extract and parse valid json from each output string
 
