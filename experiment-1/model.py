@@ -18,28 +18,23 @@ class SequenceModel:
 
         self.hf_token = os.environ.get("HF_TOKEN")
 
-        print(f"HF token = '{self.hf_token}'")
-
-        quant_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_compute_dtype=torch.float16,
-            bnb_4bit_use_double_quant=True,
-        )
-
         config.debug(f"Loading model {config.MODEL}")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             device_map="cuda",
-            quantization_config=quant_config,
-            attn_implementation="flash_attention_2",  # Flash Attention 2
-            token=self.hf_token,
-            torch_dtype=torch.bfloat16,
+            torch_dtype=torch.float16,
+            attn_implementation="flash_attention_2",
+            use_auth_token=self.hf_token,
             trust_remote_code=True
         )
 
         config.debug("Creating tokenizer")
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_id, token=self.hf_token,
-                                                       trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_id,
+            token=self.hf_token,
+            trust_remote_code=True
+        )
+
         self.tokenizer.padding_side = "left"
         self.tokenizer.truncation_side = "left"
         self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
