@@ -1,4 +1,3 @@
-import gc
 import json
 import os
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -19,25 +18,25 @@ class SequenceModel:
 
         self.hf_token = os.environ.get("HF_TOKEN")
 
-        # profiling for model loading
-        torch.cuda.empty_cache()
-        gc.collect()
-
-        print(f"[BEFORE] Allocated: {torch.cuda.memory_allocated() / 1e9:.2f} GB")
-        print(f"[BEFORE] Reserved: {torch.cuda.memory_reserved() / 1e9:.2f} GB")
+        quant_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4"
+        )
 
         config.debug(f"Loading model {config.MODEL}")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             device_map="cuda",
             torch_dtype=torch.float16,
+            quantization_config=quant_config,
 #            attn_implementation="flash_attention_2",
             use_auth_token=self.hf_token,
             trust_remote_code=True
         )
 
-        print(f"[AFTER] Allocated: {torch.cuda.memory_allocated() / 1e9:.2f} GB")
-        print(f"[AFTER] Reserved: {torch.cuda.memory_reserved() / 1e9:.2f} GB")
+        config.debug(f"The model we've loaded:\n{self.model}")
 
         config.debug("Creating tokenizer")
         self.tokenizer = AutoTokenizer.from_pretrained(
