@@ -16,8 +16,15 @@ Stage: build
     $HOME/ACFS/final-year-project/constraints.txt /constraints.txt
 
 %post
-    # Create a directory for temporary files using your scratch space (ensure /project is bound)
+    # If FAKEROOTKEY is not defined in the container environment, generate one
+    if [ -z "$FAKEROOTKEY" ]; then
+        export FAKEROOTKEY=$(uuidgen)
+    fi
+
+    # Create /project so that binding works (this will be bound to $HOME/Scratch)
     mkdir -p /project
+
+    # Create temporary directories under /project (mapped to your Scratch space)
     mkdir -p /project/tmp/pip-cache /project/tmp/pip-tmp
     export TMPDIR=/project/tmp
     export PIP_CACHE_DIR=/project/tmp/pip-cache
