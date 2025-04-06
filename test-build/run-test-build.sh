@@ -16,7 +16,7 @@ unset FAKEROOTKEY
 
 apptainer build --fakeroot --tmpdir=$HOME/Scratch/tmp \
     $HOME/Scratch/container/test-apptainer.sif \
-    $HOME/ACFS/final-year-project/test-apptainer.def
+    $HOME/ACFS/final-year-project/test-build/test-apptainer.def
 
 apptainer exec --fakeroot \
     $HOME/Scratch/container/test-apptainer.sif /bin/bash -c "echo 'Inside container:'; echo 'FAKEROOTKEY = ' \$FAKEROOTKEY; echo 'LD_PRELOAD = ' \$LD_PRELOAD"
