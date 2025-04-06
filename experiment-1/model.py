@@ -23,7 +23,7 @@ class SequenceModel:
             self.model_id,
             device_map="cuda",
             torch_dtype=torch.float16,
-            attn_implementation="flash_attention_2",
+#            attn_implementation="flash_attention_2",
             use_auth_token=self.hf_token,
             trust_remote_code=True
         )
