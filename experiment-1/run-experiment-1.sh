@@ -23,8 +23,8 @@ nvidia-smi || echo "No GPU detected"
 export HF_TOKEN=$(cat $HOME/ACFS/final-year-project/new-hf-access-token.txt)
 
 # Run the experiment from the sandbox container with GPU enabled
-apptainer exec --fakeroot --nv \
+apptainer exec --nv \
   --env HF_TOKEN=$HF_TOKEN \
   -B $HOME/ACFS/final-year-project:/project \
-  $HOME/Scratch/container/experiment-container \
+  $HOME/ACFS/final-year-project/experiment-container.sif \
   python3 /project/experiment-1/experiment-1.py
