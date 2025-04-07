@@ -30,32 +30,13 @@ def output_to_dataframe(y_pred: list[dict], y_true: list[dict]) -> pd.DataFrame:
         - pred_age: predicted age
         - pred_gender: predicted gender
     """
-    N = len(outputs)
+    df_true = pd.DataFrame.from_records(y_true).rename(columns={"age": "true_age", "gender": "true_gender"})
+    df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
 
-    valid_json = np.full(True, size=N)
-    true_age = np.full(np.nan, size=N)
-    true_gender = np.full("", size=N)
-    pred_age = np.full(np.nan, size=N)
-    pred_gender = np.full("", size=N)
+    df = pd.concat([df_true, df_pred], axis=1)
+    df["valid_json"] = df["pred_age"].isna()
 
-    for i, (p, t) in enumerate(zip(y_pred, y_true)):
-        true_age[i] = t["age"]
-        true_gender[i] = t["gender"]
-
-        if p:
-            pred_age[i] = p["age"]
-            pred_gender[i] = p["gender"]
-        else:
-            valid_json[i] = False
-
-    return pd.DataFrame({
-        "valid_json": valid_json,
-        "true_age": true_age,
-        "true_gender": true_gender,
-        "pred_age": pred_age,
-        "pred_gender": pred_gender
-    })
-    
+    return df
 
 
 if __name__ == "__main__":
