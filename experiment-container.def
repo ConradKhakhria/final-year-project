@@ -1,11 +1,11 @@
 Bootstrap: docker
-From: nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+From: nvidia/cuda:12.4.0-cudnn8-devel-ubuntu20.04
 Stage: build
 
 %labels
     Author YourName
     Version 2.1.0
-    Description PyTorch 2.1.0 GPU container with CUDA 11.8 and Hugging Face
+    Description PyTorch 2.1.0 GPU container with CUDA 12.4 and Hugging Face
 
 %environment
     export LC_ALL=C
@@ -58,23 +58,24 @@ Stage: build
         "networkx<3.0"
 
     python3 -m pip install --no-cache-dir --upgrade -c /constraints.txt "accelerate>=0.26.0"
-
     python3 -m pip install --no-cache-dir bitsandbytes==0.43.2
-
     python3 -m pip install --no-cache-dir hatchling
 
-    echo "[INFO] Installing PyTorch (CUDA 11.8 versions)"
+    echo "[INFO] Installing Flash Attention 2"
+    python3 -m pip install --no-cache-dir flash_attn --no-build-isolation --no-binary :all:
+
+    echo "[INFO] Installing PyTorch (CUDA 12.4 versions)"
     python3 -m pip install --no-cache-dir --upgrade -c /constraints.txt \
-        torch==2.1.0+cu118 \
-        torchvision==0.16.0+cu118 \
-        torchaudio==2.1.0+cu118 \
-        --index-url https://download.pytorch.org/whl/cu118
+        torch==2.1.0+cu124 \
+        torchvision==0.16.0+cu124 \
+        torchaudio==2.1.0+cu124 \
+        --index-url https://download.pytorch.org/whl/cu124
 
     echo "[INFO] Forcing numpy < 2 reinstall for compatibility"
     python3 -m pip install --no-cache-dir --force-reinstall "numpy<2"
 
     echo "[INFO] Final package versions:"
-    python3 -m pip list | grep -E 'numpy|torch|transformers|bitsandbytes|accelerate'
+    python3 -m pip list | grep -E 'numpy|torch|transformers|bitsandbytes|accelerate|flash_attn'
 
     echo "[INFO] Verifying Torch + NumPy compatibility..."
     python3 -c "import torch, numpy; print(f'Torch version: {torch.__version__}, NumPy version: {numpy.__version__}')"
