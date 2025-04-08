@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -6,8 +7,13 @@ DEBUG = True
 MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
 
 # directories
-LT_STORAGE_DIR = Path("/project")
-LT_TEMPORARY_DIR = Path.home() / "Scratch" / "fyp"
+CACHE_DIR = Path.home() / ".cache"
+DATASET_DIR = Path.home() / "data"
+RO_STORAGE_DIR = Path("/project")
+TMP_DIR = Path.home() / ".tmp"
+
+# set env variables
+os.environ["TRANSFORMERS_CACHE"] = CACHE_DIR / "huggingface-models"
 
 
 # Some helper functions

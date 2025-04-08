@@ -26,8 +26,8 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
     - y: list of dicts with values from y columns
     """
 
-    dataset_cache_path = config.LT_TEMPORARY_DIR / "hf_cache" 
-    local_dataset_path = config.LT_TEMPORARY_DIR / "data" / f"{dataset_name}_local.parquet"
+    dataset_cache_path = config.CACHE_DIR / "huggingface-datasets"
+    local_dataset_path = config.DATASET_DIR / f"{dataset_name}_local.parquet"
 
     local_dataset_path.parent.mkdir(parents=True, exist_ok=True)
 
