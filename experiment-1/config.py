@@ -9,7 +9,6 @@ MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
 # directories
 CACHE_DIR = Path.home() / ".cache"
 DATASET_DIR = Path.home() / "data"
-RO_STORAGE_DIR = Path("/project")
 TMP_DIR = Path.home() / ".tmp"
 
 # set env variables
