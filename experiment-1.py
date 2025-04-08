@@ -58,7 +58,7 @@ if __name__ == "__main__":
 You will now receive a single input, and you must reply **only** in JSON, with no extra text.
 If you are unsure of the classification for age or gender, guess.""")
 
-    subset_size = 100
+    subset_size = 1000
     subset_offset = 100_100
 
     X_test = X[subset_offset : subset_offset + subset_size]
@@ -69,4 +69,9 @@ If you are unsure of the classification for age or gender, guess.""")
 
     results = output_to_dataframe(json_outputs, y_test)
 
-    results.to_parquet(Path.home() / "results" / "experiment-1-output.parquet", index=False)
+
+    # Record results
+    with open(config.RESULTS_DIR / "experiment-1-out.txt", "w") as f:
+        f.write("\n".join(outputs))
+
+    results.to_parquet(config.RESULTS_DIR / "experiment-1-output.parquet", index=False)

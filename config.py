@@ -9,6 +9,7 @@ MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 CACHE_DIR = Path.home() / ".cache"
 DATASET_DIR = Path.home() / "data"
 TMP_DIR = Path.home() / ".tmp"
+RESULTS_DIR = Path.home() / "results"
 
 # set env variables
 os.environ["TRANSFORMERS_CACHE"] = str(CACHE_DIR / "huggingface-models")
