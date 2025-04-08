@@ -25,25 +25,14 @@ class SequenceModel:
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
 
-        quant_config = BitsAndBytesConfig(
+        self.quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
             bnb_4bit_use_double_quant=True,
             bnb_4bit_quant_type="nf4"
         )
 
-        config.debug(f"Loading model {config.MODEL}")
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_id,
-            device_map="auto",
-            torch_dtype=torch.float16,
-            quantization_config=quant_config,
-            use_auth_token=self.hf_token,
-            trust_remote_code=True,
-            attn_implementation="flash_attention_2"
-        )
-
-        self.model.eval()
+        self._load_model()
 
         config.debug(f"The model we've loaded:\n{self.model}")
 
@@ -60,6 +49,26 @@ class SequenceModel:
         if self.tokenizer.pad_token is None:
             self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
             self.model.resize_token_embeddings(len(self.tokenizer))
+
+
+    def _load_model(self):
+        """
+        Loads the model
+
+        (for internal use: avoiding VRAM memory leak)
+        """
+        config.debug(f"Loading model {config.MODEL}")
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.model_id,
+            device_map="auto",
+            torch_dtype=torch.float16,
+            quantization_config=self.quant_config,
+            use_auth_token=self.hf_token,
+            trust_remote_code=True,
+            attn_implementation="flash_attention_2"
+        )
+
+        self.model.eval()
 
 
     ########## MODEL QUERY ##########
@@ -206,6 +215,9 @@ class SequenceModel:
                 torch.cuda.empty_cache()
                 config.debug("Running nvidia-smi")
                 os.system("nvidia-smi")
+
+            if (batch_start // batch_size) % 100 == 0:
+                self._load_model()
 
         config.debug(f"Total batched query time {time.time() - total_start:.2f}s")
 
