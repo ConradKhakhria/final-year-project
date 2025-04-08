@@ -33,7 +33,8 @@ class SequenceModel:
             torch_dtype=torch.float16,
             quantization_config=quant_config,
             use_auth_token=self.hf_token,
-            trust_remote_code=True
+            trust_remote_code=True,
+            attn_implementation="flash_attention_2"
         )
 
         config.debug(f"The model we've loaded:\n{self.model}")
