@@ -65,7 +65,7 @@ If you are unsure of the classification for age or gender, guess.""")
     y_test = y[subset_offset : subset_offset + subset_size]
 
     # just print outputs for now
-    outputs = m.query_sequence_batched(X_test, batch_size=32)
+    outputs = m.query_sequence_batched(X_test, batch_size=16)
 
     with open(config.RESULTS_DIR / "experiment-1-out.txt", "w") as f:
         f.write("\n".join(outputs))
