@@ -37,7 +37,7 @@ def output_to_dataframe(y_pred: list[dict], y_true: list[dict]) -> pd.DataFrame:
     df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
 
     df = pd.concat([df_true, df_pred], axis=1)
-    df["valid_json"] = df["pred_age"].isna()
+    df["valid_json"] = not df["pred_age"].isna()
 
     return df
 
