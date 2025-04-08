@@ -27,6 +27,9 @@ pip install sentencepiece protobuf tokenizers
 # Optional: If you want bitsandbytes support for quantization
 pip install bitsandbytes
 
+# Flash attention
+pip install flash-attn --no-build-isolation
+
 # === ENVIRONMENT VARIABLES ===
 echo "[INFO] Setting up Hugging Face Token..."
 echo 'export HF_TOKEN="<your-huggingface-token-here>"' >> ~/.bashrc
