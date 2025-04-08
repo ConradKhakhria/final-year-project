@@ -10,6 +10,7 @@ CACHE_DIR = Path.home() / ".cache"
 DATASET_DIR = Path.home() / "data"
 TMP_DIR = Path.home() / ".tmp"
 RESULTS_DIR = Path.home() / "results"
+CODE_DIR = Path.home() / "final-year-project"
 
 # set env variables
 os.environ["TRANSFORMERS_CACHE"] = str(CACHE_DIR / "huggingface-models")

@@ -129,35 +129,7 @@ if __name__ == "__main__":
     df, X, y = dataset.load_dataset_locally("blog_authorship_corpus", "text", ["age", "gender"])
     m = model.SequenceModel(config.MODEL)
 
-    m.set_pre_prompt("""You are an AI assistant which:
-1. Only receives un-annotated social media posts as input
-2. Only emits output in valid JSON format, with this schema:
-    {
-        "age": <your prediction of the age (**strictly** an integer)>,
-        "gender": <your prediction of the gender of the poster, either 'male' or 'female'>
-    }
-
-You will now receive a single input, and you must reply **only** in JSON, with no extra text.
-You are literally incapable of writing anything other than 'male' or 'female' for the gender prediction,
-and must simply guess if you don't know.""")
-    
-    m.set_pre_prompt("""You are an AI assistant that:
-1. Only receives un-annotated social media posts as input.
-2. Only responds in JSON format, with the following **strict** schema:
-
-    {
-        "age": <your prediction of the age (**strictly** an integer)>,
-        "gender": <your prediction of the gender, either "male" or "female" — nothing else>
-    }
-
-Rules:
-- You **must** make a best-guess for both age and gender, even if uncertain.
-- You **may not** respond with "unknown", "unsure", or any value other than "male" or "female".
-- If you're uncertain, guess based on writing style, tone, or other cues.
-- You **must not** include any extra text outside the JSON.
-
-Now, you will receive a single input post. Respond **only** with JSON as described above.""")
-
+    m.load_pre_prompt(config.CODE_DIR / "experiment-1-pre-prompt.txt")
 
     subset_size = 100
     subset_offset = 100_100
