@@ -4,7 +4,6 @@
 #$ -l h_rt=00:10:00
 #$ -l mem=4G
 #$ -l gpu=1
-#$ -ac allow=L
 #$ -pe smp 1
 #$ -o $HOME/$JOB_NAME_$JOB_ID.out
 #$ -e $HOME/$JOB_NAME_$JOB_ID.err
