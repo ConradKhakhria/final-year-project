@@ -58,7 +58,7 @@ def evaluation(results: pd.DataFrame) -> dict:
     - an evaluation of the prediction performance on gender
     - "" "" "" age prediction
     """
-    valid = results[results["valid_json"] != True].copy()
+    valid = results[results["valid_json"] == True].copy()
     num_total = len(results)
     num_valid = len(valid)
 
@@ -66,15 +66,22 @@ def evaluation(results: pd.DataFrame) -> dict:
     config.debug(f"Valid JSON outputs: {num_valid} ({100 * num_valid / num_total:.2f}%)")
 
     # --- GENDER METRICS ---
-    gender_accuracy = accuracy_score(valid["true_gender"], valid["pred_gender"])
-    gender_precision = precision_score(valid["true_gender"], valid["pred_gender"], pos_label="female", average="binary")
-    gender_recall = recall_score(valid["true_gender"], valid["pred_gender"], pos_label="female", average="binary")
-    gender_f1 = f1_score(valid["true_gender"], valid["pred_gender"], pos_label="female", average="binary")
+    gender_mask = valid["true_gender"].isin(["male", "female"]) & valid["pred_gender"].isin(["male", "female"])
+    gender_df = valid[gender_mask]
 
-    config.debug(f"Gender accuracy: {gender_accuracy:.3f}")
-    config.debug(f"Gender precision: {gender_precision:.3f}")
-    config.debug(f"Gender recall: {gender_recall:.3f}")
-    config.debug(f"Gender F1-score: {gender_f1:.3f}")
+    if not gender_df.empty:
+        gender_accuracy = accuracy_score(gender_df["true_gender"], gender_df["pred_gender"])
+        gender_precision = precision_score(gender_df["true_gender"], gender_df["pred_gender"], pos_label="female", average="binary")
+        gender_recall = recall_score(gender_df["true_gender"], gender_df["pred_gender"], pos_label="female", average="binary")
+        gender_f1 = f1_score(gender_df["true_gender"], gender_df["pred_gender"], pos_label="female", average="binary")
+
+        config.debug(f"Gender accuracy: {gender_accuracy:.3f}")
+        config.debug(f"Gender precision: {gender_precision:.3f}")
+        config.debug(f"Gender recall: {gender_recall:.3f}")
+        config.debug(f"Gender F1-score: {gender_f1:.3f}")
+    else:
+        gender_accuracy = gender_precision = gender_recall = gender_f1 = None
+        config.debug("No valid gender rows (male/female) for evaluation.")
 
     # --- AGE METRICS ---
     pred_age = pd.to_numeric(valid["pred_age"], errors="coerce")
@@ -85,13 +92,17 @@ def evaluation(results: pd.DataFrame) -> dict:
     pred_age = pred_age[mask]
     true_age = true_age[mask]
 
-    age_mae = mean_absolute_error(true_age, pred_age)
-    age_rmse = mean_squared_error(true_age, pred_age, squared=False)
-    within_3_years = np.mean(np.abs(true_age - pred_age) <= 3)
+    if not pred_age.empty:
+        age_mae = mean_absolute_error(true_age, pred_age)
+        age_rmse = mean_squared_error(true_age, pred_age, squared=False)
+        within_3_years = np.mean(np.abs(true_age - pred_age) <= 3)
 
-    config.debug(f"Age MAE: {age_mae:.2f}")
-    config.debug(f"Age RMSE: {age_rmse:.2f}")
-    config.debug(f"Accuracy within ±3 years: {within_3_years:.2%}")
+        config.debug(f"Age MAE: {age_mae:.2f}")
+        config.debug(f"Age RMSE: {age_rmse:.2f}")
+        config.debug(f"Accuracy within ±3 years: {within_3_years:.2%}")
+    else:
+        age_mae = age_rmse = within_3_years = None
+        config.debug("No valid age rows for evaluation.")
 
     return {
         "num_total": num_total,
@@ -108,6 +119,7 @@ def evaluation(results: pd.DataFrame) -> dict:
             "accuracy_within_3_years": within_3_years
         }
     }
+
 
 
 if __name__ == "__main__":
