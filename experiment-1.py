@@ -128,22 +128,36 @@ if __name__ == "__main__":
     config.debug(f"CUDA is available: {torch.cuda.is_available()}")
     config.debug(f"CUDA device 0 name: {torch.cuda.get_device_name(0)}")
 
+    config.debug("Loading training and validation sets")
     df_train, X_train, y_train = dataset.load_dataset_locally("blog_authorship_corpus",
                                                               "text",["age", "gender"])
 
     df_val, X_val, y_val = dataset.load_dataset_locally("blog_authorship_corpus",
                                                         "text", ["age", "gender"])
 
+    config.debug("producing sample from validation set")
+    num_samples = 10000
+    np.random.seed(42)
+    total_val = len(X_val)
+    selected_indices = np.random.choice(np.arange(total_val), size=num_samples, replace=False)
+    selected_indices.sort()
+
+    with open(config.RESULTS_DIR / "subset-indices.txt", "w") as f:
+        f.write("\n".join(map(str, selected_indices)))
+
+    # Create validation subset
+    X_subset = [X_val[i] for i in selected_indices]
+    y_subset = [y_val[i] for i in selected_indices]
+
     m = model.SequenceModel(config.MODEL)
     m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt")
 
-
     # compute and write outputs
-    outputs = m.query_sequence_batched(X_val, batch_size=20)
+    outputs = m.query_sequence_batched(X_subset, batch_size=20)
 
     # parse json
     json_outputs = m.extract_json(outputs)
-    results = output_to_dataframe(json_outputs, y_val)
+    results = output_to_dataframe(json_outputs, y_subset)
 
     # Experiment evaluation
     results_evaluation = evaluation(results)
