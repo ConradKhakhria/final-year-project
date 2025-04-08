@@ -153,7 +153,8 @@ if __name__ == "__main__":
     m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt")
 
     # compute and write outputs
-    outputs = m.query_sequence_batched(X_subset, batch_size=16)
+    with torch.no_grad():
+        outputs = m.query_sequence_batched(X_subset, batch_size=16)
 
     # parse json
     json_outputs = m.extract_json(outputs)

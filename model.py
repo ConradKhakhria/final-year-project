@@ -43,6 +43,8 @@ class SequenceModel:
             attn_implementation="flash_attention_2"
         )
 
+        self.model.eval()
+
         config.debug(f"The model we've loaded:\n{self.model}")
 
         config.debug("Creating tokenizer")
@@ -54,8 +56,10 @@ class SequenceModel:
 
         self.tokenizer.padding_side = "left"
         self.tokenizer.truncation_side = "left"
-        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-        self.model.resize_token_embeddings(len(self.tokenizer))
+
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            self.model.resize_token_embeddings(len(self.tokenizer))
 
 
     ########## MODEL QUERY ##########
@@ -166,17 +170,16 @@ class SequenceModel:
 
             # Generate batch outputs
             start = time.time()
-            with torch.no_grad():
-                output_tokens = self.model.generate(
-                    input_ids=input_tokens["input_ids"],
-                    attention_mask=input_tokens["attention_mask"],
-                    max_new_tokens=20,
-                    eos_token_id=self.tokenizer.eos_token_id,
-                    pad_token_id=self.tokenizer.eos_token_id,
-                    do_sample=False,
-                    repetition_penalty=1.1,
-                    use_cache=True,
-                )
+            output_tokens = self.model.generate(
+                input_ids=input_tokens["input_ids"],
+                attention_mask=input_tokens["attention_mask"],
+                max_new_tokens=20,
+                eos_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.eos_token_id,
+                do_sample=False,
+                repetition_penalty=1.1,
+                use_cache=True,
+            )
 
             torch.cuda.synchronize()
             config.debug(f"Model generation took {time.time() - start:.2f}s")
