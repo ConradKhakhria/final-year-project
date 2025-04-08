@@ -129,7 +129,7 @@ if __name__ == "__main__":
     df, X, y = dataset.load_dataset_locally("blog_authorship_corpus", "text", ["age", "gender"])
     m = model.SequenceModel(config.MODEL)
 
-    m.load_pre_prompt(config.CODE_DIR / "experiment-1-pre-prompt.txt")
+    m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt1-few-shot.txt")
 
     subset_size = 100
     subset_offset = 100_100
