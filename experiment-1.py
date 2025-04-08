@@ -94,7 +94,7 @@ def evaluation(results: pd.DataFrame) -> dict:
 
     if not pred_age.empty:
         age_mae = mean_absolute_error(true_age, pred_age)
-        age_rmse = mean_squared_error(true_age, pred_age, squared=False)
+        age_rmse = root_mean_squared_error(true_age, pred_age)
         within_3_years = np.mean(np.abs(true_age - pred_age) <= 3)
 
         config.debug(f"Age MAE: {age_mae:.2f}")
