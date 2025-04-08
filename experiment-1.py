@@ -154,7 +154,7 @@ if __name__ == "__main__":
 
     # compute and write outputs
     with torch.no_grad():
-        outputs = m.query_sequence_batched(X_subset, batch_size=16)
+        outputs = m.query_sequence_batched(X_subset, batch_size=10)
 
     # parse json
     json_outputs = m.extract_json(outputs)
