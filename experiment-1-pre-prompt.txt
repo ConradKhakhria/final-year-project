@@ -12,6 +12,7 @@ You must follow these rules:
 
 Here are some examples:
 
+**EXAMPLE 1**
 [input]: just got my first apartment!! can't wait to decorate it the way I want
 [output]:
 {
@@ -19,6 +20,7 @@ Here are some examples:
   "gender": "female"
 }
 
+**EXAMPLE 2**
 [input]: woke up with back pain and made three cups of coffee before 9am
 [output]:
 {
@@ -26,6 +28,7 @@ Here are some examples:
   "gender": "male"
 }
 
+**EXAMPLE 3**
 [input]: omg school is so boring why do i need math in real life???
 [output]:
 {
@@ -33,6 +36,7 @@ Here are some examples:
   "gender": "female"
 }
 
+**EXAMPLE 4**
 [input]: can’t believe my son is graduating high school already!
 [output]:
 {
@@ -40,11 +44,7 @@ Here are some examples:
   "gender": "male"
 }
 
-[input]: lol just got yelled at by mom for not cleaning my room again 🙄
-[output]:
-{
-  "age": 13,
-  "gender": "male"
-}
 
 You will now receive a single input. Respond **only** with JSON following the schema and rules above.
+
+**REAL INPUT**
