@@ -7,7 +7,12 @@ import config
 
 
 @config.debug_function
-def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sort_axis=None) -> "Dataset":
+def load_dataset_locally(
+    dataset_name: str,
+    X_name: str,
+    y_names: list[str],
+    sort_axis=None,
+    split_set="train") -> tuple:
     """
     Loads a dataset from huggingface
 
@@ -19,6 +24,7 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
     - X_name: name of the input (X) column
     - y_names: list of output (y) column names
     - sort_axis: column to sort by length (usually a text field)
+    - split_set: which of "train", "validation", and "test" you want
 
     Returns:
     - df: the pandas DataFrame of the dataset
@@ -37,7 +43,7 @@ def load_dataset_locally(dataset_name: str, X_name: str, y_names: list[str], sor
     else:
         config.debug("Loading dataset from huggingface")
         dataset = datasets.load_dataset(dataset_name,
-                                        split="train",
+                                        split=split_set,
                                         cache_dir=str(dataset_cache_path),
                                         trust_remote_code=True)
         df = dataset.to_pandas()
