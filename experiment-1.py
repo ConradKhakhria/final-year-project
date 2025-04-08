@@ -126,23 +126,22 @@ if __name__ == "__main__":
     config.debug(f"CUDA is available: {torch.cuda.is_available()}")
     config.debug(f"CUDA device 0 name: {torch.cuda.get_device_name(0)}")
 
-    df, X, y = dataset.load_dataset_locally("blog_authorship_corpus", "text", ["age", "gender"])
-    m = model.SequenceModel(config.MODEL)
+    df_train, X_train, y_train = dataset.load_dataset_locally("blog_authorship_corpus",
+                                                              "text",["age", "gender"])
 
+    df_val, X_val, y_val = dataset.load_dataset_locally("blog_authorship_corpus",
+                                                        "text", ["age", "gender"])
+
+    m = model.SequenceModel(config.MODEL)
     m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt")
 
-    subset_size = 1000
-    subset_offset = 100_000
-
-    X_test = X[subset_offset : subset_offset + subset_size]
-    y_test = y[subset_offset : subset_offset + subset_size]
 
     # compute and write outputs
-    outputs = m.query_sequence_batched(X_test, batch_size=20)
+    outputs = m.query_sequence_batched(X_val, batch_size=20)
 
     # parse json
     json_outputs = m.extract_json(outputs)
-    results = output_to_dataframe(json_outputs, y_test)
+    results = output_to_dataframe(json_outputs, y_val)
 
     # Experiment evaluation
     results_evaluation = evaluation(results)
