@@ -204,6 +204,8 @@ class SequenceModel:
                 config.debug("Clearing cache and running gc")
                 gc.collect()
                 torch.cuda.empty_cache()
+                config.debug("Running nvidia-smi")
+                os.system("nvidia-smi")
 
         config.debug(f"Total batched query time {time.time() - total_start:.2f}s")
 
