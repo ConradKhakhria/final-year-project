@@ -217,7 +217,8 @@ class SequenceModel:
                 os.system("nvidia-smi")
 
             if (batch_start // batch_size) % 100 == 0:
-                self._load_model()
+                #self._load_model()
+                pass
 
         config.debug(f"Total batched query time {time.time() - total_start:.2f}s")
 
