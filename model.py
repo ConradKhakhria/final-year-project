@@ -148,7 +148,7 @@ class SequenceModel:
                 output_tokens = self.model.generate(
                     input_ids=input_tokens["input_ids"],
                     attention_mask=input_tokens["attention_mask"],
-                    max_new_tokens=50,
+                    max_new_tokens=20,
                     eos_token_id=self.tokenizer.eos_token_id,
                     pad_token_id=self.tokenizer.eos_token_id,
                     do_sample=False,
