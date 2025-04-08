@@ -3,8 +3,7 @@ from pathlib import Path
 
 
 DEBUG = True
-#MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-MODEL = "mistralai/Mistral-7B-Instruct-v0.2"
+MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 
 # directories
 CACHE_DIR = Path.home() / ".cache"
