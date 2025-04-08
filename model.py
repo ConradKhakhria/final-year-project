@@ -22,8 +22,8 @@ class SequenceModel:
             self.hf_token = f.read().strip()
 
         # ALlow tf32
-        torch.backends.cuda.matmul.allow_tf32 = True
-        torch.backends.cudnn.allow_tf32 = True
+#        torch.backends.cuda.matmul.allow_tf32 = True
+#        torch.backends.cudnn.allow_tf32 = True
 
         self.quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
@@ -51,12 +51,20 @@ class SequenceModel:
             self.model.resize_token_embeddings(len(self.tokenizer))
 
 
-    def _load_model(self):
+    def _load_model(self, refresh=False):
         """
         Loads the model
 
-        (for internal use: avoiding VRAM memory leak)
+        args:
+        - refresh: whether to completely clear everything
         """
+        if refresh:
+            self.model.cpu()
+            del self.model
+
+            gc.collect()
+            torch.cuda.empty_cache()
+
         config.debug(f"Loading model {config.MODEL}")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
@@ -217,8 +225,7 @@ class SequenceModel:
                 os.system("nvidia-smi")
 
             if (batch_start // batch_size) % 100 == 0:
-                #self._load_model()
-                pass
+                self._load_model(refresh=True)
 
         config.debug(f"Total batched query time {time.time() - total_start:.2f}s")
 
