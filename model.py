@@ -16,7 +16,8 @@ class SequenceModel:
         self.model_id = model_id
         self.pre_prompt = ""
 
-        self.hf_token = os.environ.get("HF_TOKEN")
+        with open("hf-access-token.txt") as f:
+            self.hf_token = f.read().strip()
 
         quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
