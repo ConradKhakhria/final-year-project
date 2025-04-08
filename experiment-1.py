@@ -140,9 +140,6 @@ if __name__ == "__main__":
     # compute and write outputs
     outputs = m.query_sequence_batched(X_test, batch_size=20)
 
-    with open(config.RESULTS_DIR / "experiment-1-output.txt", "w") as f:
-        f.write("\n".join(outputs))
-
     # parse json
     json_outputs = m.extract_json(outputs)
     results = output_to_dataframe(json_outputs, y_test)
