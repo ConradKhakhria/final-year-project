@@ -3,6 +3,7 @@ import json
 import numpy as np
 import os
 import pandas as pd
+from pathlib import Path
 import sys
 import torch
 
@@ -68,4 +69,4 @@ If you are unsure of the classification for age or gender, guess.""")
 
     results = output_to_dataframe(json_outputs, y_test)
 
-    results.to_parquet("/project/experiment-1/output.parquet", index=False)
+    results.to_parquet(Path.home() / "results" / "experiment-1-output.parquet", index=False)
