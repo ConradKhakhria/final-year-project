@@ -119,6 +119,8 @@ class SequenceModel:
                 return_dict_in_generate=False  # Slightly faster and lighter output structure
             )
 
+            output_tokens = output_tokens.detach().cpu()
+
             generated_tokens = output_tokens[:, input_length - 1:]
             generated_string = self.tokenizer.decode(generated_tokens[0],
                                                      skip_special_tokens=True).strip()
