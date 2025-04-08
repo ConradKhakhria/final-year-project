@@ -5,7 +5,8 @@ set -e  # Exit on error
 export DEBIAN_FRONTEND=noninteractive
 
 echo "[INFO] Updating packages..."
-sudo apt update && sudo apt upgrade -y
+sudo apt update
+sudo apt upgrade -y --with-new-pkgs -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 echo "[INFO] Installing core dependencies..."
 sudo apt install -y python3-pip git
