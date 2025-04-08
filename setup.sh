@@ -32,7 +32,7 @@ echo 'export HF_TOKEN="<your-huggingface-token-here>"' >> ~/.bashrc
 export HF_TOKEN="<your-huggingface-token-here>"
 
 # Create necessary directories
-mkdir -p ~/.cache/huggingface ~/.tmp ~/data /project
+mkdir -p ~/.cache/huggingface ~/.tmp ~/data
 
 # === RUN SCRIPT ===
 echo "[INFO] Running experiment..."
