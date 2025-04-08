@@ -6,16 +6,16 @@
 #$ -l gpu=1
 #$ -ac allow=L
 #$ -pe smp 1
-#$ -o $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.out
-#$ -e $HOME/Scratch/fyp/logs/$JOB_NAME_$JOB_ID.err
+#$ -o $HOME/$JOB_NAME_$JOB_ID.out
+#$ -e $HOME/$JOB_NAME_$JOB_ID.err
 
 # Load Apptainer
 source /etc/profile
 module load apptainer
 
 # Set cache/temp just in case
-export APPTAINER_TMPDIR=$HOME/Scratch/tmp
-export APPTAINER_CACHEDIR=$HOME/Scratch/apptainer-cache
+export APPTAINER_TMPDIR=$HOME/.tmp
+export APPTAINER_CACHEDIR=$HOME/.cache/apptainer
 
 echo "Running on node: $(hostname)"
 nvidia-smi || echo "No GPU detected"
