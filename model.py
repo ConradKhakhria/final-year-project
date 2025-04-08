@@ -19,6 +19,10 @@ class SequenceModel:
         with open("hf-access-token.txt") as f:
             self.hf_token = f.read().strip()
 
+        # ALlow tf32
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+
         quant_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
