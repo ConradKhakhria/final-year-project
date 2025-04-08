@@ -104,9 +104,14 @@ class SequenceModel:
             output_tokens = self.model.generate(
                 input_ids=input_tokens["input_ids"],
                 attention_mask=input_tokens["attention_mask"],
-                max_new_tokens=20, 
-                eos_token_id=self.tokenizer.eos_token_id, 
+                max_new_tokens=20,
+                eos_token_id=self.tokenizer.eos_token_id,
                 pad_token_id=self.tokenizer.eos_token_id,
+                do_sample=True,               # Enables sampling
+                temperature=0.8,              # Encourages variation without being too random
+                top_p=0.95,                   # Nucleus sampling — limits to most probable tokens
+                use_cache=True,              # Recommended for faster inference
+                return_dict_in_generate=False  # Slightly faster and lighter output structure
             )
 
             generated_tokens = output_tokens[:, input_length - 1:]
