@@ -14,6 +14,7 @@ CODE_DIR = Path.home() / "final-year-project"
 
 # set env variables
 os.environ["TRANSFORMERS_CACHE"] = str(CACHE_DIR / "huggingface-models")
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 
 # Some helper functions
