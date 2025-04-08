@@ -174,7 +174,7 @@ class SequenceModel:
                     pad_token_id=self.tokenizer.eos_token_id,
                     do_sample=False,
                     repetition_penalty=1.1,
-                    use_cache=False,
+                    use_cache=True,
                 )
 
             torch.cuda.synchronize()
