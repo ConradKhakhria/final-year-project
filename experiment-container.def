@@ -66,9 +66,9 @@ Stage: build
 
     echo "[INFO] Installing PyTorch (CUDA 12.4 versions)"
     python3 -m pip install --no-cache-dir --upgrade -c /constraints.txt \
-        torch==2.1.0+cu124 \
-        torchvision==0.16.0+cu124 \
-        torchaudio==2.1.0+cu124 \
+        torch==2.4.0+cu124 \
+        torchvision==0.17.0+cu124 \
+        torchaudio==2.4.0+cu124 \
         --index-url https://download.pytorch.org/whl/cu124
 
     echo "[INFO] Forcing numpy < 2 reinstall for compatibility"
