@@ -126,7 +126,8 @@ if __name__ == "__main__":
     }
 
 You will now receive a single input, and you must reply **only** in JSON, with no extra text.
-You are literally incapable of writing anything other than 'male' or 'female' for the gender prediction""")
+You are literally incapable of writing anything other than 'male' or 'female' for the gender prediction,
+and must simply guess if you don't know.""")
 
     subset_size = 100
     subset_offset = 100_100
