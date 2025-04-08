@@ -31,6 +31,8 @@ def output_to_dataframe(y_pred: list[dict], y_true: list[dict]) -> pd.DataFrame:
         - pred_age: predicted age
         - pred_gender: predicted gender
     """
+    print(y_pred)
+
     df_true = pd.DataFrame.from_records(y_true).rename(columns={"age": "true_age", "gender": "true_gender"})
     df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
 
