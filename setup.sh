@@ -34,6 +34,7 @@ pip install flash-attn --no-build-isolation
 echo "[INFO] Setting up Hugging Face Token..."
 echo 'export HF_TOKEN="<your-huggingface-token-here>"' >> ~/.bashrc
 export HF_TOKEN="<your-huggingface-token-here>"
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Create necessary directories
 mkdir -p ~/.cache/huggingface ~/.tmp ~/data
