@@ -12,7 +12,7 @@ DATASET_DIR = Path.home() / "data"
 TMP_DIR = Path.home() / ".tmp"
 
 # set env variables
-os.environ["TRANSFORMERS_CACHE"] = CACHE_DIR / "huggingface-models"
+os.environ["TRANSFORMERS_CACHE"] = str(CACHE_DIR / "huggingface-models")
 
 
 # Some helper functions
