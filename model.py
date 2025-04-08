@@ -35,7 +35,7 @@ class SequenceModel:
         config.debug(f"Loading model {config.MODEL}")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
-            device_map="cuda",
+            device_map="auto",
             torch_dtype=torch.float16,
             quantization_config=quant_config,
             use_auth_token=self.hf_token,
