@@ -21,7 +21,7 @@ source venv/bin/activate
 
 echo "[INFO] Installing Python requirements..."
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install transformers datasets accelerate pandas
+pip install transformers datasets accelerate pandas scikit-learn
 pip install sentencepiece protobuf tokenizers
 
 # Optional: If you want bitsandbytes support for quantization
