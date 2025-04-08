@@ -64,22 +64,14 @@ If you are unsure of the classification for age or gender, guess.""")
     X_test = X[subset_offset : subset_offset + subset_size]
     y_test = y[subset_offset : subset_offset + subset_size]
 
-    # just print outputs for now
+    # compute and write outputs
     outputs = m.query_sequence_batched(X_test, batch_size=16)
 
     with open(config.RESULTS_DIR / "experiment-1-out.txt", "w") as f:
         f.write("\n".join(outputs))
 
-    exit()
-
-
+    # parse json
     json_outputs = m.extract_json(outputs)
-
     results = output_to_dataframe(json_outputs, y_test)
-
-
-    # Record results
-    with open(config.RESULTS_DIR / "experiment-1-out.txt", "w") as f:
-        f.write("\n".join(outputs))
 
     results.to_parquet(config.RESULTS_DIR / "experiment-1-output.parquet", index=False)
