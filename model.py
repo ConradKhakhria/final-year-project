@@ -1,3 +1,4 @@
+import gc
 import json
 import os
 from pathlib import Path
@@ -193,10 +194,14 @@ class SequenceModel:
             config.debug(f"Decoding outputs took {time.time() - start:.2f}s")
 
             del input_tokens, output_tokens
-            torch.cuda.empty_cache()
+
+            if (batch_start // batch_size) % 10 == 0:
+                config.debug("Clearing cache and running gc")
+                gc.collect()
+                torch.cuda.empty_cache()
 
         config.debug(f"Total batched query time {time.time() - total_start:.2f}s")
-        
+
         return outputs
 
 
