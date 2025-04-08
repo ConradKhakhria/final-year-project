@@ -131,7 +131,7 @@ if __name__ == "__main__":
 
     m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt")
 
-    subset_size = 100
+    subset_size = 1000
     subset_offset = 100_000
 
     X_test = X[subset_offset : subset_offset + subset_size]
