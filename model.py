@@ -18,7 +18,7 @@ class BatchModel:
         self.model_id = model_id
         self.pre_prompt = ""
 
-        with open("hf-access-token.txt") as f:
+        with open(config.CODE_DIR / "hf-access-token.txt") as f:
             self.hf_token = f.read().strip()
 
         # ALlow tf32
