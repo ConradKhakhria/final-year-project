@@ -21,6 +21,8 @@ class BatchModel:
         with open(config.CODE_DIR / "hf-access-token.txt") as f:
             self.hf_token = f.read().strip()
 
+        print(self.hf_token)
+
         # ALlow tf32
 #        torch.backends.cuda.matmul.allow_tf32 = True
 #        torch.backends.cudnn.allow_tf32 = True
