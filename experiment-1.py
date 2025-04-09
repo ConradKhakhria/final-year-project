@@ -80,6 +80,10 @@ class Experiment1:
 
                     torch.cuda.empty_cache()
 
+                    # Create new queues
+                    input_queue = mp.Queue()
+                    output_queue = mp.Queue()
+
                     config.debug("Creating process")
                     p = mp.Process(target=self.create_batch_process_worker,
                                    args=(input_queue, output_queue, self.pre_prompt_path))
