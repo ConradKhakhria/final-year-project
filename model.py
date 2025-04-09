@@ -138,7 +138,8 @@ class BatchModel:
 
 
     @config.debug_function
-    def extract_json(self, outputs: list[str]) -> list[dict]:
+    @classmethod
+    def extract_json(cls, outputs: list[str]) -> list[dict]:
         """ 
         Attempts to extract and parse valid json from each output string
 
