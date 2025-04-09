@@ -59,19 +59,24 @@ class Experiment1:
                        args=(input_queue, output_queue, self.pre_prompt_path))
         p.start()
 
-        with torch.no_grad():
-            for batch_start in range(0, len(self.X_test), batch_size):
-                batch_no = batch_start // batch_size
-                batch_count = len(self.X_test) // batch_size
-                batch = self.X_test[batch_start : batch_start + batch_size]
+        batch_start = 0
+        N = len(self.X_test)
 
-                config.debug(f"Processing batch {batch_no} of {batch_count}")
+        with torch.no_grad():
+            while batch_start < N:
+                batch = self.X_test[batch_start : min(batch_start + batch_size, N)]
+                batch_number = batch_start // batch_size
+                batch_count = N // batch_size
+
+                config.debug(f"Processing batch {batch_number} of {batch_count}")
 
                 input_queue.put(batch)
                 results = output_queue.get()
 
-                # Handle unsuccessful case
-                if not results["successful"]:
+                if results["successful"]:
+                    outputs.extend(results["output"])
+                    batch_start += batch_size
+                else:
                     config.debug("Killing process and reloading model")
 
                     if p.is_alive():
@@ -89,15 +94,14 @@ class Experiment1:
                                    args=(input_queue, output_queue, self.pre_prompt_path))
                     p.start()
 
-                    input_queue.put(batch)
-                    results = output_queue.get()
+                    new_batch_size = max(1, int(0.8 * batch_size))
 
-                    if results.get("successful"):
-                        outputs.extend(results["output"])
-                    else:
-                        raise RuntimeError("For some reason it didn't work twice!")
-                else:
-                    outputs.extend(results["output"])
+                    if new_batch_size == batch_size > 1:
+                        new_batch_size -= 1
+
+                    config.debug(f"Reduced batch size from {batch_size} to {new_batch_size}")
+
+                    batch_size = new_batch_size
 
         input_queue.put(None)
         p.join()
