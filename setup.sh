@@ -37,7 +37,7 @@ export HF_TOKEN="<your-huggingface-token-here>"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Create necessary directories
-mkdir -p ~/.cache/huggingface ~/.tmp ~/data
+mkdir -p ~/.cache/huggingface ~/.tmp ~/data ~/results
 
 # === RUN SCRIPT ===
 echo "[INFO] Running experiment..."
