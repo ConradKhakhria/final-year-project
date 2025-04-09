@@ -40,7 +40,7 @@ class BatchModel:
             device_map="auto",
             torch_dtype=torch.float16,
             quantization_config=self.quant_config,
-            use_auth_token=self.hf_token,
+            token=self.hf_token,
             trust_remote_code=True,
             attn_implementation="flash_attention_2"
         )
