@@ -131,7 +131,7 @@ class Experiment1:
                     break
 
                 try:
-                    output = m.process_batch(batch)
+                    output = m.process_batch(batch, enforce_json=True)
                     output_queue.put({ "successful": True, "output": output })
                 except RuntimeError as e:
                     if str(e).startswith('CUDA out of memory'):
@@ -157,7 +157,7 @@ class Experiment1:
         """
         config.debug("Running experiment")
         y_test_outputs = self.process_samples_llm(batch_size)
-        y_pred = model.BatchModel.extract_json(y_test_outputs)
+        y_pred = self.extract_json(y_test_outputs)
 
         df_true = pd.DataFrame.from_records(self.y_test).rename(columns={"age": "true_age", "gender": "true_gender"})
         df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
@@ -168,6 +168,30 @@ class Experiment1:
         df["pred_age"] = pd.to_numeric(df_pred["pred_age"], errors="coerce")
 
         return df, y_test_outputs
+
+
+    @classmethod
+    @config.debug_function
+    def extract_json(cls, outputs: list[str]) -> list[dict]:
+        """ 
+        Attempts to extract and parse valid json from each output string
+
+        For each output that doesn't yield valid output, None is put in its place
+        """
+
+        json_outputs = []
+
+        for s in outputs:
+            try:
+                potential_json = s.split("}")[0] + "}"
+                parsed = json.loads(potential_json)
+            except json.JSONDecodeError:
+                parsed = None
+
+            json_outputs.append(parsed)
+
+        return json_outputs
+
 
 
     def evaluation(self, results: pd.DataFrame) -> dict:
