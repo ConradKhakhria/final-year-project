@@ -6,11 +6,7 @@ import pandas as pd
 from pathlib import Path
 from sklearn.metrics import *
 import sys
-import torch
 from typing import Tuple
-
-# Set path for local imports
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import config
 import dataset
@@ -19,9 +15,6 @@ import model
 
 class Experiment1:
     def __init__(self, pre_prompt_filename: str, num_samples: int = None):
-        config.debug(f"CUDA is available: {torch.cuda.is_available()}")
-        config.debug(f"CUDA device 0 name: {torch.cuda.get_device_name(0)}")
-
         config.debug("Loading training and validation sets")
         self.df_train = dataset.load_dataset_locally("blog_authorship_corpus",
                                                      sort_axis="text", split_set="train")
@@ -38,10 +31,10 @@ class Experiment1:
                                                      size=num_samples, replace=False)
             self.selected_indices.sort()
 
-        self.df_train = self.df_val.iloc[self.selected_indices]
+        self.df_test = self.df_val.iloc[self.selected_indices]
 
-        self.X_train = df_train["text"]
-        self.y_train = [{ "age": r["age"], "gender": r["gender"] } for r in df_train]
+        self.X_test = self.df_test["text"]
+        self.y_test = [{ "age": r["age"], "gender": r["gender"] } for r in self.df_test]
 
         # Load the model!
         self.m = model.BatchModel(config.MODEL)
@@ -56,6 +49,8 @@ class Experiment1:
         returns:
             the raw string outputs of the LLM
         """
+        import torch
+
         outputs = []
 
         input_queue = mp.Queue()
@@ -66,9 +61,12 @@ class Experiment1:
         p.start()
 
         with torch.no_grad():
-            for batch_start in range(0, len(self.X_train), batch_size):
-                config.debug(f"Processing batch {batch_start // batch_size} of {len(self.X_train) // batch_size}")
-                batch = self.X_train[batch_start : batch_start + batch_size]
+            for batch_start in range(0, len(self.X_test), batch_size):
+                batch_no = batch_start // batch_size
+                batch_count = len(self.X_test) // batch_size
+                batch = self.X_test[batch_start : batch_start + batch_size]
+
+                config.debug(f"Processing batch {batch_no} of {batch_count}")
 
                 input_queue.put(batch)
                 results = output_queue.get()
@@ -84,18 +82,19 @@ class Experiment1:
                     torch.cuda.empty_cache()
 
                     config.debug("Creating process")
-                    p = mp.Process(target=self.create_batch_process_worker, args=(input_queue, output_queue))
+                    p = mp.Process(target=self.create_batch_process_worker,
+                                   args=(input_queue, output_queue, self.m))
                     p.start()
 
                     input_queue.put(batch)
                     results = output_queue.get()
 
                     if results.get("successful"):
-                        outputs.extend(results["outputs"])
+                        outputs.extend(results["output"])
                     else:
                         raise RuntimeError("For some reason it didn't work twice!")
                 else:
-                    outputs.extend(results["outputs"])
+                    outputs.extend(results["output"])
 
         input_queue.put(None)
         p.join()
@@ -115,6 +114,8 @@ class Experiment1:
             - "output": the list of text output from the model
         - model: the BatchModel class to query
         """
+        import torch
+
         with torch.no_grad():
             while True:
                 if (batch := input_queue.get()) is None:
@@ -149,7 +150,7 @@ class Experiment1:
         y_test_outputs = self.process_samples_llm(batch_size)
         y_pred = self.m.extract_json(y_test_outputs)
 
-        df_true = pd.DataFrame.from_records(y_true).rename(columns={"age": "true_age", "gender": "true_gender"})
+        df_true = pd.DataFrame.from_records(self.y_test).rename(columns={"age": "true_age", "gender": "true_gender"})
         df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
 
         df["pred_age"] = pd.to_numeric(df_pred["pred_age"], errors="coerce")
@@ -238,7 +239,6 @@ class Experiment1:
                 "accuracy_within_3_years": within_3_years
             }
         }
-
 
 
 if __name__ == "__main__":
