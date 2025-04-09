@@ -157,8 +157,7 @@ class Experiment1:
         """
         config.debug("Running experiment")
         y_test_outputs = self.process_samples_llm(batch_size)
-        y_pred = self.extract_json(y_test_outputs)
-        y_pred = [{"age": None, "gender": None} if r is None else r for r in y_pred ]
+        y_pred = self.extract_json(y_test_outputs, {"age": None, "gender": None})
 
         df_true = pd.DataFrame.from_records(self.y_test).rename(columns={"age": "true_age", "gender": "true_gender"})
         df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
@@ -173,9 +172,13 @@ class Experiment1:
 
     @classmethod
     @config.debug_function
-    def extract_json(cls, outputs: list[str]) -> list[dict]:
+    def extract_json(cls, outputs: list[str], default: dict) -> list[dict]:
         """ 
         Attempts to extract and parse valid json from each output string
+
+        args:
+        - outputs: string outputs to parse
+        - default: default object to use if not parseable
 
         For each output that doesn't yield valid output, None is put in its place
         """
@@ -187,7 +190,7 @@ class Experiment1:
                 potential_json = s.split("}")[0] + "}"
                 parsed = json.loads(potential_json)
             except json.JSONDecodeError:
-                parsed = None
+                parsed = default.copy()
 
             json_outputs.append(parsed)
 
