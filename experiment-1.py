@@ -62,46 +62,45 @@ class Experiment1:
         batch_start = 0
         N = len(self.X_test)
 
-        with torch.no_grad():
-            while batch_start < N:
-                batch = self.X_test[batch_start : min(batch_start + batch_size, N)]
-                batch_number = batch_start // batch_size
-                batch_count = N // batch_size
+        while batch_start < N:
+            batch = self.X_test[batch_start : min(batch_start + batch_size, N)]
+            batch_number = batch_start // batch_size
+            batch_count = N // batch_size
 
-                config.debug(f"Processing batch {batch_number} of {batch_count}")
+            config.debug(f"Processing batch {batch_number} of {batch_count}")
 
-                input_queue.put(batch)
-                results = output_queue.get()
+            input_queue.put(batch)
+            results = output_queue.get()
 
-                if results["successful"]:
-                    outputs.extend(results["output"])
-                    batch_start += batch_size
-                else:
-                    config.debug("Killing process and reloading model")
+            if results["successful"]:
+                outputs.extend(results["output"])
+                batch_start += batch_size
+            else:
+                config.debug("Killing process and reloading model")
 
-                    if p.is_alive():
-                        p.terminate()
-                        p.join()
+                if p.is_alive():
+                    p.terminate()
+                    p.join()
 
-                    torch.cuda.empty_cache()
+                torch.cuda.empty_cache()
 
-                    # Create new queues
-                    input_queue = mp.Queue()
-                    output_queue = mp.Queue()
+                # Create new queues
+                input_queue = mp.Queue()
+                output_queue = mp.Queue()
 
-                    config.debug("Creating process")
-                    p = mp.Process(target=self.create_batch_process_worker,
-                                   args=(input_queue, output_queue, self.pre_prompt_path))
-                    p.start()
+                config.debug("Creating process")
+                p = mp.Process(target=self.create_batch_process_worker,
+                                args=(input_queue, output_queue, self.pre_prompt_path))
+                p.start()
 
-                    new_batch_size = max(1, int(0.8 * batch_size))
+                new_batch_size = max(1, int(0.8 * batch_size))
 
-                    if new_batch_size == batch_size > 1:
-                        new_batch_size -= 1
+                if new_batch_size == batch_size > 1:
+                    new_batch_size -= 1
 
-                    config.debug(f"Reduced batch size from {batch_size} to {new_batch_size}")
+                config.debug(f"Reduced batch size from {batch_size} to {new_batch_size}")
 
-                    batch_size = new_batch_size
+                batch_size = new_batch_size
 
         input_queue.put(None)
         p.join()
