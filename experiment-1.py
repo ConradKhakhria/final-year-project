@@ -193,7 +193,6 @@ class Experiment1:
         return json_outputs
 
 
-
     def evaluation(self, results: pd.DataFrame) -> dict:
         """
         Evaluates the results of the LLM inference
