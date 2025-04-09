@@ -36,9 +36,7 @@ class Experiment1:
         self.X_test = self.df_test["text"]
         self.y_test = self.df_test[["age", "gender"]].to_dict(orient="records")
 
-        # Load the model!
-        self.m = model.BatchModel(config.MODEL)
-        self.m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / pre_prompt_filename)
+        self.pre_prompt_path = config.CODE_DIR / "pre-prompts" / pre_prompt_filename
 
 
     @config.debug_function
@@ -57,7 +55,8 @@ class Experiment1:
         output_queue = mp.Queue()
 
         config.debug("Creating process")
-        p = mp.Process(target=self.create_batch_process_worker, args=(input_queue, output_queue, self.m))
+        p = mp.Process(target=self.create_batch_process_worker,
+                       args=(input_queue, output_queue, self.pre_prompt_path))
         p.start()
 
         with torch.no_grad():
@@ -83,7 +82,7 @@ class Experiment1:
 
                     config.debug("Creating process")
                     p = mp.Process(target=self.create_batch_process_worker,
-                                   args=(input_queue, output_queue, self.m))
+                                   args=(input_queue, output_queue, self.pre_prompt_path))
                     p.start()
 
                     input_queue.put(batch)
@@ -103,7 +102,7 @@ class Experiment1:
 
 
     @classmethod
-    def create_batch_process_worker(cls, input_queue: mp.Queue, output_queue: mp.Queue, m: model.BatchModel):
+    def create_batch_process_worker(cls, input_queue: mp.Queue, output_queue: mp.Queue, pp_path: Path):
         """
         Creates a batch processing worker
 
@@ -112,9 +111,12 @@ class Experiment1:
         - output_queue: the queue this process writes output to, as dicts:
             - "successful": whether the processing was successful (or OOM)
             - "output": the list of text output from the model
-        - model: the BatchModel class to query
+        - pp_path: pre-prompt path
         """
         import torch
+
+        m = model.BatchModel(config.MODEL)
+        m.load_pre_prompt(pp_path)
 
         with torch.no_grad():
             while True:
@@ -148,7 +150,7 @@ class Experiment1:
         """
         config.debug("Running experiment")
         y_test_outputs = self.process_samples_llm(batch_size)
-        y_pred = self.m.extract_json(y_test_outputs)
+        y_pred = model.BatchModel.extract_json(y_test_outputs)
 
         df_true = pd.DataFrame.from_records(self.y_test).rename(columns={"age": "true_age", "gender": "true_gender"})
         df_pred = pd.DataFrame.from_records(y_pred).rename(columns={"age": "pred_age", "gender": "pred_gender"})
@@ -242,6 +244,8 @@ class Experiment1:
 
 
 if __name__ == "__main__":
+    mp.set_start_method("spawn")
+
     expt1 = Experiment1("expt1-zero-shot.txt", num_samples=10_000)
 
     expt_results, expt_output = expt1.run_experiment(20)
