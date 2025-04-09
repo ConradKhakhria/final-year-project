@@ -19,7 +19,7 @@ class Experiment1:
         self.df_train = dataset.load_dataset_locally("blog_authorship_corpus",
                                                      sort_axis="text", split_set="train")
         self.df_val = dataset.load_dataset_locally("blog_authorship_corpus",
-                                                     sort_axis="text", split_set="validate")
+                                                     sort_axis="text", split_set="validation")
 
         config.debug("Creating testing set")
         np.random.seed(42)
