@@ -185,7 +185,7 @@ class Experiment1:
         config.debug(f"Total samples: {num_total}")
         config.debug(f"Valid JSON outputs: {num_valid} ({100 * num_valid / num_total:.2f}%)")
 
-        # --- GENDER METRICS ---
+        # gender
         gender_mask = valid["true_gender"].isin(["male", "female"]) & valid["pred_gender"].isin(["male", "female"])
         gender_df = valid[gender_mask]
 
@@ -203,7 +203,7 @@ class Experiment1:
             gender_accuracy = gender_precision = gender_recall = gender_f1 = None
             config.debug("No valid gender rows (male/female) for evaluation.")
 
-        # --- AGE METRICS ---
+        # age metrics
         pred_age = pd.to_numeric(valid["pred_age"], errors="coerce")
         true_age = pd.to_numeric(valid["true_age"], errors="coerce")
 
