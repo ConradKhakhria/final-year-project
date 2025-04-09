@@ -37,7 +37,7 @@ class Experiment1:
         print([r for r in self.df_test])
 
         self.X_test = self.df_test["text"]
-        self.y_test = [{ "age": r["age"], "gender": r["gender"] } for r in self.df_test]
+        self.y_test = self.df_test[["age", "gender"]].to_dict(orient="records")
 
         # Load the model!
         self.m = model.BatchModel(config.MODEL)
