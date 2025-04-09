@@ -292,3 +292,6 @@ if __name__ == "__main__":
         json.dump(expt_evaluation, f, indent=2)
 
     expt_results.to_parquet(config.RESULTS_DIR / "experiment-1-parsed-output.parquet", index=False)
+
+    expt1.df_test.reset_index() \
+                 .to_parquet(config.RESULTS_DIR / "experiment-1-test-set.parquet", index=False)
