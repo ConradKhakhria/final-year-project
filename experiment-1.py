@@ -33,9 +33,6 @@ class Experiment1:
 
         self.df_test = self.df_val.iloc[self.selected_indices]
 
-        print(f"df_test = \n{self.df_test}")
-        print([r for r in self.df_test])
-
         self.X_test = self.df_test["text"]
         self.y_test = self.df_test[["age", "gender"]].to_dict(orient="records")
 
