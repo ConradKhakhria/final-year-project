@@ -25,8 +25,11 @@ def load_dataset_locally(dataset_name: str, sort_axis=None, split_set="train") -
         the pandas DataFrame of the dataset
     """
 
+    if split_set not in {"train", "validation"}:
+        raise SyntaxError(f"split_set must be one of 'train' or 'validation'")
+
     dataset_cache_path = config.CACHE_DIR / "huggingface-datasets"
-    local_dataset_path = config.DATASET_DIR / f"{dataset_name}_local.parquet"
+    local_dataset_path = config.DATASET_DIR / f"{dataset_name}_local_{split_set}.parquet"
 
     local_dataset_path.parent.mkdir(parents=True, exist_ok=True)
 
