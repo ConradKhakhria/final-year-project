@@ -13,7 +13,8 @@ import config
 
 PROJECT_PATH = Path.home() / "UCL" / "FYP"
 
-# Load dataset
+
+config.debug("Loading datasets")
 dataset = datasets.load_dataset("blog_authorship_corpus", trust_remote_code=True)
 
 df_train = dataset["train"].to_pandas()
@@ -24,7 +25,7 @@ y_age_train, y_age_test = df_train["age"], df_test["age"]
 y_gender_train, y_gender_test = df_train["gender"], df_test["gender"]
 
 
-# models and kernels
+config.debug("Creating models")
 vectorisers = {
     "tf-idf": TfidfVectorizer(max_features=5000, ngram_range=(1,2), stop_words="english"),
     "b-of-w": CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")
@@ -51,12 +52,14 @@ regressors = {
 
 if __name__ == "__main__":
     lr_tf_idf_gender = Pipeline([
-    ("tfidf", vectorisers["tf-idf"]),
-    ("lr", classifiers["lr"])
-])
+        ("tfidf", vectorisers["tf-idf"]),
+        ("lr", classifiers["lr"])
+    ])
 
+    config.debug("Training model")
     lr_tf_idf_gender.fit(X_train, y_gender_train)
 
+    config.debug("Making predictions")
     y_gender_pred = lr_tf_idf_gender.predict(X_test)
 
     print(classification_report(y_gender_test, y_gender_pred))
