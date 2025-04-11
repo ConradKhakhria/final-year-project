@@ -3,31 +3,26 @@
 # Fail on any error
 set -e
 
-echo "[+] Installing Mambaforge..."
-# Grab Mambaforge installer and install silently
-wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-bash Miniforge3-$(uname)-$(uname -m).sh -b
-rm mambaforge.sh
+echo "[+] Installing system dependencies..."
+sudo apt update && sudo apt install -y python3 python3-pip python3-venv
 
-# Add conda to path
-eval "$($HOME/mambaforge/bin/conda shell.bash hook)"
+echo "[+] Creating virtual environment..."
+python3 -m venv blog-auth-env
+source blog-auth-env/bin/activate
 
-echo "[+] Creating environment..."
-conda create -y -n blog-auth python=3.10
-conda activate blog-auth
+echo "[+] Upgrading pip..."
+pip install --upgrade pip
 
-echo "[+] Installing dependencies..."
-mamba install -y \
+echo "[+] Installing Python packages..."
+pip install \
     pandas \
     numpy \
     scikit-learn \
     pyarrow \
     ipykernel \
     pyyaml \
-    tqdm
+    tqdm \
+    datasets
 
-echo "[+] Installing Hugging Face datasets (pip-only)..."
-pip install datasets
-
-echo "[+] Done. Activating environment now."
-echo "Run 'conda activate blog-auth' if not already active."
+echo "[+] Setup complete. Virtual environment 'blog-auth-env' is activated."
+echo "To activate again later, run: source blog-auth-env/bin/activate"
