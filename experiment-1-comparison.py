@@ -212,7 +212,7 @@ if __name__ == "__main__":
         bms.add_vectoriser("bofw", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
 
         # SVM
-        bms.add_model("svm", LinearSVC(dual="False", max_iter=1_000))
+        bms.add_model("svm", LinearSVC(dual=False, max_iter=1_000))
         bms.add_model_params("svm", "C", [0.1, 1, 10])
 
         # Stack
