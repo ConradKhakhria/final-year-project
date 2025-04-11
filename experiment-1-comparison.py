@@ -236,7 +236,7 @@ if __name__ == "__main__":
         # Random Forest
         bms.add_model("rf", RandomForestClassifier(n_jobs=1))
         bms.add_model_params("rf", "n_estimators", [100, 200, 500])
-        bms.add_model_params("rf", "max_depth", [None, 10, 20, 30])
+        bms.add_model_params("rf", "max_depth", [10, 20, 30])
 
         config.debug("Obtaining best parameters for each model")
         best_params = bms.get_best_models(X_train_cv, y_train_gender_cv)
@@ -256,7 +256,7 @@ if __name__ == "__main__":
 
         best_rf = Pipeline([
             ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-            ("model", RandomForestClassifier(max_depth=None, n_estimators=200, n_jobs=4)),
+            ("model", RandomForestClassifier(max_depth=30, n_estimators=200, n_jobs=4)),
         ])
 
         best_svm = Pipeline([
