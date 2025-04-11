@@ -171,7 +171,7 @@ if __name__ == "__main__":
                                                               stop_words="english"))
     lr_param_selector.add_vectoriser("bofw", CountVectorizer(max_features=3000, ngram_range=(1, 2), 
                                                              stop_words="english"))
-    lr_param_selector.add_parameters("C", [0.1, 1, 10])
+    lr_param_selector.add_parameters("alpha", [0.1, 1, 10])
 
     best_params = lr_param_selector.grid_search(X_train_cv, y_train_gender_cv)
 
