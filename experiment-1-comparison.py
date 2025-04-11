@@ -186,7 +186,7 @@ class BestModelSelector:
 
             selector = CVParameterSelector(model)
 
-            for p_name, p_values in params:
+            for p_name, p_values in params.items():
                 selector.add_parameters(p_name, p_values)
 
             for vectoriser_name, vectoriser in self.vectorisers.items():
