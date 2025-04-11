@@ -3,6 +3,7 @@ import datasets
 from joblib import Memory
 import numpy as np
 import pandas as pd
+import psutil
 from pathlib import Path
 from sklearn.base import BaseEstimator
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -268,11 +269,16 @@ if __name__ == "__main__":
     X_test, y_test_gender = dataset.get_Xy("test", "gender")
 
     config.debug("Fitting each model")
-    print(" - lr")
+    print("fitting logistic regression")
+    config.debug(psutil.virtual_memory())
     best_lr.fit(X_train, y_train_gender)
-    print(" - rf")
+
+    print("fitting random forest")
+    config.debug(psutil.virtual_memory())
     best_rf.fit(X_train, y_train_gender)
-    print(" - svm")
+
+    print("fitting svm")
+    config.debug(psutil.virtual_memory())
     best_svm.fit(X_train, y_train_gender)
 
     config.debug("Running predictions")
