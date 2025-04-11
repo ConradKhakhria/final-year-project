@@ -5,8 +5,8 @@ set -e
 
 echo "[+] Installing Mambaforge..."
 # Grab Mambaforge installer and install silently
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh -O mambaforge.sh
-bash mambaforge.sh -b -p $HOME/mambaforge
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh -b
 rm mambaforge.sh
 
 # Add conda to path
