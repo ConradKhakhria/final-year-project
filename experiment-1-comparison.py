@@ -249,17 +249,17 @@ if __name__ == "__main__":
         print(f'    Best params for svm:\n{best_params["svm"]["params"]}')
     else:
         best_lr = Pipeline([
-            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'))
+            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
             ("model", LogisticRegression(C=1)),
         ])
 
         best_rf = Pipeline([
-            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'))
+            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
             ("model", RandomForestClassifier(max_depth=None, n_estimators=200, n_jobs=-1)),
         ])
 
         best_svm = Pipeline([
-            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'))
+            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
             ("model", LinearSVC(C=0.1)),
         ])
 
