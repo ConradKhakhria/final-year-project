@@ -14,7 +14,7 @@ from typing import Tuple
 
 import config
 
-PROJECT_PATH = Path.home() / "UCL" / "FYP"
+PROJECT_PATH = Path.home()
 
 
 class DatasetLoader:
