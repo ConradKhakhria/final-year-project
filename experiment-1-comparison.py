@@ -95,7 +95,7 @@ class CVParameterSelector:
         self.vectorisers[name] = vec
 
 
-    def grid_search(self, X, y, cv=5) -> dict:
+    def grid_search(self, X, y, cv=5) -> tuple:
         """
         Performs grid search CV on a dataset
 
@@ -105,7 +105,9 @@ class CVParameterSelector:
         - cv=5: the number of folds
 
         returns:
-            a dict containing all of best hyperparameters
+        A tuple containing
+            - the untrained optimal model
+            - a dict containing all of best hyperparameters
         """
         parameter_grid = []
 
@@ -128,7 +130,7 @@ class CVParameterSelector:
         grid_search = GridSearchCV(placeholder_pipeline, parameter_grid, cv=5, n_jobs=-1, verbose=10)
         grid_search.fit(X, y)
 
-        return grid_search.best_params_
+        return grid_search.best_estimator_, grid_search.best_params_
 
 
 class BestModelSelector:
@@ -177,6 +179,14 @@ class BestModelSelector:
     def get_best_models(self, X, y, cv=5) -> Dict[str, dict]:
         """
         Does 'cv'-fold grid search cv for each model
+
+        returns:
+            a dict mapping model name to
+            
+                {
+                    "model", grid_search.best_estimator_,
+                    "params": grid_search.best_params_
+                }
         """
         best_parameters = {}
 
@@ -192,9 +202,12 @@ class BestModelSelector:
             for vectoriser_name, vectoriser in self.vectorisers.items():
                 selector.add_vectoriser(vectoriser_name, vectoriser)
 
-            best_params = selector.grid_search(X, y, cv=cv)
+            e, p = selector.grid_search(X, y, cv=cv)
 
-            best_parameters[model_name] = best_params
+            best_parameters[model_name] = {
+                "model":  e,
+                "params": p
+            }
 
         return best_parameters
 
@@ -211,20 +224,49 @@ if __name__ == "__main__":
         bms.add_vectoriser("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1,2), stop_words="english"))
         bms.add_vectoriser("bofw", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
 
+        # Logistic Regression
+        bms.add_model("lr", LogisticRegression(max_iter=2_000))
+        bms.add_model_params("lr", "C", [0.1, 1, 10])
+
         # SVM
-        bms.add_model("svm", LinearSVC(dual=False, max_iter=1_000))
+        bms.add_model("svm", LinearSVC(dual=False, max_iter=2_000))
         bms.add_model_params("svm", "C", [0.1, 1, 10])
 
-        # Stack
-        bms.add_model("stack", StackingClassifier(
-            estimators=[
-                ('lr', LogisticRegression(max_iter=1000)),
-                ('rf', RandomForestClassifier(n_estimators=100))
-            ],
-            final_estimator=LogisticRegression(max_iter=1000)
-        ))
-        bms.add_model_params("stack", "final_estimator__C", [0.1, 1, 10])
+        # Random Forest
+        bms.add_model("rf", RandomForestClassifier(n_jobs=1))
+        bms.add_model_params("n_estimators", [100, 200, 500])
+        bms.add_model_params("max_depth", [None, 10, 20, 30])
 
+        config.debug("Obtaining best parameters for each model")
         best_params = bms.get_best_models(X_train_cv, y_train_gender_cv)
 
-        print(best_params)
+        best_lr: LogisticRegression = best_params["lr"]["model"]
+        best_rf: RandomForestClassifier = best_params["rf"]["model"]
+        best_svm: LinearSVC = best_params["svm"]["model"]
+
+        print(f'    Best params for lr:\n{best_params["lr"]["params"]}')
+        print(f'    Best params for rf:\n{best_params["rf"]["params"]}')
+        print(f'    Best params for svm:\n{best_params["svm"]["params"]}')
+    else:
+        raise NotImplementedError("There is no case for un-set parameters")
+
+    config.debug("Testing each model")
+    X_train, y_train_gender = dataset.get_Xy("train", "gender")
+    X_test, y_test_gender = dataset.get_Xy("test", "gender")
+
+    config.debug("Fitting each model")
+    print(" - lr")
+    best_lr.fit(X_train, y_train_gender)
+    print(" - rf")
+    best_rf.fit(X_train, y_train_gender)
+    print(" - svm")
+    best_svm.fit(X_train, y_train_gender)
+
+    config.debug("Running predictions")
+    y_pred_lr = best_lr.predict(X_test)
+    y_pred_rf = best_rf.predict(X_test)
+    y_pred_svm = best_svm.predict(X_test)
+
+    print(f"Classification report for lr:\n{classification_report(y_test_gender, y_pred_lr)}")
+    print(f"Classification report for rf:\n{classification_report(y_test_gender, y_pred_rf)}")
+    print(f"Classification report for svm:\n{classification_report(y_test_gender, y_pred_svm)}")
