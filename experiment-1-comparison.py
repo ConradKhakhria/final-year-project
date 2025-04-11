@@ -13,10 +13,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 import time
-from typing import Tuple
+from typing import Dict, Tuple
 
 import config
 
+CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
@@ -130,6 +131,74 @@ class CVParameterSelector:
         return grid_search.best_params_
 
 
+class BestModelSelector:
+    def __init__(self):
+        self.models = {}
+        self.vectorisers = {}
+
+
+    def add_model(self, name: str, model):
+        """
+        Adds a model and its hyperparameters
+
+        args:
+        - name: the model name
+        - model: the model class
+        """
+        self.models[name] = {
+            "model": model,
+            "params": {}
+        }
+
+
+    def add_model_params(self, model_name: str, param_name: str, params: list):
+        """
+        Adds a list of model parameter values
+    
+        args:
+        - model_name: the name of the model
+        - param_name: the name of the parameter
+        - params: the values it can take
+        """
+        self.models[model_name]["params"][param_name] = params
+
+
+    def add_vectoriser(self, name: str, vec):
+        """
+        Adds a vectoriser
+
+        args:
+        - name: the vectorisers's name
+        - vec: the vectoriser
+        """
+        self.vectorisers[name] = vec
+
+
+    def get_best_models(self, X, y, cv=5) -> Dict[str, dict]:
+        """
+        Does 'cv'-fold grid search cv for each model
+        """
+        best_parameters = {}
+
+        for model_name in self.models:
+            model  = self.models["model"]
+            params = self.models["params"]
+
+            selector = CVParameterSelector(model)
+
+            for p_name, p_values in params:
+                selector.add_parameters(p_name, p_values)
+
+            for vectoriser_name, vectoriser in self.vectorisers.items():
+                selector.add_vectoriser(vectoriser_name, vectoriser)
+
+            best_params = selector.grid_search(X, y, cv=cv)
+
+            best_parameters[model_name] = best_parameters
+
+        return best_parameters
+
+
 if False:
     config.debug("Creating models and kernels")
 
@@ -164,15 +233,20 @@ if False:
 
 if __name__ == "__main__":
     dataset = DatasetLoader()
-    X_train_cv, y_train_gender_cv = dataset.get_Xy("train", "gender", subset_size=50_000)
-    
-    lr_param_selector = CVParameterSelector(LogisticRegression(max_iter=1000))
-    lr_param_selector.add_vectoriser("tfidf", TfidfVectorizer(max_features=3000, ngram_range=(1,2),
-                                                              stop_words="english"))
-    lr_param_selector.add_vectoriser("bofw", CountVectorizer(max_features=3000, ngram_range=(1, 2), 
-                                                             stop_words="english"))
-    lr_param_selector.add_parameters("C", [0.1, 1, 10])
 
-    best_params = lr_param_selector.grid_search(X_train_cv, y_train_gender_cv)
+    if CROSS_VALIDATE:
+        X_train_cv, y_train_gender_cv = dataset.get_Xy("train", "gender", subset_size=50_000)
 
-    print(best_params)
+        bms = BestModelSelector()
+        
+        # vectorisers
+        bms.add_vectoriser("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1,2), stop_words="english"))
+        bms.add_vectoriser("bofw", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
+
+        # SVM
+        bms.add_model("svm", LinearSVC(dual="False", max_iter=1_000))
+        bms.add_model_params("svm", "C", [0.1, 1, 10])
+
+        best_params = bms.get_best_models(X_train_cv, y_train_gender_cv)
+
+        print(best_params)
