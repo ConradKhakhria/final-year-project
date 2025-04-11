@@ -1,6 +1,7 @@
 import datasets
-import pandas as pd
+from joblib import Memory
 import numpy as np
+import pandas as pd
 from pathlib import Path
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.svm import LinearSVC, SVR
@@ -73,6 +74,7 @@ class CVModelSelector:
     def __init__(self):
         self.vectorisers = {}
         self.models = {}
+        self.memory = Memory(location='./cache', verbose=0)
 
         self.vectoriser_parameters = {}
         self.model_parameters = {}
@@ -133,7 +135,7 @@ class CVModelSelector:
         placeholder_pipeline = Pipeline([
             ("kernel", list(self.vectorisers.values())[0]),
             ("model", list(self.models.values())[0])
-        ])
+        ], memory=self.memory)
 
 
         config.debug("Grid search for classification")
