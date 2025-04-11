@@ -194,7 +194,7 @@ class BestModelSelector:
 
             best_params = selector.grid_search(X, y, cv=cv)
 
-            best_parameters[model_name] = best_parameters
+            best_parameters[model_name] = best_params
 
         return best_parameters
 
