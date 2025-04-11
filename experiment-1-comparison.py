@@ -181,8 +181,8 @@ class BestModelSelector:
         best_parameters = {}
 
         for model_name in self.models:
-            model  = self.models["model"]
-            params = self.models["params"]
+            model  = self.models[model_name]["model"]
+            params = self.models[model_name]["params"]
 
             selector = CVParameterSelector(model)
 
