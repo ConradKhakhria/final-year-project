@@ -17,7 +17,7 @@ from typing import Dict, Tuple
 
 import config
 
-CROSS_VALIDATE = True
+CROSS_VALIDATE = False
 PROJECT_PATH = Path.home()
 
 
