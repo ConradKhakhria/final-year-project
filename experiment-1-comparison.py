@@ -170,7 +170,7 @@ if __name__ == "__main__":
     lr_param_selector.add_vectoriser("tfidf", TfidfVectorizer(max_features=3000, ngram_range=(1,2),
                                                               stop_words="english"))
     lr_param_selector.add_vectoriser("bofw", CountVectorizer(max_features=3000, ngram_range=(1, 2), 
-                                                             top_words="english"))
+                                                             stop_words="english"))
     lr_param_selector.add_parameters("C", [0.1, 1, 10])
 
     best_params = lr_param_selector.grid_search(X_train_cv, y_train_gender_cv)
