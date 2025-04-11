@@ -112,7 +112,7 @@ class CVParameterSelector:
         for vec_name, vec in self.vectorisers.items():
             params = { "vec": [vec] }
 
-            for param, values in self.hyperparameters:
+            for param, values in self.hyperparameters.items():
                 params[f"model__{param}"] = values
 
             parameter_grid.append(params)
