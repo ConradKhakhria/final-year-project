@@ -1,3 +1,4 @@
+import datetime
 import os
 from pathlib import Path
 
@@ -27,7 +28,7 @@ def debug(msg: str):
     global DEBUG
 
     if DEBUG:
-        print(f"[debug]: {msg}")
+        print(f"[debug {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]: {msg}")
 
 
 def debug_function(func):
