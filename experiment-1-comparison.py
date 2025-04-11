@@ -248,7 +248,20 @@ if __name__ == "__main__":
         print(f'    Best params for rf:\n{best_params["rf"]["params"]}')
         print(f'    Best params for svm:\n{best_params["svm"]["params"]}')
     else:
-        raise NotImplementedError("There is no case for un-set parameters")
+        best_lr = Pipeline([
+            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'))
+            ("model", LogisticRegression(C=1)),
+        ])
+
+        best_rf = Pipeline([
+            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'))
+            ("model", RandomForestClassifier(max_depth=None, n_estimators=200, n_jobs=-1)),
+        ])
+
+        best_svm = Pipeline([
+            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'))
+            ("model", LinearSVC(C=0.1)),
+        ])
 
     config.debug("Testing each model")
     X_train, y_train_gender = dataset.get_Xy("train", "gender")
