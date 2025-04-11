@@ -199,38 +199,6 @@ class BestModelSelector:
         return best_parameters
 
 
-if False:
-    config.debug("Creating models and kernels")
-
-    # kernels
-    cls_model_selector = CVModelSelector()
-
-    cls_model_selector.add_vectoriser(
-        "tfidf",
-        TfidfVectorizer(max_features=5000, ngram_range=(1,2), stop_words="english"),
-        { "max_features": [1000, 3000] }
-    )
-    cls_model_selector.add_vectoriser(
-        "bofw",
-        CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"),
-        { "max_features": [1000, 3000] }
-    )
-
-    cls_model_selector.add_model("svm", LinearSVC(dual="False", max_iter=1000), { "C": [0.1, 1, 10] })
-    cls_model_selector.add_model("lr", LogisticRegression(max_iter=1000), { "C": [0.1, 1, 10] })
-    cls_model_selector.add_model(
-        "stack",
-        StackingClassifier(
-            estimators=[
-                ('lr', LogisticRegression(max_iter=1000)),
-                ('rf', RandomForestClassifier(n_estimators=100))
-            ],
-            final_estimator=LogisticRegression(max_iter=1000)
-        ),
-        { "final_estimator__C": [0.1, 1, 10] }
-    )
-
-
 if __name__ == "__main__":
     dataset = DatasetLoader()
 
@@ -246,6 +214,16 @@ if __name__ == "__main__":
         # SVM
         bms.add_model("svm", LinearSVC(dual="False", max_iter=1_000))
         bms.add_model_params("svm", "C", [0.1, 1, 10])
+
+        # Stack
+        bms.add_model("stack", StackingClassifier(
+            estimators=[
+                ('lr', LogisticRegression(max_iter=1000)),
+                ('rf', RandomForestClassifier(n_estimators=100))
+            ],
+            final_estimator=LogisticRegression(max_iter=1000)
+        ))
+        bms.add_model_params("stack", "final_estimator__C", [0.1, 1, 10])
 
         best_params = bms.get_best_models(X_train_cv, y_train_gender_cv)
 
