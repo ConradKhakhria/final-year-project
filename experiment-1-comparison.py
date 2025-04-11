@@ -36,7 +36,7 @@ class DatasetLoader:
         }
 
 
-    def get_Xy(self, split: str, label: str, subset_size: int = None) -> Tuple[np.ndarray, np.ndarray]:
+    def get_Xy(self, split: str, label: str, subset_size: int | None = None) -> Tuple[np.ndarray, np.ndarray]:
         """
         Returns the X and y pair
 
