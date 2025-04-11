@@ -183,7 +183,7 @@ cls_model_selector.add_model(
     StackingClassifier(
         estimators=[
             ('lr', LogisticRegression(max_iter=1000)),
-            ('rf', RandomForestClassifier(n_estimators=100, n_jobs=-1))
+            ('rf', RandomForestClassifier(n_estimators=100))
         ],
         final_estimator=LogisticRegression(max_iter=1000)
     ),
