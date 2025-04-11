@@ -18,6 +18,7 @@ pip install \
     pandas \
     numpy \
     scikit-learn \
+    scikit-learn-intelex \
     pyarrow \
     ipykernel \
     pyyaml \
