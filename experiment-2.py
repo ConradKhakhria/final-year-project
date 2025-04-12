@@ -59,7 +59,7 @@ class Experiment2:
             subreddits = self.reddit_df["subreddit"].unique()
 
             # For testing we will take only a few of these
-            subreddits = subreddits[:200]
+            subreddits = subreddits[:1000]
 
             n_subs = len(subreddits)
             batch_start = 0
