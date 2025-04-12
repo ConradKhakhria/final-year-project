@@ -68,16 +68,13 @@ class Experiment2:
             batch_start = 0
 
             selected_subreddit_names = []
+            unsuccessful_output_count = 0
 
             # Obtain all useful subreddits
             while batch_start < n_subs:
                 batch = subreddits[batch_start : batch_start + batch_size]
-                batch_no = batch_start // batch_size
-                batch_cnt = n_subs // batch_size
 
-                unsuccessful_output_count = 0
-
-                config.debug(f"Processing batch {batch_no} of {batch_cnt}")
+                config.debug(f"Processing batch {batch_start}..{batch_start + batch_size} of {n_subs}")
                 output = m.process_batch(batch, enforce_json=True)
                 json_output = model.extract_json(output, { "name": None, "useful": None })
 
