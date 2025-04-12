@@ -72,12 +72,10 @@ class Experiment2:
                 batch_no = batch_start // batch_size
                 batch_cnt = n_subs // batch_size
 
+                unsuccessful_output_count = 0
+
                 config.debug(f"Processing batch {batch_no} of {batch_cnt}")
-
                 output = m.process_batch(batch, enforce_json=True)
-
-                print(output)
-
                 json_output = model.extract_json(output, { "name": None, "useful": None })
 
                 for i, o in enumerate(json_output):
@@ -85,9 +83,11 @@ class Experiment2:
                         if o["useful"]:
                             selected_subreddit_names.append(batch[i])
                     else:
-                        print(f"Failure to produce output for {batch[i]}")
+                        unsuccessful_output_count += 1
 
                 batch_start += batch_size
+
+            config.debug(f"There were {unsuccessful_output_count} unsuccessful batches")
 
             # record this list of subreddits
             with open(subreddit_selection_path, "w") as f:
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
     expt = Experiment2()
 
-    filtered_subreddits_df = expt.filter_relevant_subreddits()
+    filtered_subreddits_df = expt.filter_relevant_subreddits(batch_size=100)
 
     exit()
 
