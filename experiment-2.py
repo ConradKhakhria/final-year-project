@@ -12,8 +12,10 @@ import config
 import dataset
 import model
 
-NUM_SAMPLES = None
+
 LOCAL_TESTING = False
+NUM_SAMPLES = None
+NUM_SUBREDDITS = 1000
 
 # Local config
 SUBREDDIT_SELECTOR_PRE_PROMPT = "expt2-select-subreddits.txt"
@@ -59,7 +61,8 @@ class Experiment2:
             subreddits = self.reddit_df["subreddit"].unique()
 
             # For testing we will take only a few of these
-            subreddits = subreddits[:1000]
+            if NUM_SUBREDDITS is not None:
+                subreddits = subreddits[:NUM_SUBREDDITS]
 
             n_subs = len(subreddits)
             batch_start = 0
