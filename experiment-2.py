@@ -57,6 +57,10 @@ class Experiment2:
             m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / SUBREDDIT_SELECTOR_PRE_PROMPT)
 
             subreddits = self.reddit_df["subreddit"].unique()
+
+            # For testing we will take only a few of these
+            subreddits = subreddits[:200]
+
             n_subs = len(subreddits)
             batch_start = 0
 
