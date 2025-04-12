@@ -5,7 +5,6 @@ import numpy as np
 import os
 import pandas as pd
 from pathlib import Path
-from sklearn.metrics import *
 import sys
 from typing import Iterator, Tuple
 
@@ -14,6 +13,7 @@ import dataset
 import model
 
 NUM_SAMPLES = None
+LOCAL_TESTING = False
 
 # Local config
 SUBREDDIT_SELECTOR_PRE_PROMPT = "expt2-select-subreddits.txt"
@@ -22,12 +22,13 @@ SUBREDDIT_SELECTOR_PRE_PROMPT = "expt2-select-subreddits.txt"
 class Experiment2:
     def __init__(self):
         config.debug("Loading dataset")
-        reddit_submissions_path = config.DATASET_DIR / "sampled_reddit_submissions.jsonl"
-        reddit_comments_path = config.DATASET_DIR / "sampled_reddit_comments.jsonl"
 
-        # For local testing
-        reddit_submissions_path = "../data/reddit/sampled_reddit_submissions.jsonl"
-        reddit_comments_path = "../data/reddit/sampled_reddit_comments.jsonl"
+        if LOCAL_TESTING:
+            reddit_submissions_path = Path("../data/reddit/sampled_reddit_submissions.jsonl")
+            reddit_comments_path = Path("../data/reddit/sampled_reddit_comments.jsonl")
+        else:
+            reddit_submissions_path = config.DATASET_DIR / "sampled_reddit_submissions.jsonl"
+            reddit_comments_path = config.DATASET_DIR / "sampled_reddit_comments.jsonl"
 
         self.reddit_df = dataset.load_reddit_submissions_comments(reddit_submissions_path, reddit_comments_path)
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
@@ -153,6 +154,8 @@ if __name__ == "__main__":
     """
     Approach:
     1. Load (a subset of) reddit posts (submissions & comments)
-    2. 
+    2. filter subreddits with LLM
+    3. Split up by time (4 days) and subreddit
+    4. For each time and subreddit, produce a report of all 
     """
 
