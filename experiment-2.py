@@ -111,17 +111,12 @@ class Experiment2:
         time_sorted_df = df_test.sort_values(by="date_posted")
         subreddits = df_test["subreddit"].unique()
 
-        print(list(subreddits))
-
         current_start = start_date
 
         while current_start < end_date:
             current_end = current_start + datetime.timedelta(days=chunk_size)
             time_mask = (current_start <= time_sorted_df["date_posted"]) & \
                         (time_sorted_df["date_posted"] < current_end)
-
-            print(f"there are {len(time_sorted_df[time_mask]['subreddit'].unique())} subs")
-
 
             for sub in subreddits:
                 sub_mask = time_sorted_df["subreddit"] == sub
@@ -133,16 +128,29 @@ class Experiment2:
             current_start = current_end
 
 
+    @config.debug_function
+    def get_trends_from_chunk(self, chunk: pd.DataFrame) -> str:
+        """
+        Obtain an enumeration of consumer trends indicated by a chunk of posts
+
+        args:
+        - chunk: a dataframe of posts from a specific subreddit and timeframe
+    
+        returns:
+            A string containing a bullet-pointed list of trends indicated
+        """
+        print(len(chunk))
+
+        return ""
+
+
+
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     expt = Experiment2()
 
     filtered_subreddits_df = expt.filter_relevant_subreddits(batch_size=100)
-
-    exit()
-
-
     N = len(filtered_subreddits_df)
 
     if NUM_SAMPLES is None:
@@ -151,12 +159,15 @@ if __name__ == "__main__":
         selected_idxs = np.random.choice(np.arange(0, N), size=NUM_SAMPLES, replace=False)
 
     filtered_subreddits_df = filtered_subreddits_df[selected_idxs]
-
-    
     post_chunks = expt.chunk_by_date_and_subreddit(filtered_subreddits_df, 4)
 
-    for i in range(10):
-        print(f"For slice i = {i}, the length is {len(next(post_chunks))}")
+    for c in post_chunks:
+        output = expt.get_trends_from_chunk(c)
+
+        print(output)
+
+        exit()
+
 
     """
     Approach:
