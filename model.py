@@ -136,3 +136,29 @@ class BatchModel:
         del input_tokens, output_tokens
 
         return outputs
+
+
+@config.debug_function
+def extract_json(outputs: list[str], default: dict) -> list[dict]:
+    """ 
+    Attempts to extract and parse valid json from each output string
+
+    args:
+    - outputs: string outputs to parse
+    - default: default object to use if not parseable
+
+    For each output that doesn't yield valid output, None is put in its place
+    """
+
+    json_outputs = []
+
+    for s in outputs:
+        try:
+            potential_json = s.split("}")[0] + "}"
+            parsed = json.loads(potential_json)
+        except json.JSONDecodeError:
+            parsed = default.copy()
+
+        json_outputs.append(parsed)
+
+    return json_outputs
