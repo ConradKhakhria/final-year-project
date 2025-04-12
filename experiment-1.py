@@ -164,9 +164,6 @@ class Experiment1:
 
         df = pd.concat([df_true, df_pred], axis=1)
 
-        df["valid_json"] = ~df["pred_age"].isna()
-        df["pred_age"] = pd.to_numeric(df_pred["pred_age"], errors="coerce")
-
         return df, y_test_outputs
 
 
@@ -283,13 +280,9 @@ if __name__ == "__main__":
     expt1 = Experiment1("expt1-zero-shot.txt", num_samples=10_000)
 
     expt_results, expt_output = expt1.run_experiment(20)
-    expt_evaluation = expt1.evaluation(expt_results)
 
     with open(config.RESULTS_DIR / "experiment-1-output.json", "w") as f:
         json.dump(expt_output, f, indent=2)
-
-    with open(config.RESULTS_DIR / "experiment-1-evaluation.json", "w") as f:
-        json.dump(expt_evaluation, f, indent=2)
 
     expt_results.to_parquet(config.RESULTS_DIR / "experiment-1-parsed-output.parquet", index=False)
 
