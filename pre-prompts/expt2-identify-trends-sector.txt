@@ -8,3 +8,4 @@ Rules:
 1. You will be given the reddit posts in JSON format
 2. You *must* reply in bullet points (beginning with '-'). Each bullet point must contain a brief summary of the consumer trend you believe is being indicated, as well as an explanation of how you have come to this conclusion
 3. Do not make things up. If there is nothing to report then simply report nothing
+4. *DO NOT MENTION ANYTHING UNLESS IT RELATES SPECIFICALLY TO COCA-COLA
