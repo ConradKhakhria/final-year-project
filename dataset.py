@@ -60,8 +60,10 @@ def load_reddit_submissions_comments(submissions_fname: Path, comments_fname: Pa
     """
     Loads a df containing all submissions and comments
     """
-    submissions = pd.read_json(str(submissions_fname), lines=True)
-    comments = pd.read_json(str(comments_fname), lines=True)
+    print(f"submissions_fname = {submissions_fname}")
+
+    submissions = pd.read_json(submissions_fname, lines=True)
+    comments = pd.read_json(comments_fname, lines=True)
 
     # create 'text' columns for both
     submissions["text"] = submissions["title"].fillna("") + "\n" + submissions["selftext"].fillna("")
