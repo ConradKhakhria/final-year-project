@@ -62,6 +62,7 @@ def load_reddit_submissions_comments(submissions_fname: Path, comments_fname: Pa
     """
     print(f"submissions_fname = {submissions_fname}")
     print(type(submissions_fname))
+    print(submissions_fname.exists())
 
     submissions = pd.read_json(submissions_fname, lines=True)
     comments = pd.read_json(comments_fname, lines=True)
