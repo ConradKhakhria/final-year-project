@@ -139,10 +139,11 @@ class Experiment2:
         returns:
             A string containing a bullet-pointed list of trends indicated
         """
-        print(f"\n\nchunk = {chunk}\n\n")
-
         m = model.BatchModel(config.MODEL)
         m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
+
+        print(chunk.columns)
+        print(chunk["subreddit"])
 
         prompt = f"all posts are from r/{chunk['subreddit'][0]}"
 
