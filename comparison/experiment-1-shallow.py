@@ -21,7 +21,7 @@ from typing import Dict, Tuple
 
 import config
 
-CROSS_VALIDATE = False
+CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
@@ -67,6 +67,9 @@ class DatasetLoader:
         X = self.X[split]
         y = self.y[split][label]
 
+        if label == "age":
+            y = self.bucket_ages(y)
+
         if subset_size is not None:
             idxs = np.random.choice(np.arange(len(X)), size=subset_size, replace=False)
 
@@ -74,6 +77,18 @@ class DatasetLoader:
             y = y[idxs]
 
         return X, y
+
+
+    def bucket_ages(self, y: list) -> np.ndarray:
+        """
+        Discretises integer ages into 5-year buckets
+
+        Assumptions: 0 <= y[i] <= 100
+        """
+        starts  = 5 * (np.arange(0, 100) // 5)
+        buckets = np.array([f"{s}-{s + 5}" for s in starts])
+
+        return buckets[y]
 
 
 class CVParameterSelector:
@@ -220,7 +235,7 @@ if __name__ == "__main__":
     dataset = DatasetLoader()
 
     if CROSS_VALIDATE:
-        X_train_cv, y_train_gender_cv = dataset.get_Xy("train", "gender", subset_size=50_000)
+        X_train_cv, y_train_gender_cv = dataset.get_Xy("train", "age", subset_size=50_000)
 
         bms = BestModelSelector()
         
