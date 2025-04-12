@@ -11,5 +11,5 @@ Rules:
         "name": <the name of the subreddit - string>,
         "useful": <whether it would be useful - bool (true or false)>
     }
-3. If you don't know, you *must* give your best guess, and the guess must be boolean
+3. If you don't know, you *must* give your best guess based on the name, and the guess must be boolean
 4. You must not include any extra commentary or other extra text
