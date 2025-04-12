@@ -17,6 +17,7 @@ from sklearn.model_selection import GridSearchCV
 import sys
 import time
 from typing import Dict, Tuple
+from sklearn.preprocessing import Normalizer
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -95,7 +96,6 @@ class DatasetLoader:
 class CVParameterSelector:
     def __init__(self, model):
         self.model = model
-
         self.memory = Memory(location='./cache', verbose=0)
         self.hyperparameters = {}
         self.vectorisers = {}
@@ -121,7 +121,7 @@ class CVParameterSelector:
 
         args:
         - X: the features to validate on
-        - y: the labels "" "" ""
+        - y: the labels
         - cv=5: the number of folds
 
         returns:
@@ -140,14 +140,14 @@ class CVParameterSelector:
 
             parameter_grid.append(params)
 
-        # grid search
+        # Grid search
         placeholder_pipeline = Pipeline([
             ("vectoriser", list(self.vectorisers.values())[0]),
             ("model", self.model)
         ], memory=self.memory)
 
         config.debug("Grid search for classification")
-        grid_search = GridSearchCV(placeholder_pipeline, parameter_grid, cv=5, n_jobs=-1, verbose=10)
+        grid_search = GridSearchCV(placeholder_pipeline, parameter_grid, cv=cv, n_jobs=-1, verbose=10)
         grid_search.fit(X, y)
 
         return grid_search.best_estimator_, grid_search.best_params_
@@ -190,7 +190,7 @@ class BestModelSelector:
         Adds a vectoriser
 
         args:
-        - name: the vectorisers's name
+        - name: the vectoriser's name
         - vec: the vectoriser
         """
         self.vectorisers[name] = vec
@@ -202,9 +202,8 @@ class BestModelSelector:
 
         returns:
             a dict mapping model name to
-            
                 {
-                    "model", grid_search.best_estimator_,
+                    "model": grid_search.best_estimator_,
                     "params": grid_search.best_params_
                 }
         """
@@ -237,19 +236,21 @@ if __name__ == "__main__":
 
     if CROSS_VALIDATE:
         X_train_cv, y_train_age_cv = dataset.get_Xy("train", "age", subset_size=50_000)
-
         bms = BestModelSelector()
-        
-        # vectorisers
-        bms.add_vectoriser("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1,2), stop_words="english"))
-        bms.add_vectoriser("bofw", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
+
+        bms.add_vectoriser("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
+
+        bms.add_vectoriser("bofw", Pipeline([
+            ("count", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")),
+            ("normaliser", Normalizer(norm='l2'))
+        ]))
 
         # Logistic Regression
-        bms.add_model("lr", LogisticRegression(max_iter=2_000))
+        bms.add_model("lr", LogisticRegression(max_iter=2000))
         bms.add_model_params("lr", "C", [0.1, 1, 10])
 
         # SVM
-        bms.add_model("svm", LinearSVC(dual=False, max_iter=2_000))
+        bms.add_model("svm", LinearSVC(dual=False, max_iter=2000))
         bms.add_model_params("svm", "C", [0.1, 1, 10])
 
         # Random Forest
