@@ -260,6 +260,9 @@ if __name__ == "__main__":
         config.debug("Obtaining best parameters for each model")
         best_params = bms.get_best_models(X_train_cv, y_train_age_cv)
 
+        with open("CV-RESULTS.txt", "w") as f:
+            f.write(str(best_params))
+
         best_lr: LogisticRegression = best_params["lr"]["model"]
         best_rf: RandomForestClassifier = best_params["rf"]["model"]
         best_svm: LinearSVC = best_params["svm"]["model"]
