@@ -327,3 +327,66 @@ if __name__ == "__main__":
     # Write the confusion matrices to a JSON file that can be downloaded and inspected locally
     with open("confusion_matrices.json", "w") as f:
         json.dump(confusion_data, f)
+
+"""
+Classification report for lr:
+              precision    recall  f1-score   support
+
+       10-15       0.00      0.00      0.00         2
+       15-20       0.52      0.75      0.62        16
+       20-25       0.22      0.18      0.20        11
+       25-30       0.35      0.38      0.36        16
+       30-35       0.00      0.00      0.00         1
+       35-40       0.00      0.00      0.00         2
+       40-45       0.00      0.00      0.00         1
+       45-50       0.00      0.00      0.00         1
+
+    accuracy                           0.40        50
+   macro avg       0.14      0.16      0.15        50
+weighted avg       0.33      0.40      0.36        50
+
+/home/paperspace/final-year-project/blog-auth-env/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1565: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+/home/paperspace/final-year-project/blog-auth-env/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1565: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+/home/paperspace/final-year-project/blog-auth-env/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1565: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+Classification report for rf:
+              precision    recall  f1-score   support
+
+       10-15       0.00      0.00      0.00         2
+       15-20       0.52      0.88      0.65        16
+       20-25       0.00      0.00      0.00        11
+       25-30       0.48      0.69      0.56        16
+       30-35       0.00      0.00      0.00         1
+       35-40       0.00      0.00      0.00         2
+       40-45       0.00      0.00      0.00         1
+       45-50       0.00      0.00      0.00         1
+
+    accuracy                           0.50        50
+   macro avg       0.12      0.20      0.15        50
+weighted avg       0.32      0.50      0.39        50
+
+/home/paperspace/final-year-project/blog-auth-env/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1565: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+/home/paperspace/final-year-project/blog-auth-env/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1565: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+/home/paperspace/final-year-project/blog-auth-env/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1565: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+Classification report for svm:
+              precision    recall  f1-score   support
+
+       10-15       0.00      0.00      0.00         2
+       15-20       0.48      0.75      0.59        16
+       20-25       0.27      0.27      0.27        11
+       25-30       0.36      0.31      0.33        16
+       30-35       0.00      0.00      0.00         1
+       35-40       0.00      0.00      0.00         2
+       40-45       0.00      0.00      0.00         1
+       45-50       0.00      0.00      0.00         1
+
+    accuracy                           0.40        50
+   macro avg       0.14      0.17      0.15        50
+weighted avg       0.33      0.40      0.35        50
+
+"""
