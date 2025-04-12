@@ -4,8 +4,8 @@ You must follow these rules:
 - Input will always be an un-annotated social media post.
 - Output must be **valid JSON only**, matching this schema:
   {
-    "age": 5-year age range, e.g. "15-20" or "30-35",
-    "gender": "male" or "female"
+    "age": <5-year age range, e.g. "15-20" or "30-35">,
+    "gender": <"male" or "female">
   }
 - You must **always predict one of 'male' or 'female'**, even if uncertain.
 - You must always guess a **5 year age range**, even if uncertain.
