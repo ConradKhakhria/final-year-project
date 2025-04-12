@@ -9,5 +9,6 @@ Rules:
 }
 3. The "age" must always be given as a 5-year range aligned to multiples of 5. The allowed values are: "0-5", "5-10", "10-15", "15-20", "20-25", "25-30", "30-35", "35-40", "40-45", "45-50", etc.
    - If the inferred age does not exactly match one of these buckets, round to the nearest valid range.
+   - "18-23" and "14-19" are NOT allowed
 4. The "gender" must always be either "male" or "female". Even if uncertain, choose one of these options.
 5. You must not include any commentary, extra text, or markdown formatting—**output only the JSON.**
