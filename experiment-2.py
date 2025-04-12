@@ -142,10 +142,9 @@ class Experiment2:
         m = model.BatchModel(config.MODEL)
         m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
-        print(chunk.columns)
-        print(chunk["subreddit"])
+        subreddit = chunk["subreddit"].iloc[0]
 
-        prompt = f"all posts are from r/{chunk['subreddit'][0]}"
+        prompt = f"all posts are from r/{subreddit}"
 
         for i in range(len(chunk)):
             post = chunk.iloc[i]
