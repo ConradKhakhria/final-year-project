@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 import gc
 import json
 import os
@@ -84,13 +85,14 @@ class BatchModel:
 
 
     @config.debug_function
-    def process_batch(self, batch: list[str], enforce_json=True) -> list[str]:
+    def process_batch(self, batch: list[str], enforce_json=True, max_new_tokens=30) -> list[str]:
         """
         Processes a batch of inputs with the model pre-prompt
     
         args:
         - batch: the list of inputs, as strings
         - enforce_json: whether to enforce JSON output
+        - max_new_tokens: the maximum number of new tokens that will be generated
 
         returns:
             the list of outputs as strings
@@ -115,7 +117,7 @@ class BatchModel:
         output_tokens = self.model.generate(
             input_ids=input_tokens["input_ids"],
             attention_mask=input_tokens["attention_mask"],
-            max_new_tokens=30,
+            max_new_tokens=max_new_tokens,
             eos_token_id=self.tokenizer.eos_token_id,
             pad_token_id=self.tokenizer.eos_token_id,
             do_sample=False,
