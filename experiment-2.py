@@ -75,6 +75,9 @@ class Experiment2:
                 config.debug(f"Processing batch {batch_no} of {batch_cnt}")
 
                 output = m.process_batch(batch, enforce_json=True)
+
+                print(output)
+
                 json_output = model.extract_json(output, { "name": None, "useful": None })
 
                 for i, o in enumerate(json_output):
