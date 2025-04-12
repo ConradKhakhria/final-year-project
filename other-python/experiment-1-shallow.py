@@ -1,6 +1,7 @@
 # mypy: ignore-errors
 import datasets
 from joblib import Memory
+import json
 import numpy as np
 import os
 import pandas as pd
@@ -12,7 +13,7 @@ from sklearn.svm import LinearSVC, SVR
 from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 import sys
 import time
@@ -312,3 +313,17 @@ if __name__ == "__main__":
     print(f"Classification report for lr:\n{classification_report(y_test_age, y_pred_lr)}")
     print(f"Classification report for rf:\n{classification_report(y_test_age, y_pred_rf)}")
     print(f"Classification report for svm:\n{classification_report(y_test_age, y_pred_svm)}")
+
+    cm_lr = confusion_matrix(y_test_age, y_pred_lr)
+    cm_rf = confusion_matrix(y_test_age, y_pred_rf)
+    cm_svm = confusion_matrix(y_test_age, y_pred_svm)
+
+    confusion_data = {
+        "LogisticRegression": cm_lr.tolist(),
+        "RandomForest": cm_rf.tolist(),
+        "LinearSVC": cm_svm.tolist()
+    }
+
+    # Write the confusion matrices to a JSON file that can be downloaded and inspected locally
+    with open("confusion_matrices.json", "w") as f:
+        json.dump(confusion_data, f)
