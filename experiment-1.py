@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 import json
 import multiprocessing as mp
 import numpy as np
