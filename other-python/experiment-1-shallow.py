@@ -23,7 +23,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-CROSS_VALIDATE = True
+CROSS_VALIDATE = False
 PROJECT_PATH = Path.home()
 
 
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
         best_rf = Pipeline([
             ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-            ("model", RandomForestClassifier(max_depth=30, n_estimators=200, n_jobs=4)),
+            ("model", RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=4)),
         ])
 
         best_svm = Pipeline([
