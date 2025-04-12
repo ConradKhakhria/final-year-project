@@ -15,7 +15,7 @@ import model
 
 LOCAL_TESTING = False
 NUM_SAMPLES = None
-NUM_SUBREDDITS = 1000
+NUM_SUBREDDITS = 5000
 
 # Local config
 SUBREDDIT_SELECTOR_PRE_PROMPT = "expt2-select-subreddits.txt"
