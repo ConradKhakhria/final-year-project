@@ -150,7 +150,7 @@ class Experiment2:
             post = chunk.iloc[i]
 
             prompt +=   f"post {i + 1}: {{" \
-                        f"    'date':  {post['date']},"  \
+                        f"    'date':  {post['date_posted']},"  \
                         f"    'karma': {post['score']}," \
                         f"    'type':  '{'text-post' if post['type'][0] == 's' else 'comment'}'," \
                         f"    'content': '{post['text']}'" \
