@@ -149,12 +149,12 @@ class Experiment2:
         for i in range(len(chunk)):
             post = chunk.iloc[i]
 
-            prompt +=   f"post {i + 1}: {{" \
-                        f"    'date':  {post['date_posted']},"  \
-                        f"    'karma': {post['score']}," \
-                        f"    'type':  '{'text-post' if post['type'][0] == 's' else 'comment'}'," \
-                        f"    'content': '{post['text']}'" \
-                        "}\n"
+            prompt += json.dumps({
+                "date": post["date_posted"],
+                "karma": post["score"],
+                "type": "text-post" if post["type"][0] == "s" else "comment",
+                "content": repr(post["text"])
+            }, indent=4)
 
         output = m.process_batch([prompt], enforce_json=False, max_new_tokens=50)
 
