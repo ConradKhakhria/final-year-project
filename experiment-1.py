@@ -277,7 +277,7 @@ class Experiment1:
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
-    expt1 = Experiment1("expt1-zero-shot.txt", num_samples=10_000)
+    expt1 = Experiment1("expt1-zero-shot.txt", num_samples=50)
 
     expt_results, expt_output = expt1.run_experiment(20)
 
