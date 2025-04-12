@@ -1,7 +1,4 @@
 # mypy: ignore-errors
-from sklearnx import patch_sklearn
-patch_sklearn()
-
 import datasets
 from joblib import Memory
 import numpy as np
