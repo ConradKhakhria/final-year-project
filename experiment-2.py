@@ -139,9 +139,24 @@ class Experiment2:
         returns:
             A string containing a bullet-pointed list of trends indicated
         """
-        print(len(chunk))
+        m = model.BatchModel(config.MODEL)
+        m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
-        return ""
+        prompt = f"all posts are from r/{chunk['subreddit'][0]}"
+
+        for i in range(len(chunk)):
+            post = chunk.iloc[i]
+
+            prompt +=   f"post {i + 1}: {{" \
+                        f"    'date':  {post['date']},"  \
+                        f"    'karma': {post['score']}," \
+                        f"    'type':  '{'text-post' if post['type'][0] == 's' else 'comment'}'," \
+                        f"    'content': '{post['text']}'" \
+                        "}\n"
+
+        output = m.process_batch([prompt], enforce_json=False, max_new_tokens=50)
+
+        return output[0]
 
 
 
