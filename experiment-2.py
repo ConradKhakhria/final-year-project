@@ -156,7 +156,7 @@ class Experiment2:
                 "content": repr(post["text"])
             }, indent=4)
 
-        output = m.process_batch([prompt], enforce_json=False, max_new_tokens=50)
+        output = m.process_batch([prompt], enforce_json=False, max_new_tokens=200)
 
         return output[0]
 
