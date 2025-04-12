@@ -14,7 +14,7 @@ wget -O reddit.torrent https://academictorrents.com/download/ba051999301b109eab3
 
 echo "[4/6] Fetching Jan-Mar 2016 Reddit comments via torrent..."
 mkdir -p reddit_data
-aria2c --dir=reddit_data --select-file=1,2,3 reddit.torrent
+aria2c --dir=reddit_data --select-file=357,358,359,122,123,124 reddit.torrent
 
 echo "[5/6] Running sampling script..."
 python3 sample_reddit.py
