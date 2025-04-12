@@ -131,6 +131,10 @@ if __name__ == "__main__":
     expt = Experiment2()
 
     filtered_subreddits_df = expt.filter_relevant_subreddits()
+
+    exit()
+
+
     N = len(filtered_subreddits_df)
 
     if NUM_SAMPLES is None:
