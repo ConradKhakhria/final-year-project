@@ -24,11 +24,11 @@ class Experiment2:
         config.debug("Loading dataset")
 
         if LOCAL_TESTING:
-            reddit_submissions_path = Path("../data/reddit/sampled_reddit_submissions.jsonl")
-            reddit_comments_path = Path("../data/reddit/sampled_reddit_comments.jsonl")
+            reddit_submissions_path = "../data/reddit/sampled_reddit_submissions.jsonl"
+            reddit_comments_path = "../data/reddit/sampled_reddit_comments.jsonl"
         else:
-            reddit_submissions_path = config.DATASET_DIR / "sampled_reddit_submissions.jsonl"
-            reddit_comments_path = config.DATASET_DIR / "sampled_reddit_comments.jsonl"
+            reddit_submissions_path = config.DATASET_DIR / "reddit" / "sampled_reddit_submissions.jsonl"
+            reddit_comments_path = config.DATASET_DIR / "reddit" / "sampled_reddit_comments.jsonl"
 
         self.reddit_df = dataset.load_reddit_submissions_comments(reddit_submissions_path, reddit_comments_path)
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
