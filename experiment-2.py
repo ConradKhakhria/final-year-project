@@ -151,7 +151,7 @@ class Experiment2:
 
             prompt += json.dumps({
                 "date": post["date_posted"].strftime('%Y-%m-%d'),
-                "karma": post["score"],
+                "karma": str(post["score"]),
                 "type": "text-post" if post["type"][0] == "s" else "comment",
                 "content": repr(post["text"])
             }, indent=4)
