@@ -236,7 +236,7 @@ if __name__ == "__main__":
     dataset = DatasetLoader()
 
     if CROSS_VALIDATE:
-        X_train_cv, y_train_gender_cv = dataset.get_Xy("train", "age", subset_size=50_000)
+        X_train_cv, y_train_age_cv = dataset.get_Xy("train", "age", subset_size=50_000)
 
         bms = BestModelSelector()
         
@@ -258,7 +258,7 @@ if __name__ == "__main__":
         bms.add_model_params("rf", "max_depth", [10, 20, 30])
 
         config.debug("Obtaining best parameters for each model")
-        best_params = bms.get_best_models(X_train_cv, y_train_gender_cv)
+        best_params = bms.get_best_models(X_train_cv, y_train_age_cv)
 
         best_lr: LogisticRegression = best_params["lr"]["model"]
         best_rf: RandomForestClassifier = best_params["rf"]["model"]
@@ -284,27 +284,27 @@ if __name__ == "__main__":
         ])
 
     config.debug("Testing each model")
-    X_train, y_train_gender = dataset.get_Xy("train", "gender")
-    X_test, y_test_gender = dataset.get_Xy("test", "gender")
+    X_train, y_train_age = dataset.get_Xy("train", "age")
+    X_test, y_test_age = dataset.get_Xy("test", "age")
 
     config.debug("Fitting each model")
     print("fitting logistic regression")
     config.debug(psutil.virtual_memory())
-    best_lr.fit(X_train, y_train_gender)
+    best_lr.fit(X_train, y_train_age)
 
     print("fitting random forest")
     config.debug(psutil.virtual_memory())
-    best_rf.fit(X_train, y_train_gender)
+    best_rf.fit(X_train, y_train_age)
 
     print("fitting svm")
     config.debug(psutil.virtual_memory())
-    best_svm.fit(X_train, y_train_gender)
+    best_svm.fit(X_train, y_train_age)
 
     config.debug("Running predictions")
     y_pred_lr = best_lr.predict(X_test)
     y_pred_rf = best_rf.predict(X_test)
     y_pred_svm = best_svm.predict(X_test)
 
-    print(f"Classification report for lr:\n{classification_report(y_test_gender, y_pred_lr)}")
-    print(f"Classification report for rf:\n{classification_report(y_test_gender, y_pred_rf)}")
-    print(f"Classification report for svm:\n{classification_report(y_test_gender, y_pred_svm)}")
+    print(f"Classification report for lr:\n{classification_report(y_test_age, y_pred_lr)}")
+    print(f"Classification report for rf:\n{classification_report(y_test_age, y_pred_rf)}")
+    print(f"Classification report for svm:\n{classification_report(y_test_age, y_pred_svm)}")
