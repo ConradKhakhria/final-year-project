@@ -67,7 +67,10 @@ def load_reddit_submissions_comments(submissions_fname: Path, comments_fname: Pa
     submissions["text"] = submissions["title"].fillna("") + "\n" + submissions["selftext"].fillna("")
     comments["text"] = comments["body"]
 
-    selected_columns = ["id", "author", "created_utc", "subreddit", "score", "text"]
+    comments["type"] = "comment"
+    submissions["type"] = "submission"
+
+    selected_columns = ["id", "author", "created_utc", "subreddit", "score", "text", "type"]
 
     comments_reduced = comments[selected_columns]
     submissions_reduced = submissions[selected_columns]
