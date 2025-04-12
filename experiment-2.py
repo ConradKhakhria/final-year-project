@@ -150,7 +150,7 @@ class Experiment2:
             post = chunk.iloc[i]
 
             prompt += json.dumps({
-                "date": post["date_posted"],
+                "date": post["date_posted"].strftime('%Y-%m-%d'),
                 "karma": post["score"],
                 "type": "text-post" if post["type"][0] == "s" else "comment",
                 "content": repr(post["text"])
