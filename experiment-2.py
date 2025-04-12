@@ -158,7 +158,7 @@ if __name__ == "__main__":
     else:
         selected_idxs = np.random.choice(np.arange(0, N), size=NUM_SAMPLES, replace=False)
 
-    filtered_subreddits_df = filtered_subreddits_df[selected_idxs]
+    filtered_subreddits_df = filtered_subreddits_df.iloc[selected_idxs]
     post_chunks = expt.chunk_by_date_and_subreddit(filtered_subreddits_df, 4)
 
     for c in post_chunks:
