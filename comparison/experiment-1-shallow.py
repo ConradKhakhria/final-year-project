@@ -2,6 +2,7 @@
 import datasets
 from joblib import Memory
 import numpy as np
+import os
 import pandas as pd
 import psutil
 from pathlib import Path
@@ -13,8 +14,11 @@ from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
+import sys
 import time
 from typing import Dict, Tuple
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
