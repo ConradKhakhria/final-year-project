@@ -144,7 +144,7 @@ class Experiment2:
 
         subreddit = chunk["subreddit"].iloc[0]
 
-        prompt = f"all posts are from r/{subreddit}"
+        prompt = f"all posts are from r/{subreddit}\n--- BEGIN INPUTS ---"
 
         for i in range(len(chunk)):
             post = chunk.iloc[i]
@@ -156,7 +156,11 @@ class Experiment2:
                 "content": repr(post["text"])
             }, indent=4)
 
+        prompt += "\n--- END INPUTS ---"
+
         output = m.process_batch([prompt], enforce_json=False, max_new_tokens=200)
+
+        config.debug(f"The prompt has length {len(prompt)}")
 
         return output[0]
 
