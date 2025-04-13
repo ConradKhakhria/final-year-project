@@ -35,6 +35,7 @@ class Experiment2:
         self.reddit_df = dataset.load_reddit_submissions_comments(reddit_submissions_path, reddit_comments_path)
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
 
+        self.m = model.BatchModel(config.MODEL)
 
     @config.debug_function
     def filter_relevant_subreddits(self, batch_size: int = 20) -> pd.DataFrame:
@@ -55,8 +56,7 @@ class Experiment2:
             with open(subreddit_selection_path) as f:
                 selected_subreddit_names = json.load(f)
         else:
-            m = model.BatchModel(config.MODEL)
-            m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / SUBREDDIT_SELECTOR_PRE_PROMPT)
+            self.m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / SUBREDDIT_SELECTOR_PRE_PROMPT)
 
             subreddits = self.reddit_df["subreddit"].unique()
 
@@ -75,7 +75,7 @@ class Experiment2:
                 batch = subreddits[batch_start : batch_start + batch_size]
 
                 config.debug(f"Processing batch {batch_start}..{batch_start + batch_size} of {n_subs}")
-                output = m.process_batch(batch, enforce_json=True)
+                output = self.m.process_batch(batch, enforce_json=True)
                 json_output = model.extract_json(output, { "name": None, "useful": None })
 
                 for i, o in enumerate(json_output):
@@ -139,8 +139,7 @@ class Experiment2:
         returns:
             A string containing a bullet-pointed list of trends indicated
         """
-        m = model.BatchModel(config.MODEL)
-        m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
+        self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
         subreddit = chunk["subreddit"].iloc[0]
 
@@ -158,7 +157,7 @@ class Experiment2:
 
         prompt += "\n--- END INPUTS ---"
 
-        output = m.process_batch([prompt], enforce_json=False, max_new_tokens=200)
+        output = self.m.process_batch([prompt], enforce_json=False, max_new_tokens=200)
 
         config.debug(f"The prompt has length {len(prompt)}")
 
