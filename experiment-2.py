@@ -17,8 +17,10 @@ NUM_SAMPLES = None
 
 
 class BatchModelIsolator:
-    def __init__(self, pre_prompt_name: str):
+    def __init__(self, which_model: Literal["small", "large"], pre_prompt_name: str):
         self.pre_prompt_path = config.CODE_DIR / "pre-prompts" / pre_prompt_name
+        self.which_model = which_model
+
         self.p: mp.Process | None = None
         self.in_queue: mp.Queue | None = None
         self.out_queue: mp.Queue | None = None
@@ -87,7 +89,7 @@ class BatchModelIsolator:
 
         p = mp.Process(
             target=self.batch_process_worker,
-            args=(in_queue, out_queue, self.pre_prompt_path)
+            args=(in_queue, out_queue, self.pre_prompt_path, self.which_model)
         )
         p.start()
 
@@ -95,7 +97,9 @@ class BatchModelIsolator:
 
 
     @classmethod
-    def batch_process_worker(cls, in_queue: mp.Queue, out_queue: mp.Queue, pp_path: Path):
+    def batch_process_worker(
+        cls, in_queue: mp.Queue, out_queue: mp.Queue, pp_path: Path, which_model: Literal["small", "large"]
+    ):
         """
         Creates a batch processing worker
 
@@ -105,8 +109,9 @@ class BatchModelIsolator:
             - "successful": whether the processing was successful (or OOM)
             - "output": the list of text output from the model
         - pp_path: pre-prompt path
+        - which_model: whether to use the small or large model
         """
-        m = model.BatchModel(config.SMALL_MODEL)
+        m = model.BatchModel(config.SMALL_MODEL if which_model == "small" else config.LARGE_MODEL)
         m.load_pre_prompt(pp_path)
 
         with torch.no_grad():
@@ -138,7 +143,8 @@ class Experiment2:
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
 
-        self.model_isolator = BatchModelIsolator("expt2-identify-trends-sector.txt")
+        self.small_model_isolator = BatchModelIsolator("small", "expt2-identify-trends-sector.txt")
+        self.large_model_isolator = BatchModelIsolator("large", "expt2-identify-trends-from-reports.txt")
 
 
     @config.debug_function
@@ -222,9 +228,12 @@ class Experiment2:
             A string containing a bullet-pointed list of trends indicated
         """
         prompts = [self.chunk_to_prompt(c) for c in chunks]
-        outputs = self.model_isolator.process_prompts(prompts, batch_size=batch_size)
+        outputs = self.small_model_isolator.process_prompts(prompts, batch_size=batch_size)
 
         return outputs
+
+
+    
 
 
 if __name__ == "__main__":
