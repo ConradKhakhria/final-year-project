@@ -139,7 +139,7 @@ if __name__ == "__main__":
     relevant_post_outputs: List[str] = []
 
     for c in post_chunks:
-        relevant_post_outputs.extend(expt.get_trends_from_chunk(c))
+        relevant_post_outputs.extend(expt.get_trends_from_chunk(c, 4))
 
     for i, out in enumerate(relevant_post_outputs):
         print(f"Output for chunk {i + 1}:\n{out}\n\n")
