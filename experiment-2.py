@@ -76,6 +76,8 @@ class Experiment2:
         """
         Turns a chunk of posts into a prompt string
         """
+        print(f"type(chunk) = {type(chunk)}")
+
         start_date = chunk.iloc[0]["date_posted"]
         end_date = chunk.iloc[-1]["date_posted"]
         subreddit = chunk["subreddit"].iloc[0]
