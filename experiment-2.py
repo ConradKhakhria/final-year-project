@@ -76,8 +76,6 @@ class Experiment2:
         """
         Turns a chunk of posts into a prompt string
         """
-        print(f"type(chunk) = {type(chunk)}")
-
         start_date = chunk.iloc[0]["date_posted"]
         end_date = chunk.iloc[-1]["date_posted"]
         subreddit = chunk["subreddit"].iloc[0]
@@ -114,7 +112,7 @@ class Experiment2:
         """
         self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
-        prompts = [self.chunk_to_prompt(c) for c in chunks]
+        prompts = [self.chunk_to_prompt(chunks.iloc[i]) for i in range(len(chunks))]
         outputs = []
 
         if batch_size is None:
