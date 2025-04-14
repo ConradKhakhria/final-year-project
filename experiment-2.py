@@ -323,7 +323,7 @@ if __name__ == "__main__":
     expt.small_model_isolator.kill_batch_worker()
 
     with open(config.RESULTS_DIR / "experiment-2-trend-reports.json", "w") as f:
-        json.dump(trend_reports, sub)
+        json.dump(trend_reports, f)
 
     # Produce larger report
     larger_reports = {}
@@ -339,4 +339,4 @@ if __name__ == "__main__":
         config.output(f" - overall report:\n{larger_reports[sub]}")
 
     with open(config.RESULTS_DIR / "experiment-2-overall-reports.json", "w") as f:
-        json.dump(larger_reports, sub)
+        json.dump(larger_reports, f)
