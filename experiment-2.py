@@ -19,6 +19,9 @@ NUM_SAMPLES = None
 class BatchModelIsolator:
     def __init__(self, pre_prompt_name: str):
         self.pre_prompt_path = config.CODE_DIR / "pre-prompts" / pre_prompt_name
+        self.p: mp.Process | None = None
+        self.in_queue: mp.Queue | None = None
+        self.out_queue: mp.Queue | None = None
 
 
     def process_prompts(self, prompts: List[str], batch_size = None) -> List[str]:
@@ -35,26 +38,27 @@ class BatchModelIsolator:
         if batch_size is None:
             batch_size = 1
 
-        p, in_queue, out_queue = self.create_batch_process_worker()
+        if self.p == self.in_queue == self.out_queue == None:
+            self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
 
         while batch_start < len(prompts):
             prompt_batch = prompts[batch_start : min(len(prompts), batch_start + batch_size)]
 
             config.debug(f"Processing batch {batch_start}..{batch_start + batch_size} of {len(prompts)}")
-            in_queue.put(prompt_batch)
+            self.in_queue.put(prompt_batch)
 
-            results = out_queue.get()
+            results = self.out_queue.get()
             if results["successful"]:
                 outputs.extend(results["output"])
                 batch_start += batch_size
             else:
-                if p.is_alive():
-                    p.terminate()
-                    p.join()
+                if self.p.is_alive():
+                    self.p.terminate()
+                    self.p.join()
 
                 torch.cuda.empty_stack()
 
-                p, in_queue, out_queue = self.create_batch_process_worker()
+                self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
 
                 new_batch_size = max(1, int(0.8 * batch_size))
                 if new_batch_size == batch_size > 1:
@@ -62,8 +66,8 @@ class BatchModelIsolator:
 
                 batch_size = new_batch_size
 
-        in_queue.put(None)
-        p.join()
+        self.in_queue.put(None)
+        self.p.join()
 
         return outputs
 
