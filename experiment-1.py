@@ -123,7 +123,7 @@ class Experiment1:
         """
         import torch
 
-        m = model.BatchModel(config.MODEL)
+        m = model.BatchModel(config.SMALL_MODEL)
         m.load_pre_prompt(pp_path)
 
         with torch.no_grad():

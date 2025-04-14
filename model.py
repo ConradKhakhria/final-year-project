@@ -33,7 +33,7 @@ class BatchModel:
             bnb_4bit_quant_type="nf4"
         )
 
-        config.debug(f"Loading model {config.MODEL}")
+        config.debug(f"Loading model {model_id}")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             device_map="auto",
