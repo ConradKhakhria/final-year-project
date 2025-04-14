@@ -54,28 +54,3 @@ def load_dataset_locally(dataset_name: str, sort_axis=None, split_set="train") -
         df.to_parquet(local_dataset_path)
 
     return df
-
-
-def load_reddit_submissions_comments(submissions_fname: Path, comments_fname: Path) -> pd.DataFrame:
-    """
-    Loads a df containing all submissions and comments
-    """
-    submissions = pd.read_json(submissions_fname, lines=True)
-    comments = pd.read_json(comments_fname, lines=True)
-
-    # create 'text' columns for both
-    submissions["text"] = submissions["title"].fillna("") + "\n" + submissions["selftext"].fillna("")
-    comments["text"] = comments["body"]
-
-    comments["type"] = "comment"
-    submissions["type"] = "submission"
-
-    selected_columns = ["id", "author", "created_utc", "subreddit", "score", "text", "type"]
-
-    comments_reduced = comments[selected_columns]
-    submissions_reduced = submissions[selected_columns]
-    
-    # Combine the two DataFrames.
-    combined_df = pd.concat([comments_reduced, submissions_reduced], ignore_index=True)
-    
-    return combined_df

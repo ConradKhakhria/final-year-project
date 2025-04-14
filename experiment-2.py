@@ -12,92 +12,33 @@ import config
 import dataset
 import model
 
-
 LOCAL_TESTING = False
 NUM_SAMPLES = None
-NUM_SUBREDDITS = 5000
-
-# Local config
-SUBREDDIT_SELECTOR_PRE_PROMPT = "expt2-select-subreddits.txt"
 
 
 class Experiment2:
     def __init__(self):
         config.debug("Loading dataset")
 
-        if LOCAL_TESTING:
-            reddit_submissions_path = "../data/reddit/sampled_reddit_submissions.jsonl"
-            reddit_comments_path = "../data/reddit/sampled_reddit_comments.jsonl"
-        else:
-            reddit_submissions_path = config.DATASET_DIR / "reddit" / "sampled_reddit_submissions.jsonl"
-            reddit_comments_path = config.DATASET_DIR / "reddit" / "sampled_reddit_comments.jsonl"
+        data_path = config.CODE_DIR / "data" / "combined-filtered-reddit-data.parquet"
 
-        self.reddit_df = dataset.load_reddit_submissions_comments(reddit_submissions_path, reddit_comments_path)
+        self.reddit_df = pd.read_parquet(data_path)
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
 
         self.m = model.BatchModel(config.MODEL)
 
-    @config.debug_function
-    def filter_relevant_subreddits(self, batch_size: int = 20) -> pd.DataFrame:
+
+    def sample_reddit_df(self, num_samples: int):
         """
-        Filters test_df to contain only relevant subreddits, as chosen by the LLM
-
-        args:
-        - batch_size: the number of subreddit names to process at once
-
-        returns:
-            The entire dataset but only containing relevant subreddits
+        Selects a subset of size num_samples for reddit_df
         """
-        global SUBREDDIT_SELECTOR_PRE_PROMPT
-
-        subreddit_selection_path = config.CACHE_DIR / "selected-subreddits.json"
-
-        if subreddit_selection_path.exists():
-            with open(subreddit_selection_path) as f:
-                selected_subreddit_names = json.load(f)
-        else:
-            self.m.load_pre_prompt(config.CODE_DIR / "pre-prompts" / SUBREDDIT_SELECTOR_PRE_PROMPT)
-
-            subreddits = self.reddit_df["subreddit"].unique()
-
-            # For testing we will take only a few of these
-            if NUM_SUBREDDITS is not None:
-                subreddits = subreddits[:NUM_SUBREDDITS]
-
-            n_subs = len(subreddits)
-            batch_start = 0
-
-            selected_subreddit_names = []
-            unsuccessful_output_count = 0
-
-            # Obtain all useful subreddits
-            while batch_start < n_subs:
-                batch = subreddits[batch_start : batch_start + batch_size]
-
-                config.debug(f"Processing batch {batch_start}..{batch_start + batch_size} of {n_subs}")
-                output = self.m.process_batch(batch, enforce_json=True)
-                json_output = model.extract_json(output, { "name": None, "useful": None })
-
-                for i, o in enumerate(json_output):
-                    if o["useful"] is not None:
-                        if o["useful"]:
-                            selected_subreddit_names.append(batch[i])
-                    else:
-                        unsuccessful_output_count += 1
-
-                batch_start += batch_size
-
-            config.debug(f"There were {unsuccessful_output_count} unsuccessful batches")
-
-            # record this list of subreddits
-            with open(subreddit_selection_path, "w") as f:
-                json.dump(selected_subreddit_names, f)
-
-        return self.reddit_df[self.reddit_df["subreddit"].isin(selected_subreddit_names)]
+        n_posts = len(self.reddit_df)
+        idxs = np.random.choice(np.arange(0, n_posts), size=num_samples, replace=False)
+        self.reddit_df = self.reddit_df[idxs]
 
 
     @config.debug_function
-    def chunk_by_date_and_subreddit(self, df_test: pd.DataFrame, chunk_size: int) -> Iterator[pd.DataFrame]:
+    def chunk_by_date_and_subreddit(self, chunk_size: int) -> Iterator[pd.DataFrame]:
         """
         Iterates over dates and subreddits
 
@@ -105,11 +46,11 @@ class Experiment2:
         - df_test: the dataframe to divide into chunks
         - chunk_size: the size *in days* of each chunk
         """
-        start_date = df_test["date_posted"].min()
-        end_date = df_test["date_posted"].max()
+        start_date = self.reddit_df["date_posted"].min()
+        end_date = self.reddit_df["date_posted"].max()
 
-        time_sorted_df = df_test.sort_values(by="date_posted")
-        subreddits = df_test["subreddit"].unique()
+        time_sorted_df = self.reddit_df.sort_values(by="date_posted")
+        subreddits = self.reddit_df["subreddit"].unique()
 
         current_start = start_date
 
@@ -164,22 +105,15 @@ class Experiment2:
         return output[0]
 
 
-
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     expt = Experiment2()
 
-    filtered_subreddits_df = expt.filter_relevant_subreddits(batch_size=100)
-    N = len(filtered_subreddits_df)
+    if NUM_SAMPLES is not None:
+        expt.sample_reddit_df(NUM_SAMPLES)
 
-    if NUM_SAMPLES is None:
-        selected_idxs = np.arange(0, N)
-    else:
-        selected_idxs = np.random.choice(np.arange(0, N), size=NUM_SAMPLES, replace=False)
-
-    filtered_subreddits_df = filtered_subreddits_df.iloc[selected_idxs]
-    post_chunks = expt.chunk_by_date_and_subreddit(filtered_subreddits_df, 4)
+    post_chunks = expt.chunk_by_date_and_subreddit(4)
 
     for c in post_chunks:
         output = expt.get_trends_from_chunk(c)
