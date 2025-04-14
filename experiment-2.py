@@ -334,7 +334,7 @@ if __name__ == "__main__":
         config.output(f" - number of reports: {len(trend_reports[sub]['reports'])}")
         config.output(f" - total text: {len(' '.join(trend_reports[sub]['reports']))}")
 
-        larger_reports[sub] = expt.get_trends_from_reports(trend_reports[sub], 4)
+        larger_reports[sub] = expt.get_trends_from_reports(trend_reports[sub]['reports'], 4)
 
         config.output(f" - overall report:\n{larger_reports[sub]}")
 
