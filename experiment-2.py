@@ -310,6 +310,9 @@ if __name__ == "__main__":
 
     for sub in subreddit_selection["relevant"][:5]:
         post_chunks = expt.create_balanced_post_selection(relevant_df, sub, 25)
+
+        print(f"sub = {sub} ; len(post_chunks) = {len(post_chunks)}")
+
         trend_reports[sub] = {
             "reports": expt.get_trends_from_chunk(post_chunks, 4),
             "start_date": post_chunks[0].iloc[0]["date_posted"],
