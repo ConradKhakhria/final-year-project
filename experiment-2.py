@@ -153,6 +153,7 @@ if __name__ == "__main__":
 
     for c in post_chunks:
         print(f"New chunk:\n - subreddit = {c['subreddit'].iloc[0]}\n - len = {len(c)}")
+        print(f" - text_len = {sum(len(p["text"] for p in c))}")
 
 #        output = expt.get_trends_from_chunk(c)
 #        print("=====================\n" + output + "\n=================")
