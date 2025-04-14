@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-DEBUG = False
+DEBUG = True
 MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 
 # directories
