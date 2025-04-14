@@ -316,8 +316,8 @@ if __name__ == "__main__":
 
         trend_reports[sub] = {
             "reports": expt.get_trends_from_chunk(post_chunks, 4),
-            "start_date": post_chunks[0].iloc[0]["date_posted"],
-            "end_date": post_chunks[-1].iloc[-1]["date_posted"]
+            "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
+            "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
         }
 
     expt.small_model_isolator.kill_batch_worker()
