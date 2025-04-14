@@ -138,13 +138,20 @@ class BatchModelIsolator:
         """
         Kills the current batch worker and deletes the input and output queues
         """
-        if self.p.is_alive():
+        if self.p is not None and self.p.is_alive():
             self.p.terminate()
             self.p.join()
+            self.p = None
 
-        self.p = None
-        self.in_queue = None
-        self.out_queue = None
+        if self.in_queue is not None:
+            self.in_queue.close()
+            self.in_queue.join_thread()
+            self.in_queue = None
+
+        if self.out_queue is not None:
+            self.out_queue.close()
+            self.out_queue.join_thread()
+            self.out_queue = None
 
 
 class Experiment2:
@@ -294,4 +301,3 @@ if __name__ == "__main__":
        trends (relating to Coca-Cola) indicated by the post
     5. 
     """
-
