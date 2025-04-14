@@ -111,7 +111,7 @@ class BatchModel:
             prompt_strings = [f"{self.pre_prompt}\n\n[input]: {i}\n[output]: " for i in batch]
 
         input_tokens = self.tokenizer(prompt_strings, return_tensors="pt", padding=True,
-                                      truncation=True, )
+                                      truncation=True, max_length=2000)
         input_tokens = input_tokens.to("cuda")
 
         output_tokens = self.model.generate(
