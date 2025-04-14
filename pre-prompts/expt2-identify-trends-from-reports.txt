@@ -6,7 +6,7 @@ Your task is to synthesize these reports into one comprehensive final report tha
 
 For each trend identified, output a bullet-point line (starting with '-') including:
 1. a concise trend label
-2. a brief chain-of-thought explanation of why you believe this trend is indicated.
+2. a *detailed* chain-of-thought explanation of why you believe this trend is indicated.
 
 Do not echo any of the raw report texts, only provide your aggregated analysis.
 Separate each input report using the delimiter <<REPORT>>.
