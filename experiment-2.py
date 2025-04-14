@@ -135,11 +135,7 @@ if __name__ == "__main__":
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
     post_chunks = expt.create_balanced_post_selection(relevant_df, "food", 25)
-
-    relevant_post_outputs: List[str] = []
-
-    for c in post_chunks:
-        relevant_post_outputs.extend(expt.get_trends_from_chunk(c, 4))
+    relevant_post_outputs: List[str] = expt.get_trends_from_chunk(list(post_chunks), 4)
 
     for i, out in enumerate(relevant_post_outputs):
         print(f"Output for chunk {i + 1}:\n{out}\n\n")
