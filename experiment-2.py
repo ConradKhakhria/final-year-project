@@ -162,7 +162,7 @@ class BatchModelIsolator:
 
 
 class Experiment2:
-    def __init__(self):
+    def __init__(self, small_model_max_tokens: int, large_model_max_tokens: int):
         config.debug("Loading dataset")
 
         self.data_dir = config.CODE_DIR / "data"
@@ -172,8 +172,10 @@ class Experiment2:
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
 
-        self.small_model_isolator = BatchModelIsolator("small", "expt2-identify-trends-sector.txt", 200)
-        self.large_model_isolator = BatchModelIsolator("large", "expt2-identify-trends-from-reports.txt", 1000)
+        self.small_model_isolator = BatchModelIsolator("small", "expt2-identify-trends-sector.txt",
+                                                       small_model_max_tokens)
+        self.large_model_isolator = BatchModelIsolator("large", "expt2-identify-trends-from-reports.txt",
+                                                       large_model_max_tokens)
 
 
     @config.debug_function
@@ -298,7 +300,7 @@ class Experiment2:
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
-    expt = Experiment2()
+    expt = Experiment2(small_model_max_tokens=200, large_model_max_tokens=2000)
 
     subreddit_selection = expt.subreddit_selection
 
@@ -340,3 +342,5 @@ if __name__ == "__main__":
 
     with open(config.RESULTS_DIR / "experiment-2-overall-reports.json", "w") as f:
         json.dump(larger_reports, f)
+
+    expt.large_model_isolator.kill_batch_worker()
