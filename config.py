@@ -5,6 +5,7 @@ from pathlib import Path
 
 DEBUG = True
 SMALL_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
+LARGE_MODEL = None
 
 # directories
 CACHE_DIR = Path.home() / ".cache"
