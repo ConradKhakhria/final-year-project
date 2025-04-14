@@ -72,44 +72,58 @@ class Experiment2:
             yield time_sorted.iloc[i_start : min(df_len, i_start + n_posts)]
 
 
-    @config.debug_function
-    def get_trends_from_chunk(self, chunk: pd.DataFrame) -> str:
+    def chunk_to_prompt(self, chunk: pd.DataFrame) -> str:
         """
-        Obtain an enumeration of consumer trends indicated by a chunk of posts
-
-        args:
-        - chunk: a dataframe of posts from a specific subreddit and timeframe
-    
-        returns:
-            A string containing a bullet-pointed list of trends indicated
+        Turns a chunk of posts into a prompt string
         """
-        self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
-
         start_date = chunk.iloc[0]["date_posted"]
         end_date = chunk.iloc[-1]["date_posted"]
-
-        config.debug(f"Prompting with {len(chunk)} posts from {start_date} to {end_date}")
-
         subreddit = chunk["subreddit"].iloc[0]
-        prompt = f"all posts are from r/{subreddit}\n--- BEGIN INPUTS ---"
+
+        prompt = f"All supplied posts will be from r/{subreddit}. " \
+                 f"They were posted between {start_date} and {end_date}"
 
         for i in range(len(chunk)):
             post = chunk.iloc[i]
 
+            prompt += f"[post number {i + 1}]:\n"
             prompt += json.dumps({
                 "date": post["date_posted"].strftime('%Y-%m-%d'),
                 "karma": str(post["score"]),
                 "type": "text-post" if post["type"][0] == "s" else "comment",
                 "content": repr(post["text"])
             }, indent=4)
+            prompt += "\n"
 
-        prompt += "\n--- END INPUTS ---"
+        return prompt
 
-        output = self.m.process_batch([prompt], enforce_json=False, max_new_tokens=200)
 
-        config.debug(f"The prompt has length {len(prompt)}")
+    @config.debug_function
+    def get_trends_from_chunk(self, chunks: List[pd.DataFrame], batch_size = None) -> List[str]:
+        """
+        Obtain an enumeration of consumer trends indicated by a chunk of posts
 
-        return output[0]
+        args:
+        - chunks: a list of dataframes of posts from a specific subreddit and timeframe
+        - batch_size: the number of chunks to process at once
+    
+        returns:
+            A string containing a bullet-pointed list of trends indicated
+        """
+        self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
+
+        prompts = [self.chunk_to_prompt(c) for c in chunks]
+        outputs = []
+
+        if batch_size is None:
+            batch_size = len(chunks)
+
+        for batch_start in range(0, len(chunks), batch_size):
+            prompt_batch = prompts[batch_start : min(len(chunks), batch_start + batch_size)]
+            out = self.m.process_batch(prompt_batch, enforce_json=False, max_new_tokens=200)
+            outputs.extend(out)
+
+        return outputs
 
 
 if __name__ == "__main__":
@@ -122,9 +136,14 @@ if __name__ == "__main__":
 
     post_chunks = expt.create_balanced_post_selection(relevant_df, "food", 25)
 
+    relevant_post_outputs: List[str] = []
+
     for c in post_chunks:
-        output = expt.get_trends_from_chunk(c)
-        print("vvvvvvvvvvvvvvvvvvvv\n" + output + "\n^^^^^^^^^^^^^^^^^^^^^")
+        relevant_post_outputs.extend(expt.get_trends_from_chunk(c))
+
+    for i, out in enumerate(relevant_post_outputs):
+        print(f"Output for chunk {i + 1}:\n{out}\n\n")
+
 
 
     """
