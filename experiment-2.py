@@ -39,9 +39,9 @@ class Experiment2:
         - num_samples: optional - whether to take a subset
         """
         with open(self.data_dir / "subreddit-selection.json") as f:
-            subreddit_selection = json.load(f)
+            self.subreddit_selection = json.load(f)
 
-        test_df = self.reddit_df[self.reddit_df["subreddit"].isin(subreddit_selection[relevance])]
+        test_df = self.reddit_df[self.reddit_df["subreddit"].isin(self.subreddit_selection[relevance])]
 
         if num_samples is not None:
             n_posts = len(test_df)
@@ -117,8 +117,12 @@ class Experiment2:
         """
         self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
-        subreddit = chunk["subreddit"].iloc[0]
+        start_date = chunk.iloc[0]["date_posted"]
+        end_date = chunk.iloc[-1]["date_posed"]
 
+        config.debug(f"Prompting with {len(chunk)} posts from {start_date} to {end_date}")
+
+        subreddit = chunk["subreddit"].iloc[0]
         prompt = f"all posts are from r/{subreddit}\n--- BEGIN INPUTS ---"
 
         for i in range(len(chunk)):
@@ -148,15 +152,11 @@ if __name__ == "__main__":
     relevant_df = expt.select_test_df("relevant", NUM_SAMPLES)
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
-#    post_chunks = expt.chunk_by_date_and_subreddit(relevant_df, 4)
-    post_chunks = expt.create_balanced_post_selection(relevant_df, "food", 20)
+    post_chunks = expt.create_balanced_post_selection(relevant_df, "food", 25)
 
     for c in post_chunks:
-        print(f"New chunk:\n - subreddit = {c['subreddit'].iloc[0]}\n - len = {len(c)}")
-        print(f" - text_len = {sum(len(s) for s in c['text'])}")
-
-#        output = expt.get_trends_from_chunk(c)
-#        print("=====================\n" + output + "\n=================")
+        output = expt.get_trends_from_chunk(c)
+        print("=====================\n" + output + "\n=================")
 
 
     """
