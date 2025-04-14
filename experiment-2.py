@@ -24,6 +24,9 @@ class Experiment2:
         self.reddit_df = pd.read_parquet(self.data_dir / "combined-filtered-reddit-data.parquet")
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
 
+        with open(self.data_dir / "subreddit-selection.json") as f:
+            self.subreddit_selection = json.load(f)
+
         self.m = model.BatchModel(config.MODEL)
 
 
@@ -38,9 +41,6 @@ class Experiment2:
         - relevance: whether to select the relevant or irrelevant subreddits
         - num_samples: optional - whether to take a subset
         """
-        with open(self.data_dir / "subreddit-selection.json") as f:
-            self.subreddit_selection = json.load(f)
-
         test_df = self.reddit_df[self.reddit_df["subreddit"].isin(self.subreddit_selection[relevance])]
 
         if num_samples is not None:
@@ -131,15 +131,23 @@ if __name__ == "__main__":
 
     expt = Experiment2()
 
+    subreddit_selection = expt.subreddit_selection
+
     relevant_df = expt.select_test_df("relevant", NUM_SAMPLES)
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
-    post_chunks = expt.create_balanced_post_selection(relevant_df, "food", 25)
-    relevant_post_outputs: List[str] = expt.get_trends_from_chunk(list(post_chunks), 4)
+    # We will focus on relevant subreddits
+    subreddit_trend_repots = {}
 
-    for i, out in enumerate(relevant_post_outputs):
-        print(f"Output for chunk {i + 1}:\n{out}\n\n")
+    for sub in subreddit_selection["relevant"][:5]:
+        post_chunks = expt.create_balanced_post_selection(relevant_df, sub, 25)
+        post_repots = expt.get_trends_from_chunk(list(post_chunks), 4)
+        subreddit_trend_repots[sub] = post_repots
 
+    for sub in subreddit_trend_repots:
+        print(f"Here are repots from subreddit {sub}")
+        for i, report in enumerate(subreddit_trend_repots[sub]):
+            print(f"[report {i + 1}]:\n{report}")
 
 
     """
