@@ -73,38 +73,6 @@ class Experiment2:
 
 
     @config.debug_function
-    def chunk_by_date_and_subreddit(self, df_test: pd.DataFrame, chunk_size: int) -> Iterator[pd.DataFrame]:
-        """
-        Iterates over dates and subreddits
-
-        args:
-        - df_test: the dataframe to divide into chunks
-        - chunk_size: the size *in days* of each chunk
-        """
-        start_date = df_test["date_posted"].min()
-        end_date = df_test["date_posted"].max()
-
-        time_sorted_df = df_test.sort_values(by="date_posted")
-        subreddits = df_test["subreddit"].unique()
-
-        current_start = start_date
-
-        while current_start < end_date:
-            current_end = current_start + datetime.timedelta(days=chunk_size)
-            time_mask = (current_start <= time_sorted_df["date_posted"]) & \
-                        (time_sorted_df["date_posted"] < current_end)
-
-            for sub in subreddits:
-                sub_mask = time_sorted_df["subreddit"] == sub
-                chunk = time_sorted_df[time_mask & sub_mask]
-
-                if not chunk.empty:
-                    yield chunk
-
-            current_start = current_end
-
-
-    @config.debug_function
     def get_trends_from_chunk(self, chunk: pd.DataFrame) -> str:
         """
         Obtain an enumeration of consumer trends indicated by a chunk of posts
@@ -118,7 +86,7 @@ class Experiment2:
         self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
         start_date = chunk.iloc[0]["date_posted"]
-        end_date = chunk.iloc[-1]["date_posed"]
+        end_date = chunk.iloc[-1]["date_posted"]
 
         config.debug(f"Prompting with {len(chunk)} posts from {start_date} to {end_date}")
 
