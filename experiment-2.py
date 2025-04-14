@@ -112,7 +112,7 @@ class Experiment2:
         """
         self.m.set_pre_prompt(config.CODE_DIR / "pre-prompts" / "expt2-identify-trends-sector.txt")
 
-        prompts = [self.chunk_to_prompt(chunks.iloc[i]) for i in range(len(chunks))]
+        prompts = [self.chunk_to_prompt(c) for c in chunks]
         outputs = []
 
         if batch_size is None:
