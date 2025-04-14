@@ -6,7 +6,7 @@ import os
 import pandas as pd
 from pathlib import Path
 import sys
-from typing import Iterator, Literal, Tuple 
+from typing import Iterator, List, Literal, Tuple 
 
 import config
 import dataset
@@ -27,6 +27,7 @@ class Experiment2:
         self.m = model.BatchModel(config.MODEL)
 
 
+    @config.debug_function
     def select_test_df(
         self, relevance: Literal["relevant", "irrelevant"], num_samples: int | None = None
     ) -> pd.DataFrame:
@@ -48,6 +49,27 @@ class Experiment2:
             test_df = test_df.iloc[sample_idxs]
 
         return test_df
+
+
+    @config.debug_function
+    def create_balanced_post_selection(
+        self, df_test: pd.DataFrame, subreddit: str, n_posts: int
+    ) -> Iterator[pd.DataFrame]:
+        """
+        Yields dataframes each containing close to n_posts
+
+        args:
+        - df_test: the dataframe to select from
+        - subreddit: the subreddit to select from
+        - n_posts: the number of posts for each df
+
+        All posts will be in time-order
+        """
+        time_sorted = df_test[df_test["subreddit"] == subreddit].sort_values(by="date_posted")
+        df_len = len(time_sorted)
+
+        for i_start in range(0, df_len, n_posts):
+            yield time_sorted.iloc[i_start : min(df_len, i_start + n_posts)]
 
 
     @config.debug_function
@@ -126,7 +148,8 @@ if __name__ == "__main__":
     relevant_df = expt.select_test_df("relevant", NUM_SAMPLES)
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
-    post_chunks = expt.chunk_by_date_and_subreddit(relevant_df, 4)
+#    post_chunks = expt.chunk_by_date_and_subreddit(relevant_df, 4)
+    post_chunks = expt.create_balanced_post_selection(relevant_df, "food", 20)
 
     for c in post_chunks:
         print(f"New chunk:\n - subreddit = {c['subreddit'].iloc[0]}\n - len = {len(c)}")
