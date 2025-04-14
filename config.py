@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 
-DEBUG = True
+DEBUG = False
 MODEL = "meta-llama/Llama-2-13b-chat-hf"
 
 # directories

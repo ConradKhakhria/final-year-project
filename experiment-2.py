@@ -129,9 +129,10 @@ if __name__ == "__main__":
     post_chunks = expt.chunk_by_date_and_subreddit(relevant_df, 4)
 
     for c in post_chunks:
-        output = expt.get_trends_from_chunk(c)
+        print(f"New chunk:\n - subreddit = {c['subreddit'].iloc[0]}\n - len = {len(c)}")
 
-        print("=====================\n" + output + "\n=================")
+#        output = expt.get_trends_from_chunk(c)
+#        print("=====================\n" + output + "\n=================")
 
 
     """
