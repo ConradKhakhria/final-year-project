@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 import sys
 import torch
-from typing import Iterator, List, Literal, Tuple 
+from typing import Iterator, List, Literal, Optional, Tuple 
 
 import config
 import dataset
@@ -21,9 +21,9 @@ class BatchModelIsolator:
         self.pre_prompt_path = config.CODE_DIR / "pre-prompts" / pre_prompt_name
         self.which_model = which_model
 
-        self.p: mp.Process | None = None
-        self.in_queue: mp.Queue | None = None
-        self.out_queue: mp.Queue | None = None
+        self.p: Optional[mp.Process]  = None
+        self.in_queue: Optional[mp.Queue] = None
+        self.out_queue: Optional[mp.Queue] = None
 
 
     def process_prompts(self, prompts: List[str], batch_size = None) -> List[str]:
@@ -40,10 +40,14 @@ class BatchModelIsolator:
         if batch_size is None:
             batch_size = 1
 
-        if self.p == self.in_queue == self.out_queue == None:
+        if self.p is None:
             self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
 
         while batch_start < len(prompts):
+            assert self.p is not None
+            assert self.in_queue is not None
+            assert self.out_queue is not None
+
             prompt_batch = prompts[batch_start : min(len(prompts), batch_start + batch_size)]
 
             config.debug(f"Processing batch {batch_start}..{batch_start + batch_size} of {len(prompts)}")
@@ -58,7 +62,7 @@ class BatchModelIsolator:
                     self.p.terminate()
                     self.p.join()
 
-                torch.cuda.empty_stack()
+                torch.cuda.empty_cache()
 
                 self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
 
@@ -68,12 +72,10 @@ class BatchModelIsolator:
 
                 batch_size = new_batch_size
 
-        self.in_queue.put(None)
-        self.p.join()
-
         return outputs
 
 
+    @config.debug_function
     def create_batch_process_worker(self) -> Tuple[mp.Process, mp.Queue, mp.Queue]:
         """
         Creates a new batch process worker
@@ -130,6 +132,19 @@ class BatchModelIsolator:
 
         torch.cuda.empty_cache()
 
+
+    @config.debug_function
+    def kill_batch_worker(self):
+        """
+        Kills the current batch worker and deletes the input and output queues
+        """
+        if self.p.is_alive():
+            self.p.terminate()
+            self.p.join()
+
+        self.p = None
+        self.in_queue = None
+        self.out_queue = None
 
 
 class Experiment2:
@@ -233,7 +248,16 @@ class Experiment2:
         return outputs
 
 
-    
+    @config.debug_function
+    def get_trends_from_reports(self, reports: List[str]) -> str:
+        """
+        Uses the large model to produce a final report summarising consumer trends
+        identified in the reports
+        """
+        
+
+        return ""
+
 
 
 if __name__ == "__main__":
@@ -259,6 +283,8 @@ if __name__ == "__main__":
         for i, report in enumerate(subreddit_trend_repots[sub]):
             print(f"[report {i + 1}]:\n{report}")
 
+
+    expt.small_model_isolator.kill_batch_worker()
 
     """
     Approach:
