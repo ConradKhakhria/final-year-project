@@ -116,7 +116,7 @@ class Experiment2:
         outputs = []
 
         if batch_size is None:
-            batch_size = len(chunks)
+            batch_size = 1
 
         for batch_start in range(0, len(chunks), batch_size):
             prompt_batch = prompts[batch_start : min(len(chunks), batch_start + batch_size)]
