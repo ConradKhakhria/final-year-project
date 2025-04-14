@@ -310,7 +310,7 @@ if __name__ == "__main__":
     # We will focus on relevant subreddits
     trend_reports = {}
 
-    for sub in subreddit_selection["relevant"][:5]:
+    for sub in subreddit_selection["relevant"]:
         post_chunks = expt.create_balanced_post_selection(relevant_df, sub, 25)
 
         if len(post_chunks) == 0:
