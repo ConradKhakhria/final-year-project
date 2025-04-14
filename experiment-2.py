@@ -17,9 +17,12 @@ NUM_SAMPLES = None
 
 
 class BatchModelIsolator:
-    def __init__(self, which_model: Literal["small", "large"], pre_prompt_name: str):
+    def __init__(
+        self, which_model: Literal["small", "large"], pre_prompt_name: str, max_new_tokens: int
+    ):
         self.pre_prompt_path = config.CODE_DIR / "pre-prompts" / pre_prompt_name
         self.which_model = which_model
+        self.max_new_tokens = max_new_tokens
 
         self.p: Optional[mp.Process]  = None
         self.in_queue: Optional[mp.Queue] = None
@@ -91,7 +94,8 @@ class BatchModelIsolator:
 
         p = mp.Process(
             target=self.batch_process_worker,
-            args=(in_queue, out_queue, self.pre_prompt_path, self.which_model)
+            args=(in_queue, out_queue, self.pre_prompt_path,
+                  self.which_model, self.max_new_tokens)
         )
         p.start()
 
@@ -100,7 +104,8 @@ class BatchModelIsolator:
 
     @classmethod
     def batch_process_worker(
-        cls, in_queue: mp.Queue, out_queue: mp.Queue, pp_path: Path, which_model: Literal["small", "large"]
+        cls, in_queue: mp.Queue, out_queue: mp.Queue, pp_path: Path,
+        which_model: Literal["small", "large"], max_new_tokens: int
     ):
         """
         Creates a batch processing worker
@@ -112,8 +117,10 @@ class BatchModelIsolator:
             - "output": the list of text output from the model
         - pp_path: pre-prompt path
         - which_model: whether to use the small or large model
+        - max_new_tokens: the number of new tokens the model can generate
         """
-        m = model.BatchModel(config.SMALL_MODEL if which_model == "small" else config.LARGE_MODEL)
+        model_id = config.SMALL_MODEL if which_model == "small" else config.LARGE_MODEL
+        m = model.BatchModel(model_id)
         m.load_pre_prompt(pp_path)
 
         with torch.no_grad():
@@ -122,7 +129,7 @@ class BatchModelIsolator:
                     break
 
                 try:
-                    output = m.process_batch(batch, enforce_json=False, max_new_tokens=200)
+                    output = m.process_batch(batch, enforce_json=False, max_new_tokens=max_new_tokens)
                     out_queue.put({ "successful": True, "output": output })
                 except RuntimeError as e:
                     if str(e).startswith('CUDA out of memory'):
@@ -165,8 +172,8 @@ class Experiment2:
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
 
-        self.small_model_isolator = BatchModelIsolator("small", "expt2-identify-trends-sector.txt")
-        self.large_model_isolator = BatchModelIsolator("large", "expt2-identify-trends-from-reports.txt")
+        self.small_model_isolator = BatchModelIsolator("small", "expt2-identify-trends-sector.txt", 200)
+        self.large_model_isolator = BatchModelIsolator("large", "expt2-identify-trends-from-reports.txt", 1000)
 
 
     @config.debug_function
@@ -193,7 +200,7 @@ class Experiment2:
     @config.debug_function
     def create_balanced_post_selection(
         self, df_test: pd.DataFrame, subreddit: str, n_posts: int
-    ) -> Iterator[pd.DataFrame]:
+    ) -> List[pd.DataFrame]:
         """
         Yields dataframes each containing close to n_posts
 
@@ -204,11 +211,16 @@ class Experiment2:
 
         All posts will be in time-order
         """
+        chunks = []
+
         time_sorted = df_test[df_test["subreddit"] == subreddit].sort_values(by="date_posted")
         df_len = len(time_sorted)
 
         for i_start in range(0, df_len, n_posts):
-            yield time_sorted.iloc[i_start : min(df_len, i_start + n_posts)]
+            chunk = time_sorted.iloc[i_start : min(df_len, i_start + n_posts)]
+            chunks.append(chunk)
+
+        return chunks
 
 
     def chunk_to_prompt(self, chunk: pd.DataFrame) -> str:
@@ -256,15 +268,31 @@ class Experiment2:
 
 
     @config.debug_function
-    def get_trends_from_reports(self, reports: List[str]) -> str:
+    def get_trends_from_reports(self, reports: List[str], batch_size: int) -> str:
         """
         Uses the large model to produce a final report summarising consumer trends
         identified in the reports
+
+        args:
+        - reports: a list of reports made by the LLM
+        - batch_size: the number of reports to combine at each iteration
         """
-        
+        current_reports = reports[:]
+        layers = 1
 
-        return ""
+        while len(current_reports) > 1:
+            config.debug(f"Creating a new layer of reports: layer = {layers}")
+            new_reports = []
 
+            for batch_start in range(0, len(current_reports), batch_size):
+                batch = reports[batch_start : min(len(current_reports), batch_start + batch_size)]
+                query = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(batch))
+                new_reports.extend(self.large_model_isolator.process_prompts([query]))
+
+            current_reports = new_reports
+            layers += 1
+
+        return current_reports[0]
 
 
 if __name__ == "__main__":
@@ -278,26 +306,33 @@ if __name__ == "__main__":
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
     # We will focus on relevant subreddits
-    subreddit_trend_repots = {}
+    trend_reports = {}
 
     for sub in subreddit_selection["relevant"][:5]:
         post_chunks = expt.create_balanced_post_selection(relevant_df, sub, 25)
-        post_repots = expt.get_trends_from_chunk(list(post_chunks), 4)
-        subreddit_trend_repots[sub] = post_repots
-
-    for sub in subreddit_trend_repots:
-        print(f"Here are repots from subreddit {sub}")
-        for i, report in enumerate(subreddit_trend_repots[sub]):
-            print(f"[report {i + 1}]:\n{report}")
-
+        trend_reports[sub] = {
+            "reports": expt.get_trends_from_chunk(post_chunks, 4),
+            "start_date": post_chunks.iloc[0]["date_posted"],
+            "end_date": post_chunks.iloc[-1]["date_posted"]
+        }
 
     expt.small_model_isolator.kill_batch_worker()
 
-    """
-    Approach:
-    1. Load (a subset of) reddit posts (submissions & comments)
-    3. Split up by time (4 days) and subreddit
-    4. For each time and subreddit, produce a report of all consumer
-       trends (relating to Coca-Cola) indicated by the post
-    5. 
-    """
+    with open(config.RESULTS_DIR / "experiment-2-trend-reports.json", "w") as f:
+        json.dump(trend_reports, sub)
+
+    # Produce larger report
+    larger_reports = {}
+
+    for sub in trend_reports:
+        config.output(f"Reports for subreddit r/{sub}:")
+        config.output(f" - date range: {trend_reports[sub]['start_date']} to {trend_reports[sub]['end_date']}")
+        config.output(f" - number of reports: {len(trend_reports[sub]['reports'])}")
+        config.output(f" - total text: {len(' '.join(trend_reports[sub]['reports']))}")
+
+        larger_reports[sub] = expt.get_trends_from_reports(trend_reports[sub], 4)
+
+        config.output(f" - overall report:\n{larger_reports[sub]}")
+
+    with open(config.RESULTS_DIR / "experiment-2-overall-reports.json", "w") as f:
+        json.dump(larger_reports, sub)
