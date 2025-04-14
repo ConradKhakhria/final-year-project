@@ -111,7 +111,7 @@ class BatchModelIsolator:
                     break
 
                 try:
-                    output = m.process_batch(batch, enforce_json=True)
+                    output = m.process_batch(batch, enforce_json=False, max_new_tokens=200)
                     out_queue.put({ "successful": True, "output": output })
                 except RuntimeError as e:
                     if str(e).startswith('CUDA out of memory'):
