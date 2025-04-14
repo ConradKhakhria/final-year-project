@@ -126,7 +126,7 @@ if __name__ == "__main__":
     relevant_df = expt.select_test_df("relevant", NUM_SAMPLES)
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
-    post_chunks = expt.chunk_by_date_and_subreddit(4)
+    post_chunks = expt.chunk_by_date_and_subreddit(relevant_df, 4)
 
     for c in post_chunks:
         output = expt.get_trends_from_chunk(c)
