@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     for c in post_chunks:
         output = expt.get_trends_from_chunk(c)
-        print("=====================\n" + output + "\n=================")
+        print("vvvvvvvvvvvvvvvvvvvv\n" + output + "\n^^^^^^^^^^^^^^^^^^^^^")
 
 
     """
