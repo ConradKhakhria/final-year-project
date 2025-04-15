@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 import sys
 import torch
-from typing import Iterator, List, Literal, Optional, Tuple 
+from typing import Any, Dict, Iterator, List, Literal, Optional, Tuple, no_type_check
 
 import config
 import dataset
@@ -17,34 +17,54 @@ NUM_SAMPLES = None
 
 
 class BatchModelIsolator:
-    def __init__(
-        self, which_model: Literal["small", "large"], pre_prompt_name: str, max_new_tokens: int
-    ):
-        self.pre_prompt_path = config.CODE_DIR / "pre-prompts" / pre_prompt_name
-        self.which_model = which_model
-        self.max_new_tokens = max_new_tokens
+    def __init__(self, which_model: Literal["small", "large"]):
+        if which_model == "small":
+            self.model_id = config.SMALL_MODEL
+        else:
+            self.model_id = config.LARGE_MODEL
 
         self.p: Optional[mp.Process]  = None
         self.in_queue: Optional[mp.Queue] = None
         self.out_queue: Optional[mp.Queue] = None
+        self.cfg: Dict[str, Any] = {}
 
 
-    def process_prompts(self, prompts: List[str], batch_size = None) -> List[str]:
+    @no_type_check
+    def process_prompts(
+        self, prompts: List[str], batch_size: Optional[int] = None, cfg: Optional[dict] = None,
+    ) -> List[str]:
         """
         Processes a list of prompts in a separate process
 
         args:
-        - prompts: the list of prompts to process
-        - batch_size: the batch size (default to sequential)
-        """ 
-        outputs = []
-        batch_start = 0
+        - prompts: a list of prompts to process
+        - batch_size: the number of batches to process at a time
+        - cfg: a dict containing overrides for:
+            1. max_new_tokens
+            2. pre_prompt_path
+            3. enforce_json
+        """
+        cfg_modified = False
 
-        if batch_size is None:
-            batch_size = 1
+        # Set configurations
+        if mnt := cfg.get("max_new_tokens", None):
+            self.cfg["max_new_tokens"] = mnt
+            cfg_modified = True
 
-        if self.p is None:
+        if ppn := cfg.get("pre_prompt_name", None):
+            self.cfg["pre_prompt_path"] = config.CODE_DIR / "pre-prompts" / ppn
+            cfg_modified = True
+
+        if ej := cfg.get("enforce_json", None):
+            self.cfg["enforce_json"] = ej
+            cfg_modified = True
+
+        if cfg_modified:
             self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
+
+        # Process output
+        output = []
+        batch_start = 0
 
         while batch_start < len(prompts):
             assert self.p is not None
@@ -62,12 +82,11 @@ class BatchModelIsolator:
                 batch_start += batch_size
             else:
                 if self.p.is_alive():
-                    self.p.terminate()
-                    self.p.join()
+                    self.kill_batch_worker()
 
                 torch.cuda.empty_cache()
 
-                self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
+                self.p, self.in_queue, self.out_queue = self.create_batch_process_worker(enforce_json)
 
                 new_batch_size = max(1, int(0.8 * batch_size))
                 if new_batch_size == batch_size > 1:
@@ -85,27 +104,24 @@ class BatchModelIsolator:
 
         returns:
         A tuple containing:
-        1. The process
-        2. The input queue
-        3. The output queue
+            1. The process
+            2. The input queue
+            3. The output queue
         """
         in_queue: mp.Queue = mp.Queue()
         out_queue: mp.Queue = mp.Queue()
 
         p = mp.Process(
             target=self.batch_process_worker,
-            args=(in_queue, out_queue, self.pre_prompt_path,
-                  self.which_model, self.max_new_tokens)
+            args=(in_queue, out_queue, self.model_id, self.cfg)
         )
         p.start()
 
         return p, in_queue, out_queue
 
 
-    @classmethod
     def batch_process_worker(
-        cls, in_queue: mp.Queue, out_queue: mp.Queue, pp_path: Path,
-        which_model: Literal["small", "large"], max_new_tokens: int
+        cls, in_queue: mp.Queue, out_queue: mp.Queue, model_id: str, cfg: Dict[str, Any]
     ):
         """
         Creates a batch processing worker
@@ -113,15 +129,13 @@ class BatchModelIsolator:
         args:
         - input_queue: the queue this process take batches from
         - output_queue: the queue this process writes output to, as dicts:
-            - "successful": whether the processing was successful (or OOM)
-            - "output": the list of text output from the model
-        - pp_path: pre-prompt path
-        - which_model: whether to use the small or large model
-        - max_new_tokens: the number of new tokens the model can generate
+            1. "successful": whether the processing was successful (or OOM)
+            2. "output": the list of text output from the model
+        - model_id: the model ID
+        - cfg: the config dict
         """
-        model_id = config.SMALL_MODEL if which_model == "small" else config.LARGE_MODEL
         m = model.BatchModel(model_id)
-        m.load_pre_prompt(pp_path)
+        m.load_pre_prompt(cfg["pre_prompt_path"])
 
         with torch.no_grad():
             while True:
@@ -129,7 +143,8 @@ class BatchModelIsolator:
                     break
 
                 try:
-                    output = m.process_batch(batch, enforce_json=False, max_new_tokens=max_new_tokens)
+                    output = m.process_batch(batch, enforce_json=cfg['enforce_json'],
+                                             max_new_tokens=cfg['max_new_tokens'])
                     out_queue.put({ "successful": True, "output": output })
                 except RuntimeError as e:
                     if str(e).startswith('CUDA out of memory'):
@@ -172,10 +187,11 @@ class Experiment2:
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
 
-        self.small_model_isolator = BatchModelIsolator("small", "expt2-identify-trends-sector.txt",
-                                                       small_model_max_tokens)
-        self.large_model_isolator = BatchModelIsolator("large", "expt2-identify-trends-from-reports.txt",
-                                                       large_model_max_tokens)
+        self.small_max_tokens = small_model_max_tokens
+        self.large_max_tokens = large_model_max_tokens
+
+        self.small_model_isolator = BatchModelIsolator("small")
+        self.large_model_isolator = BatchModelIsolator("large")
 
 
     @config.debug_function
@@ -197,6 +213,18 @@ class Experiment2:
             test_df = test_df.iloc[sample_idxs]
 
         return test_df
+
+
+    @config.debug_function
+    def generate_demographic_inferences(self, test_df: pd.DataFrame, batch_size: int = 20) -> pd.DataFrame:
+        """
+        Returns the df with demographic groups inferred
+
+        args:
+        - test_df: the dataframe to add demographic inferences to
+        - batch_size: the size of each batch
+        """
+        raise NotImplementedError()
 
 
     @config.debug_function
@@ -264,7 +292,15 @@ class Experiment2:
             A string containing a bullet-pointed list of trends indicated
         """
         prompts = [self.chunk_to_prompt(c) for c in chunks]
-        outputs = self.small_model_isolator.process_prompts(prompts, batch_size=batch_size)
+        outputs = self.small_model_isolator.process_prompts(
+            prompts,
+            batch_size=batch_size,
+            cfg={
+                "enforce_json": False,
+                "max_new_tokens": self.small_max_tokens,
+                "pre_prompt_name": "expt2-identify-trends-sector.txt"
+            }
+        )
 
         return outputs
 
@@ -284,14 +320,16 @@ class Experiment2:
 
         while len(current_reports) > 1:
             config.debug(f"Creating a new layer of reports: layer = {layers}")
-            new_reports = []
-
-            for batch_start in range(0, len(current_reports), batch_size):
-                batch = reports[batch_start : min(len(current_reports), batch_start + batch_size)]
-                query = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(batch))
-                new_reports.extend(self.large_model_isolator.process_prompts([query]))
-
-            current_reports = new_reports
+            query = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(reports))
+            reports = self.large_model_isolator.process_prompts(
+                [query],
+                batch_size=batch_size,
+                cfg={
+                    "enforce_json": False,
+                    "max_new_tokens": self.large_max_tokens,
+                    "pre_prompt_name": "expt2-identify-trends-from-reports.txt"
+                }
+            )
             layers += 1
 
         return current_reports[0]
