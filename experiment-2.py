@@ -194,6 +194,9 @@ class Experiment2:
         self.large_model_isolator = BatchModelIsolator("large")
 
 
+    ##### Data selection #####
+
+
     @config.debug_function
     def select_test_df(
         self, relevance: Literal["relevant", "irrelevant"], num_samples: int | None = None
@@ -223,15 +226,12 @@ class Experiment2:
         args:
         - test_df: the dataframe to add demographic inferences to
         - batch_size: the size of each batch
+
+        Post-processing:
+        1. age is split into 5-year groupings
+        2. if gender isn't strictly male or female, it is None
         """
-        create_prompt = lambda r : "\n".join([
-            f"- date posted: {r['date_posted'].strftime('%Y-%m-%d')}",
-            f"- subreddit: {r['subreddit']}",
-            f"- username: {r['author']}",
-            f"- karma: {r['score']}",
-            f"- post contents:\n'{r['text']}'"
-        ])
-        prompts = test_df.reset_index(drop=True).apply(create_prompt, axis=1).tolist()
+        prompts = test_df.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
         outputs = self.small_model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
@@ -249,6 +249,30 @@ class Experiment2:
                 "gender": "predicted_gender"
             }
         )
+
+        # Post-processing
+        def format_age(age: Any) -> int | None:
+            try:
+                if 0 <= (age_int := int(float(age))) <= len(bins):
+                    return bins[age_int]
+                else:
+                    return None
+            except (ValueError, TypeError):
+                return None
+
+
+        def format_gender(gender: Any) -> str | None:
+            if isinstance(gender, str):
+                gender = gender.lower()
+                if gender in ['male', 'female']:
+                    return gender
+            return None
+
+
+        bins = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(100)])
+
+        inference_df["predicted_age"] = inference_df["predicted_age"].apply(format_age)
+        inference_df["predicted_gender"] = inference_df["predicted_gender"].apply(format_gender)
 
         return pd.concat([test_df, inference_df], axis=1)
 
@@ -279,6 +303,23 @@ class Experiment2:
         return chunks
 
 
+    ##### Data Preprocessing #####
+
+    def row_to_prompt(self, row: pd.core.series.Series) -> str:
+        """
+        Converts a row into a string summarising the post.
+
+        This function adds descriptions based on the data inside the row
+        """
+        s = f"- date posted: {row['date_posted'].strftime('%Y-%m-%d')}\n"
+
+        for col in row.index:
+            if col != "text":
+                s += f"- {col}: {row[col]}\n"
+
+        return s + f"- post contents:\n'{row['text']}'\n"
+
+
     def chunk_to_prompt(self, chunk: pd.DataFrame) -> str:
         """
         Turns a chunk of posts into a prompt string
@@ -288,31 +329,14 @@ class Experiment2:
         subreddit = chunk["subreddit"].iloc[0]
 
         prompt = f"All supplied posts will be from r/{subreddit}. " \
-                 f"They were posted between {start_date} and {end_date}"
+                 f"They were posted between {start_date} and {end_date}\n"
 
-        if "predicted_age" in chunk.columns:
-            create_sub_prompt = lambda r : "\n".join([
-                f"- date posted: "      + r['date_posted'],
-                f"- subreddit: "        + r['subreddit'],
-                f"- username: "         + r['author'],
-                f"- karma: "            + r['score'],
-                f"- predicted age: "    + r['predicted_age'],
-                f"- predicted gender "  + r['predicted_gender'],
-                f"- post contents:\n'{r['text']}'\n"
-            ])
-        else:
-            create_sub_prompt = lambda r : "\n".join([
-                f"- date posted: "      + r['date_posted'],
-                f"- subreddit: "        + r['subreddit'],
-                f"- username: "         + r['author'],
-                f"- karma: "            + r['score'],
-                f"- post contents:\n'{r['text']}'\n"
-            ])
+        post_prompts = chunk.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
 
-        sub_prompts = chunk.reset_index(drop=True).apply(create_sub_prompt, axis=1).tolist()
+        return prompt + "\n".join(f"[post number {i + 1}]:\n{p}" for i, p in enumerate(post_prompts))
 
-        return "\n".join(f"[post number {i + 1}]:\n{p}" for i, p in enumerate(sub_prompts))
 
+    ##### Trend Inference #####
 
     @config.debug_function
     def get_trends_from_chunk(self, chunks: List[pd.DataFrame], batch_size = None) -> List[str]:
