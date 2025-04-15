@@ -14,43 +14,6 @@ TMP_DIR = Path.home() / ".tmp"
 RESULTS_DIR = Path.home() / "results"
 CODE_DIR = Path.home() / "final-year-project"
 
-# specific to selecting posts
-ACCEPTED_SUBREDDITS = [
-    # Relating to the core business
-    "food",
-    "soda",
-    "alcohol",
-    "fastfood",
-
-    # Relating to current events and locations (english language)
-    "australia",
-    "europe",
-    "ireland",
-    "news",
-    "politics",
-    "sweden",
-    "unitedkingdom",
-    "worldnews",
-
-    # Relating to fitness or diet
-    "fitness",
-    "keto",
-    "loseit",
-    "nutrition",
-    "running",
-    "vegan",
-    "vegetarian",
-
-    # Popular reddit forums
-    "AskReddit",
-    "LifeProTips",
-    "technology",
-    "tifu",
-    "todayilearned",
-    "science",
-]
-
-
 # set env variables
 os.environ["TRANSFORMERS_CACHE"] = str(CACHE_DIR / "huggingface-models")
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
