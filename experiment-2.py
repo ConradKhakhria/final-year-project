@@ -417,7 +417,7 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     # Setup age and gender range
-    age_range = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(100)] + ["unkown"])
+    age_range = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(100)] + ["unknown"])
     gender_range = ["male", "female", "unknown"]
 
     expt = Experiment2(small_model_max_tokens=200, large_model_max_tokens=2000)
