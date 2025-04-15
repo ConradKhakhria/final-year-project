@@ -3,6 +3,7 @@ import zstandard
 import os
 import json
 import random
+import pandas as pd
 
 def read_lines_zst(file_path):
     with open(file_path, 'rb') as fh:
@@ -20,7 +21,7 @@ def read_lines_zst(file_path):
             buffer = lines[-1]
         reader.close()
 
-def sample_from_files(file_paths, sample_size, output_path):
+def sample_from_files(file_paths, sample_size):
     reservoir = []
     total = 0
     for file_path in file_paths:
@@ -40,11 +41,8 @@ def sample_from_files(file_paths, sample_size, output_path):
                     reservoir[idx] = obj
             if total % 100000 == 0:
                 print(f"Processed: {total:,} lines")
-    print(f"Writing {sample_size} sampled posts to {output_path}")
-    with open(output_path, 'w') as out_f:
-        for item in reservoir:
-            json.dump(item, out_f)
-            out_f.write('\n')
+    print(f"Sampled {len(reservoir)} items.")
+    return reservoir
 
 if __name__ == "__main__":
     paths = [
@@ -52,4 +50,15 @@ if __name__ == "__main__":
         "reddit_data/RC_2016-02.zst",
         "reddit_data/RC_2016-03.zst"
     ]
-    sample_from_files(paths, 100000, "sampled_reddit.jsonl")
+
+    sample_size = 100000
+    output_path = "sampled_reddit.parquet"
+
+    sampled_data = sample_from_files(paths, sample_size)
+
+    print("Converting to DataFrame...")
+    df = pd.DataFrame(sampled_data)
+
+    print(f"Saving to Parquet: {output_path}")
+    df.to_parquet(output_path, compression='brotli')
+    print("Done.")
