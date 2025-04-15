@@ -63,7 +63,7 @@ class BatchModelIsolator:
             self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
 
         # Process output
-        output = []
+        outputs = []
         batch_start = 0
 
         while batch_start < len(prompts):
