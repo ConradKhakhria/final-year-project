@@ -13,7 +13,7 @@ import config
 import dataset
 import model
 
-NUM_SAMPLES = 10_000
+NUM_SAMPLES = None
 
 
 class BatchModelIsolator:
@@ -427,6 +427,7 @@ if __name__ == "__main__":
     relevant_df = expt.select_test_df("relevant", NUM_SAMPLES)
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
+    config.debug(f"len(relevant_df) = {len(relevant_df)}")
     relevant_df = expt.generate_demographic_inferences(relevant_df, batch_size=40)
 
     # We will focus on relevant subreddits
