@@ -21,11 +21,11 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 # Some helper functions
 
-def output(msg: str):
+def output(msg: str, msg_type: str = "output"):
     """
     Prints a message with a timestamp 
     """
-    print(f"[output {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]: {msg}")
+    print(f"[{msg_type} {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]: {msg}")
 
 
 def debug(msg: str):
@@ -36,7 +36,7 @@ def debug(msg: str):
     global DEBUG
 
     if DEBUG:
-        output(msg)
+        output(msg, msg_type="debug")
 
 
 def debug_function(func):
