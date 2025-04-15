@@ -427,6 +427,8 @@ if __name__ == "__main__":
     relevant_df = expt.select_test_df("relevant", NUM_SAMPLES)
     irrelevant_df = expt.select_test_df("irrelevant", NUM_SAMPLES)
 
+    relevant_df = expt.generate_demographic_inferences(relevant_df)
+
     # We will focus on relevant subreddits
     trend_reports = {}
 
