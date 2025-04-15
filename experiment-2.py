@@ -251,7 +251,7 @@ class Experiment2:
         # Post-processing
         def format_age(age: Any) -> str:
             try:
-                if 0 <= (age_int := int(float(age))) <= len(bins):
+                if 0 <= (age_int := int(float(age))) <= 100:
                     return bins[age_int]
                 else:
                     return "unknown"
@@ -267,7 +267,7 @@ class Experiment2:
             return "unknown"
 
 
-        bins = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(100)])
+        bins = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(110)])
 
         inference_df["predicted_age"] = inference_df["predicted_age"].apply(format_age)
         inference_df["predicted_gender"] = inference_df["predicted_gender"].apply(format_gender)
