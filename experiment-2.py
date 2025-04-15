@@ -224,7 +224,33 @@ class Experiment2:
         - test_df: the dataframe to add demographic inferences to
         - batch_size: the size of each batch
         """
-        raise NotImplementedError()
+        create_prompt = lambda r : "\n".join([
+            f"- date posted: {r['date_posted'].strftime('%Y-%m-%d')}",
+            f"- subreddit: {r['subreddit']}",
+            f"- username: {r['author']}",
+            f"- karma: {r['score']}",
+            f"- post contents:\n'{r['text']}'"
+        ])
+        prompts = test_df.reset_index(drop=True).apply(create_prompt, axis=1).tolist()
+        outputs = self.small_model_isolator.process_prompts(
+            prompts,
+            batch_size=batch_size,
+            cfg={
+                "enforce_json": True,
+                "max_new_tokens": 20,
+                "pre_prompt_name": "expt1-zero-shot.txt"
+            }
+        )
+
+        json_output = model.extract_json(outputs, {"age": None, "gender": None})
+        inference_df = pd.DataFrame.from_records(json_output).rename(
+            columns={
+                "age": "predicted_age",
+                "gender": "predicted_gender"
+            }
+        )
+
+        return pd.concat([test_df, inference_df], axis=1)
 
 
     @config.debug_function
@@ -264,19 +290,28 @@ class Experiment2:
         prompt = f"All supplied posts will be from r/{subreddit}. " \
                  f"They were posted between {start_date} and {end_date}"
 
-        for i in range(len(chunk)):
-            post = chunk.iloc[i]
+        if "predicted_age" in chunk.columns:
+            create_sub_prompt = lambda r : "\n".join([
+                f"- date posted: "      + r['date_posted'],
+                f"- subreddit: "        + r['subreddit'],
+                f"- username: "         + r['author'],
+                f"- karma: "            + r['score'],
+                f"- predicted age: "    + r['predicted_age'],
+                f"- predicted gender "  + r['predicted_gender'],
+                f"- post contents:\n'{r['text']}'\n"
+            ])
+        else:
+            create_sub_prompt = lambda r : "\n".join([
+                f"- date posted: "      + r['date_posted'],
+                f"- subreddit: "        + r['subreddit'],
+                f"- username: "         + r['author'],
+                f"- karma: "            + r['score'],
+                f"- post contents:\n'{r['text']}'\n"
+            ])
 
-            prompt += f"[post number {i + 1}]:\n"
-            prompt += json.dumps({
-                "date": post["date_posted"].strftime('%Y-%m-%d'),
-                "karma": str(post["score"]),
-                "type": "text-post" if post["type"][0] == "s" else "comment",
-                "content": repr(post["text"])
-            }, indent=4)
-            prompt += "\n"
+        sub_prompts = chunk.reset_index(drop=True).apply(create_sub_prompt, axis=1).tolist()
 
-        return prompt
+        return "\n".join(f"[post number {i + 1}]:\n{p}" for i, p in enumerate(sub_prompts))
 
 
     @config.debug_function
