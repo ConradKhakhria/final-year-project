@@ -425,7 +425,6 @@ if __name__ == "__main__":
     relevant_df = expt.select_test_df("relevant", num_samples=5_000)
     irrelevant_df = expt.select_test_df("irrelevant")
 
-    config.debug(f"len(relevant_df) = {len(relevant_df)}")
     relevant_df = expt.generate_demographic_inferences(relevant_df, batch_size=40)
 
     # We will focus on relevant subreddits
