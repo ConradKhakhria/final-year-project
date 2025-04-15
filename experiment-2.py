@@ -251,22 +251,22 @@ class Experiment2:
         )
 
         # Post-processing
-        def format_age(age: Any) -> int | None:
+        def format_age(age: Any) -> str:
             try:
                 if 0 <= (age_int := int(float(age))) <= len(bins):
                     return bins[age_int]
                 else:
-                    return None
+                    return "unknown"
             except (ValueError, TypeError):
-                return None
+                return "unknown"
 
 
-        def format_gender(gender: Any) -> str | None:
+        def format_gender(gender: Any) -> str:
             if isinstance(gender, str):
                 gender = gender.lower()
                 if gender in ['male', 'female']:
                     return gender
-            return None
+            return "unknown"
 
 
         bins = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(100)])
@@ -279,7 +279,8 @@ class Experiment2:
 
     @config.debug_function
     def create_balanced_post_selection(
-        self, df_test: pd.DataFrame, subreddit: str, n_posts: int
+        self, df_test: pd.DataFrame, subreddit: str, age_range: str,
+        gender: str, n_posts: int
     ) -> List[pd.DataFrame]:
         """
         Yields dataframes each containing close to n_posts
@@ -287,13 +288,18 @@ class Experiment2:
         args:
         - df_test: the dataframe to select from
         - subreddit: the subreddit to select from
+        - age_range: the age range to select from
+        - gender: the gender to select
         - n_posts: the number of posts for each df
 
         All posts will be in time-order
         """
         chunks = []
+        condition = (df_test["subreddit"] == subreddit) \
+                  & (df_test["predicted_age"] == age_range) \
+                  & (df_test["predicted_gender"] == gender)
 
-        time_sorted = df_test[df_test["subreddit"] == subreddit].sort_values(by="date_posted")
+        time_sorted = df_test[condition].sort_values(by="date_posted")
         df_len = len(time_sorted)
 
         for i_start in range(0, df_len, n_posts):
@@ -365,23 +371,36 @@ class Experiment2:
 
 
     @config.debug_function
-    def get_trends_from_reports(self, reports: List[str], batch_size: int) -> str:
+    def get_trends_from_reports(
+        self, reports: List[str], subreddit: str | None, age_range: str, gender: str, batch_size: int
+    ) -> str:
         """
         Uses the large model to produce a final report summarising consumer trends
         identified in the reports
 
         args:
         - reports: a list of reports made by the LLM
+        - subreddit: the subreddit the report came from (nullable)
+        - age_range: the inferred age range of the people who posted
+        - gender: the inferred gender of the posters
         - batch_size: the number of reports to combine at each iteration
         """
         current_reports = reports[:]
         layers = 1
 
+        query_context = (
+            "metadata:\n"
+            f" - all posts are from r/{subreddit}\n" if subreddit else ""
+            f" - the inferred age range of the posters is {age_range}\n"
+            f" - the inferred gender of the posters is {gender}"
+        )
+
         while len(current_reports) > 1:
             config.debug(f"Creating a new layer of reports: layer = {layers}")
-            query = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(reports))
+
+            reports_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(reports))
             reports = self.large_model_isolator.process_prompts(
-                [query],
+                [query_context + reports_string],
                 batch_size=batch_size,
                 cfg={
                     "enforce_json": False,
@@ -397,6 +416,10 @@ class Experiment2:
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
+    # Setup age and gender range
+    age_range = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(100)] + ["unkown"])
+    gender_range = ["male", "female", "unknown"]
+
     expt = Experiment2(small_model_max_tokens=200, large_model_max_tokens=2000)
 
     subreddit_selection = expt.subreddit_selection
@@ -408,16 +431,18 @@ if __name__ == "__main__":
     trend_reports = {}
 
     for sub in subreddit_selection["relevant"]:
-        post_chunks = expt.create_balanced_post_selection(relevant_df, sub, 25)
+        for ages in age_range:
+            for gender in gender_range:
+                post_chunks = expt.create_balanced_post_selection(relevant_df, sub, ages, gender, 25)
 
-        if len(post_chunks) == 0:
-            continue
+                if len(post_chunks) == 0:
+                    continue
 
-        trend_reports[sub] = {
-            "reports": expt.get_trends_from_chunk(post_chunks, 4),
-            "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
-            "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
-        }
+                trend_reports[(sub, ages, gender)] = {
+                    "reports": expt.get_trends_from_chunk(post_chunks, 4),
+                    "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
+                    "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
+                }
 
     expt.small_model_isolator.kill_batch_worker()
 
@@ -427,15 +452,16 @@ if __name__ == "__main__":
     # Produce larger report
     larger_reports = {}
 
-    for sub in trend_reports:
-        config.output(f"Reports for subreddit r/{sub}:")
+    for sub, ages, gender in trend_reports:
+        config.output(f"Reports for subreddit r/{sub} with ages = {ages} and gender = {gender}:")
         config.output(f" - date range: {trend_reports[sub]['start_date']} to {trend_reports[sub]['end_date']}")
         config.output(f" - number of reports: {len(trend_reports[sub]['reports'])}")
         config.output(f" - total text: {len(' '.join(trend_reports[sub]['reports']))}")
 
-        larger_reports[sub] = expt.get_trends_from_reports(trend_reports[sub]['reports'], 4)
+        larger_reports[(sub, ages, gender)] = expt.get_trends_from_reports(trend_reports[sub]['reports'],
+                                                           sub, ages, gender, 4)
 
-        config.output(f" - overall report:\n{larger_reports[sub]}")
+        config.output(f" - overall report:\n{larger_reports[(sub, ages, gender)]}")
 
     with open(config.RESULTS_DIR / "experiment-2-overall-reports.json", "w") as f:
         json.dump(larger_reports, f)
