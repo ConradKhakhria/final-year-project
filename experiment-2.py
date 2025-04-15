@@ -118,6 +118,7 @@ class BatchModelIsolator:
         return p, in_queue, out_queue
 
 
+    @classmethod
     def batch_process_worker(
         cls, in_queue: mp.Queue, out_queue: mp.Queue, model_id: str, cfg: Dict[str, Any]
     ):
