@@ -1,1 +1,6 @@
 .venv/
+hf-access-token.txt
+notebooks/
+cache/
+__pycache__/
+.mypy_cache/
