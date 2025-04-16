@@ -394,8 +394,11 @@ class Experiment2:
         - gender: the inferred gender of the posters
         - batch_size: the number of reports to combine at each iteration
         """
-        layers = 1
+        if reports == []:
+            config.debug(f"For some reason we got 0 reports for {(subreddit, age_range, gender)}")
+            return "<no trends for this demographic grouping>"
 
+        layers = 1
         query_context = (
             "metadata:\n"
             f" - all posts are from r/{subreddit}\n" if subreddit else ""
