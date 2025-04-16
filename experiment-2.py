@@ -175,6 +175,10 @@ class BatchModelIsolator:
             self.out_queue = None
 
 
+    def __del__(self):
+        self.kill_batch_worker()
+
+
 class Experiment2:
     def __init__(self, small_model_max_tokens: int, large_model_max_tokens: int):
         config.debug("Loading dataset")
