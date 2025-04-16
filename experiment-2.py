@@ -422,6 +422,16 @@ class Experiment2:
         return current_reports[0]
 
 
+    def dump_report(self, reports: dict, filename: str):
+        """
+        Formats a report dict for stringification and writes to a JSON file
+        """
+        reports_str_keys = { str(k) : v for k, v in reports.items() }
+
+        with open(config.RESULTS_DIR / filename, "w") as f:
+            json.dump(reports_str_keys, f)
+
+
 # Select either relevant or irrelevant subreddits
 WHICH_SUBREDDITS = "relevant"
 
@@ -457,10 +467,8 @@ if __name__ == "__main__":
                     "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
                 }
 
+    expt.dump_report(trend_reports, "experiment-2-trend-reports.json")
     expt.small_model_isolator.kill_batch_worker()
-
-    with open(config.RESULTS_DIR / "experiment-2-trend-reports.json", "w") as f:
-        json.dump(trend_reports, f)
 
     # Produce larger report
     larger_reports = {}
@@ -477,8 +485,7 @@ if __name__ == "__main__":
 
         config.output(f" - overall report:\n{larger_reports[(sub, ages, gender)]}")
 
-    with open(config.RESULTS_DIR / "experiment-2-subreddit-overall-reports.json", "w") as f:
-        json.dump(larger_reports, f)
+    expt.dump_report(larger_reports, "experiment-2-subreddit-overall-reports.json")
 
     # Create overall reports for each demographic segment
     demographic_segment_reports = {}
@@ -494,7 +501,5 @@ if __name__ == "__main__":
                 reports, None, ages, gender, 4
             )
 
-    with open(config.RESULTS_DIR / "experiment-2-demographic-reports.json", "w") as f:
-        json.dump(demographic_segment_reports, f)
-
+    expt.dump_report(demographic_segment_reports, "experiment-2-demographic-reports.json")
     expt.large_model_isolator.kill_batch_worker()
