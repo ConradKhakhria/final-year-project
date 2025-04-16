@@ -102,6 +102,10 @@ class BatchModelIsolator:
             2. The input queue
             3. The output queue
         """
+        # Be very sure that there isn't one already
+        # This will do nothing if there isn't one
+        self.kill_batch_worker()
+
         in_queue: mp.Queue = mp.Queue()
         out_queue: mp.Queue = mp.Queue()
 
