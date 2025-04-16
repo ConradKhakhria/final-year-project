@@ -51,7 +51,7 @@ class BatchModelIsolator:
                     self.cfg[cfg_name] = cfg_value
                     cfg_modified = True
 
-        self.cfg['pre_prompt_path'] = config.CODE_DIR / 'pre_prompts' / self.cfg['pre_prompt_name']
+        self.cfg['pre_prompt_path'] = config.CODE_DIR / 'pre-prompts' / self.cfg['pre_prompt_name']
 
         if cfg_modified:
             self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
