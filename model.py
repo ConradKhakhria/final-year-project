@@ -46,8 +46,6 @@ class BatchModel:
 
         self.model.eval()
 
-        config.debug(f"The model we've loaded:\n{self.model}")
-
         config.debug("Creating tokenizer")
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_id,
