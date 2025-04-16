@@ -69,9 +69,10 @@ class BatchModelIsolator:
             assert self.in_queue is not None
             assert self.out_queue is not None
 
-            prompt_batch = prompts[batch_start : min(len(prompts), batch_start + batch_size)]
+            batch_end = min(len(prompts), batch_start + batch_size)
+            prompt_batch = prompts[batch_start : batch_end]
 
-            config.debug(f"Processing batch {batch_start}..{batch_start + batch_size} of {len(prompts)}")
+            config.debug(f"Processing batch {batch_start}..{batch_end} of {len(prompts)}")
             self.in_queue.put(prompt_batch)
 
             results = self.out_queue.get()
@@ -145,7 +146,6 @@ class BatchModelIsolator:
         with torch.no_grad():
             while True:
                 if (batch := in_queue.get()) is None:
-                    print("\n\nbreaking\n\n")
                     break
 
                 try:
