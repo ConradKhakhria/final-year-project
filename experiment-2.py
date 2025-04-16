@@ -473,14 +473,14 @@ if __name__ == "__main__":
     # Produce larger report
     larger_reports = {}
 
-    for sub, ages, gender in trend_reports:
+    for (sub, ages, gender), entry in trend_reports.items():
         config.output(f"Reports for subreddit r/{sub} with ages = {ages} and gender = {gender}:")
-        config.output(f" - date range: {trend_reports[sub]['start_date']} to {trend_reports[sub]['end_date']}")
-        config.output(f" - number of reports: {len(trend_reports[sub]['reports'])}")
-        config.output(f" - total text: {len(' '.join(trend_reports[sub]['reports']))}")
+        config.output(f" - date range: {entry['start_date']} to {entry['end_date']}")
+        config.output(f" - number of reports: {len(entry['reports'])}")
+        config.output(f" - total text: {len(' '.join(entry['reports']))}")
 
         larger_reports[(sub, ages, gender)] = expt.get_trends_from_reports(
-            trend_reports[sub]['reports'], sub, ages, gender, 4
+            entry['reports'], sub, ages, gender, 4
         )
 
         config.output(f" - overall report:\n{larger_reports[(sub, ages, gender)]}")
