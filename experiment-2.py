@@ -79,11 +79,7 @@ class BatchModelIsolator:
                 outputs.extend(results["output"])
                 batch_start += batch_size
             else:
-                if self.p.is_alive():
-                    self.kill_batch_worker()
-
-                torch.cuda.empty_cache()
-
+                self.kill_batch_worker()
                 self.p, self.in_queue, self.out_queue = self.create_batch_process_worker(enforce_json)
 
                 new_batch_size = max(1, int(0.8 * batch_size))
@@ -151,7 +147,8 @@ class BatchModelIsolator:
                     else:
                         raise e
 
-        torch.cuda.empty_cache()
+        del m
+        out_queue.put(None)
 
 
     @config.debug_function
@@ -160,19 +157,22 @@ class BatchModelIsolator:
         Kills the current batch worker and deletes the input and output queues
         """
         if self.p is not None and self.p.is_alive():
+            self.in_queue.put(None)
+            self.out_queue.get() # Block on destructor
+
             self.p.terminate()
             self.p.join()
             self.p = None
 
-        if self.in_queue is not None:
             self.in_queue.close()
             self.in_queue.join_thread()
             self.in_queue = None
 
-        if self.out_queue is not None:
             self.out_queue.close()
             self.out_queue.join_thread()
             self.out_queue = None
+
+        torch.cuda.empty_cache()
 
 
     def __del__(self):

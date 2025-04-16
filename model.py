@@ -140,6 +140,17 @@ class BatchModel:
         return outputs
 
 
+    def __del__(self):
+        """
+        Explicitly removes the model and tokeniser from VRAM
+        """
+        del self.model
+        del self.tokenizer
+
+        gc.collect()
+        torch.cuda.empty_cache()
+
+
 @config.debug_function
 def extract_json(outputs: list[str], default: dict) -> list[dict]:
     """ 
