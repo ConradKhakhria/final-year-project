@@ -142,7 +142,8 @@ class BatchModelIsolator:
                                              max_new_tokens=cfg['max_new_tokens'])
                     out_queue.put({ "successful": True, "output": output })
                 except RuntimeError as e:
-                    if str(e).startswith('CUDA out of memory'):
+                    if str(e).startswith('CUDA out of memory') or \
+                       str(e).startswith('Some modules are dispatched'):
                         out_queue.put({ "successful": False, "output": None })
                     else:
                         raise e
