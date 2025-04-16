@@ -45,7 +45,7 @@ class BatchModelIsolator:
         cfg_modified = False
 
         # Set configurations
-        if cfg:
+        if cfg is not None:
             for cfg_name, cfg_value in cfg.items():
                 if self.cfg.get(cfg_name, None) != cfg_value:
                     self.cfg[cfg_name] = cfg_value
