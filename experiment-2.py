@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import json
 import multiprocessing as mp
 import numpy as np
@@ -433,14 +434,102 @@ class Experiment2:
         return reports[0]
 
 
-    def dump_report(self, reports: dict, filename: str):
+    def dump_report(self, reports: dict, file_path: Path):
         """
         Formats a report dict for stringification and writes to a JSON file
         """
         reports_str_keys = { str(k) : v for k, v in reports.items() }
 
-        with open(config.RESULTS_DIR / filename, "w") as f:
+        with open(file_path, "w") as f:
             json.dump(reports_str_keys, f)
+
+
+    ##### Overall Experiment #####
+
+    def run_experiment(
+        self,
+        experiment_sub_heading: str,
+        which_subreddits: Literal["relevant", "irrelevant"],
+        chunk_demographics_max_tokens: int,
+        chunk_report_max_tokens: int,
+        overall_report_max_tokens: int,
+        num_samples: int | None = None
+    ):
+        """
+        Runs the second experiment
+
+        args:
+        - experiment_sub_heading:
+            the name of the parent directory to put results into
+        - which_subreddits:
+            whether to select the relevant or irrelevant posts
+        - chunk_demographics_max_tokens:
+            the max number of new tokens to be used when generating demographic inferences
+        - chunk_report_max_tokens:
+            the max number of tokens for generating short reports
+        - overall_report_max_tokens:
+            the max number of tokens for generating the larger reports
+        - num_samples (nullable):
+            The number of samples to take from the dataset
+        """
+        subreddits = self.subreddit_selection[which_subreddits]
+        age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
+        gender_range = ["male", "female", "unknown"]
+
+        output_path = config.RESULTS_DIR / experiment_sub_heading
+
+        test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
+        test_df = self.generate_demographic_inferences(test_df, batch_size=40)
+
+        trend_reports = {}
+
+        # Generate reports for each (subreddit, age range, gender)
+        for s, a, g in itertools.product(subreddits, age_ranges, gender_range):
+            post_chunks = expt.create_balanced_post_selection(test_df, s, a, g, 25)
+
+            if len(post_chunks) > 0:
+                config.debug(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
+                trend_reports[(s, a, g)] = {
+                    "reports": expt.get_trends_from_chunk(post_chunks, 4),
+                    "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
+                    "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
+                }
+
+        expt.dump_report(trend_reports, output_path / "experiment-2-trend-reports.json")
+        expt.small_model_isolator.kill_batch_worker()
+
+        # Produce larger reports
+        larger_reports = {}
+
+        for (s, a, g), entry in trend_reports.items():
+            config.output(f"Reports for subreddit r/{s} with ages = {a} and gender = {g}:")
+            config.output(f" - date range: {entry['start_date']} to {entry['end_date']}")
+            config.output(f" - number of reports: {len(entry['reports'])}")
+            config.output(f" - total text: {len(' '.join(entry['reports']))}")
+
+            new_report = self.get_trends_from_reports(entry['reports'], s, a, g, 4)
+            larger_reports[(s, a, g)] = new_report
+
+            config.output(f" - overall report:\n{larger_reports[(s, a, g)]}")
+
+        expt.dump_report(larger_reports, output_path / "experiment-2-subreddit-overall-reports.json")
+
+        # Create overall reports for each demographic segment
+        demographic_segment_reports = {}
+
+        for a, g in itertools.product(age_ranges, gender_range):
+            reports = []
+
+            for s in subreddits:
+                if (r := larger_reports.get((s, a, g), None)) is not None:
+                    reports.append(r)
+
+            if len(reports) > 0:
+                overall_report = self.get_trends_from_reports(reports, None, a, g, 4)
+                demographic_segment_reports[(a, g)] = overall_report
+
+        expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
+        expt.large_model_isolator.kill_batch_worker()
 
 
 # Select either relevant or irrelevant subreddits
@@ -449,68 +538,13 @@ WHICH_SUBREDDITS = "relevant"
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
-    # Setup age and gender range
-    age_range = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
-    gender_range = ["male", "female", "unknown"]
-
     expt = Experiment2(small_model_max_tokens=200, large_model_max_tokens=2000)
 
-    subreddit_selection = expt.subreddit_selection
-
-    relevant_df = expt.select_test_df(WHICH_SUBREDDITS, num_samples=500)
-    relevant_df = expt.generate_demographic_inferences(relevant_df, batch_size=40)
-
-    # We will focus on relevant subreddits
-    trend_reports = {}
-
-    for sub in subreddit_selection[WHICH_SUBREDDITS]:
-        for ages in age_range:
-            for gender in gender_range:
-                post_chunks = expt.create_balanced_post_selection(relevant_df, sub, ages, gender, 25)
-
-                if len(post_chunks) == 0:
-                    continue
-
-                config.debug(f"Generating short reports for sub = {sub}, ages = {ages}, gender = {gender}")
-                trend_reports[(sub, ages, gender)] = {
-                    "reports": expt.get_trends_from_chunk(post_chunks, 4),
-                    "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
-                    "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
-                }
-
-    expt.dump_report(trend_reports, "experiment-2-trend-reports.json")
-    expt.small_model_isolator.kill_batch_worker()
-
-    # Produce larger report
-    larger_reports = {}
-
-    for (sub, ages, gender), entry in trend_reports.items():
-        config.output(f"Reports for subreddit r/{sub} with ages = {ages} and gender = {gender}:")
-        config.output(f" - date range: {entry['start_date']} to {entry['end_date']}")
-        config.output(f" - number of reports: {len(entry['reports'])}")
-        config.output(f" - total text: {len(' '.join(entry['reports']))}")
-
-        larger_reports[(sub, ages, gender)] = expt.get_trends_from_reports(
-            entry['reports'], sub, ages, gender, 4
-        )
-
-        config.output(f" - overall report:\n{larger_reports[(sub, ages, gender)]}")
-
-    expt.dump_report(larger_reports, "experiment-2-subreddit-overall-reports.json")
-
-    # Create overall reports for each demographic segment
-    demographic_segment_reports = {}
-
-    for ages in age_range:
-        for gender in gender_range:
-            reports = []
-            for sub in subreddit_selection[WHICH_SUBREDDITS]:
-                if (r := larger_reports.get((sub, ages, gender), None)) is not None:
-                    reports.append(r)
-
-            demographic_segment_reports[(ages, gender)] = expt.get_trends_from_reports(
-                reports, None, ages, gender, 4
-            )
-
-    expt.dump_report(demographic_segment_reports, "experiment-2-demographic-reports.json")
-    expt.large_model_isolator.kill_batch_worker()
+    expt.run_experiment(
+        experiment_sub_heading="test-expt",
+        which_subreddits="relevant",
+        chunk_demographics_max_tokens=20,
+        chunk_report_max_tokens=200,
+        overall_report_max_tokens=2000,
+        num_samples=500
+    )
