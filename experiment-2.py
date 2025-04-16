@@ -531,7 +531,8 @@ class Experiment2:
                     reports.append(r)
 
             if len(reports) > 0:
-                overall_report = self.get_trends_from_reports(reports, None, a, g, 4)
+                overall_report = self.get_trends_from_reports(reports, None, a, g,
+                                                              overall_report_max_tokens, 4)
                 demographic_segment_reports[(a, g)] = overall_report
 
         expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
