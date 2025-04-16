@@ -539,9 +539,6 @@ class Experiment2:
         expt.large_model_isolator.kill_batch_worker()
 
 
-# Select either relevant or irrelevant subreddits
-WHICH_SUBREDDITS = "relevant"
-
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
