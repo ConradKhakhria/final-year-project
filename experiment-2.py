@@ -45,17 +45,13 @@ class BatchModelIsolator:
         cfg_modified = False
 
         # Set configurations
-        if mnt := cfg.get("max_new_tokens", None):
-            self.cfg["max_new_tokens"] = mnt
-            cfg_modified = True
+        if cfg:
+            for cfg_name, cfg_value in cfg.items():
+                if self.cfg.get(cfg_name, None) != cfg_value:
+                    self.cfg[cfg_name] = cfg_value
+                    cfg_modified = True
 
-        if ppn := cfg.get("pre_prompt_name", None):
-            self.cfg["pre_prompt_path"] = config.CODE_DIR / "pre-prompts" / ppn
-            cfg_modified = True
-
-        if ej := cfg.get("enforce_json", None):
-            self.cfg["enforce_json"] = ej
-            cfg_modified = True
+        self.cfg['pre_prompt_path'] = config.CODE_DIR / 'pre_prompts' / self.cfg['pre_prompt_name']
 
         if cfg_modified:
             self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
