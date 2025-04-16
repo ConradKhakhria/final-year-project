@@ -394,7 +394,6 @@ class Experiment2:
         - gender: the inferred gender of the posters
         - batch_size: the number of reports to combine at each iteration
         """
-        current_reports = reports[:]
         layers = 1
 
         query_context = (
@@ -404,7 +403,7 @@ class Experiment2:
             f" - the inferred gender of the posters is {gender}"
         )
 
-        while len(current_reports) > 1:
+        while len(reports) > 1:
             config.debug(f"Creating a new layer of reports: layer = {layers}")
 
             reports_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(reports))
@@ -419,7 +418,7 @@ class Experiment2:
             )
             layers += 1
 
-        return current_reports[0]
+        return reports[0]
 
 
     def dump_report(self, reports: dict, filename: str):
