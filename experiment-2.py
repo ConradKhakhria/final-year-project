@@ -404,18 +404,27 @@ class Experiment2:
         )
 
         while len(reports) > 1:
-            config.debug(f"Creating a new layer of reports: layer = {layers}")
+            config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
+            new_reports = []
 
-            reports_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(reports))
-            reports = self.large_model_isolator.process_prompts(
-                [query_context + reports_string],
-                batch_size=batch_size,
-                cfg={
-                    "enforce_json": False,
-                    "max_new_tokens": self.large_max_tokens,
-                    "pre_prompt_name": "expt2-identify-trends-from-reports.txt"
-                }
-            )
+            for batch_start in range(0, len(reports), batch_size):
+                batch_end = min(len(reports), batch_start + batch_size)
+                batch = reports[batch_start : batch_end]
+                batch_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(batch))
+
+                new_report = self.large_model_isolator.process_prompts(
+                    [query_context + batch_string],
+                    batch_size=20,
+                    cfg={
+                        "enforce_json": False,
+                        "max_new_tokens": self.large_max_tokens,
+                        "pre_prompt_name": "expt2-identify-trends-from-reports.txt"
+                    }
+                )
+
+                new_reports.append(new_report)
+
+            reports = new_reports
             layers += 1
 
         return reports[0]
