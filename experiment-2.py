@@ -412,6 +412,9 @@ class Experiment2:
         return current_reports[0]
 
 
+# Select either relevant or irrelevant subreddits
+WHICH_SUBREDDITS = "relevant"
+
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
@@ -423,15 +426,14 @@ if __name__ == "__main__":
 
     subreddit_selection = expt.subreddit_selection
 
-    relevant_df = expt.select_test_df("relevant", num_samples=500)
-    irrelevant_df = expt.select_test_df("irrelevant")
+    relevant_df = expt.select_test_df(WHICH_SUBREDDITS, num_samples=500)
 
     relevant_df = expt.generate_demographic_inferences(relevant_df, batch_size=40)
 
     # We will focus on relevant subreddits
     trend_reports = {}
 
-    for sub in subreddit_selection["relevant"]:
+    for sub in subreddit_selection[WHICH_SUBREDDITS]:
         for ages in age_range:
             for gender in gender_range:
                 post_chunks = expt.create_balanced_post_selection(relevant_df, sub, ages, gender, 25)
@@ -459,12 +461,30 @@ if __name__ == "__main__":
         config.output(f" - number of reports: {len(trend_reports[sub]['reports'])}")
         config.output(f" - total text: {len(' '.join(trend_reports[sub]['reports']))}")
 
-        larger_reports[(sub, ages, gender)] = expt.get_trends_from_reports(trend_reports[sub]['reports'],
-                                                           sub, ages, gender, 4)
+        larger_reports[(sub, ages, gender)] = expt.get_trends_from_reports(
+            trend_reports[sub]['reports'], sub, ages, gender, 4
+        )
 
         config.output(f" - overall report:\n{larger_reports[(sub, ages, gender)]}")
 
-    with open(config.RESULTS_DIR / "experiment-2-overall-reports.json", "w") as f:
+    with open(config.RESULTS_DIR / "experiment-2-subreddit-overall-reports.json", "w") as f:
         json.dump(larger_reports, f)
+
+    # Create overall reports for each demographic segment
+    demographic_segment_reports = {}
+
+    for ages in age_range:
+        for gender in gender_range:
+            reports = []
+            for sub in subreddit_selection[WHICH_SUBREDDITS]:
+                if (r := larger_reports.get((sub, ages, gender), None)) is not None:
+                    reports.append(r)
+
+            demographic_segment_reports[(ages, gender)] = expt.get_trends_from_reports(
+                reports, None, ages, gender, 4
+            )
+
+    with open(config.RESULTS_DIR / "experiment-2-demographic-reports.json", "w") as f:
+        json.dump(demographic_segment_reports, f)
 
     expt.large_model_isolator.kill_batch_worker()
