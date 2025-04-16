@@ -144,6 +144,8 @@ class BatchModel:
         """
         Explicitly removes the model and tokeniser from VRAM
         """
+        config.debug("Deleting the model and tokeniser")
+
         del self.model
         del self.tokenizer
 
