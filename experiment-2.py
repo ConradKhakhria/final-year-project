@@ -441,12 +441,12 @@ if __name__ == "__main__":
     for sub in subreddit_selection[WHICH_SUBREDDITS]:
         for ages in age_range:
             for gender in gender_range:
-                config.debug(f"Generating short reports for sub = {sub}, ages = {ages}, gender = {gender}")
                 post_chunks = expt.create_balanced_post_selection(relevant_df, sub, ages, gender, 25)
 
                 if len(post_chunks) == 0:
                     continue
 
+                config.debug(f"Generating short reports for sub = {sub}, ages = {ages}, gender = {gender}")
                 trend_reports[(sub, ages, gender)] = {
                     "reports": expt.get_trends_from_chunk(post_chunks, 4),
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
