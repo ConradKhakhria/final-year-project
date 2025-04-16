@@ -189,7 +189,7 @@ class BatchModelIsolator:
 
 
 class Experiment2:
-    def __init__(self, small_model_max_tokens: int, large_model_max_tokens: int):
+    def __init__(self):
         config.debug("Loading dataset")
 
         self.data_dir = config.CODE_DIR / "data"
@@ -198,9 +198,6 @@ class Experiment2:
 
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
-
-        self.small_max_tokens = small_model_max_tokens
-        self.large_max_tokens = large_model_max_tokens
 
         self.small_model_isolator = BatchModelIsolator("small")
         self.large_model_isolator = BatchModelIsolator("large")
@@ -231,12 +228,15 @@ class Experiment2:
 
 
     @config.debug_function
-    def generate_demographic_inferences(self, test_df: pd.DataFrame, batch_size: int = 20) -> pd.DataFrame:
+    def generate_demographic_inferences(
+        self, test_df: pd.DataFrame, max_new_tokens: int, batch_size: int = 20,
+    ) -> pd.DataFrame:
         """
         Returns the df with demographic groups inferred
 
         args:
         - test_df: the dataframe to add demographic inferences to
+        - max_new_tokens: max number of new tokens the model can generate
         - batch_size: the size of each batch
 
         Post-processing:
@@ -249,7 +249,7 @@ class Experiment2:
             batch_size=batch_size,
             cfg={
                 "enforce_json": True,
-                "max_new_tokens": 20,
+                "max_new_tokens": max_new_tokens,
                 "pre_prompt_name": "expt1-zero-shot.txt"
             }
         )
@@ -355,14 +355,17 @@ class Experiment2:
 
     ##### Trend Inference #####
 
-    def get_trends_from_chunk(self, chunks: List[pd.DataFrame], batch_size = None) -> List[str]:
+    def get_trends_from_chunk(
+        self, chunks: List[pd.DataFrame], max_new_tokens: int, batch_size = None
+    ) -> List[str]:
         """
         Obtain an enumeration of consumer trends indicated by a chunk of posts
 
         args:
         - chunks: a list of dataframes of posts from a specific subreddit and timeframe
+        - max_new_tokens: the max number of new tokens to generate
         - batch_size: the number of chunks to process at once
-    
+
         returns:
             A string containing a bullet-pointed list of trends indicated
         """
@@ -372,7 +375,7 @@ class Experiment2:
             batch_size=batch_size,
             cfg={
                 "enforce_json": False,
-                "max_new_tokens": self.small_max_tokens,
+                "max_new_tokens": max_new_tokens,
                 "pre_prompt_name": "expt2-identify-trends-sector.txt"
             }
         )
@@ -382,7 +385,8 @@ class Experiment2:
 
     @config.debug_function
     def get_trends_from_reports(
-        self, reports: List[str], subreddit: str | None, age_range: str, gender: str, batch_size: int
+        self, reports: List[str], subreddit: str | None, age_range: str,
+        gender: str, max_new_tokens: int, batch_size: int
     ) -> str:
         """
         Uses the large model to produce a final report summarising consumer trends
@@ -393,6 +397,7 @@ class Experiment2:
         - subreddit: the subreddit the report came from (nullable)
         - age_range: the inferred age range of the people who posted
         - gender: the inferred gender of the posters
+        - max_new_tokens: the max number of new tokens the LLM can generate
         - batch_size: the number of reports to combine at each iteration
         """
         if reports == []:
@@ -421,7 +426,7 @@ class Experiment2:
                     batch_size=20,
                     cfg={
                         "enforce_json": False,
-                        "max_new_tokens": self.large_max_tokens,
+                        "max_new_tokens": max_new_tokens,
                         "pre_prompt_name": "expt2-identify-trends-from-reports.txt"
                     }
                 )
@@ -450,7 +455,7 @@ class Experiment2:
         self,
         experiment_sub_heading: str,
         which_subreddits: Literal["relevant", "irrelevant"],
-        chunk_demographics_max_tokens: int,
+        demographics_max_tokens: int,
         chunk_report_max_tokens: int,
         overall_report_max_tokens: int,
         num_samples: int | None = None
@@ -463,7 +468,7 @@ class Experiment2:
             the name of the parent directory to put results into
         - which_subreddits:
             whether to select the relevant or irrelevant posts
-        - chunk_demographics_max_tokens:
+        - demographics_max_tokens:
             the max number of new tokens to be used when generating demographic inferences
         - chunk_report_max_tokens:
             the max number of tokens for generating short reports
@@ -479,7 +484,7 @@ class Experiment2:
         output_path = config.RESULTS_DIR / experiment_sub_heading
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
-        test_df = self.generate_demographic_inferences(test_df, batch_size=40)
+        test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=40)
 
         trend_reports = {}
 
@@ -490,7 +495,7 @@ class Experiment2:
             if len(post_chunks) > 0:
                 config.debug(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
                 trend_reports[(s, a, g)] = {
-                    "reports": expt.get_trends_from_chunk(post_chunks, 4),
+                    "reports": expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 4),
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
                     "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
                 }
@@ -507,7 +512,8 @@ class Experiment2:
             config.output(f" - number of reports: {len(entry['reports'])}")
             config.output(f" - total text: {len(' '.join(entry['reports']))}")
 
-            new_report = self.get_trends_from_reports(entry['reports'], s, a, g, 4)
+            new_report = self.get_trends_from_reports(entry['reports'], s, a, g,
+                                                      overall_report_max_tokens, 4)
             larger_reports[(s, a, g)] = new_report
 
             config.output(f" - overall report:\n{larger_reports[(s, a, g)]}")
@@ -538,12 +544,12 @@ WHICH_SUBREDDITS = "relevant"
 if __name__ == "__main__":
     mp.set_start_method("spawn")
 
-    expt = Experiment2(small_model_max_tokens=200, large_model_max_tokens=2000)
+    expt = Experiment2()
 
     expt.run_experiment(
         experiment_sub_heading="test-expt",
         which_subreddits="relevant",
-        chunk_demographics_max_tokens=20,
+        demographics_max_tokens=20,
         chunk_report_max_tokens=200,
         overall_report_max_tokens=2000,
         num_samples=500
