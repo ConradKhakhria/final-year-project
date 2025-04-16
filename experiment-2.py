@@ -111,6 +111,8 @@ class BatchModelIsolator:
         )
         p.start()
 
+        config.debug(f"Created new batch worker\ntorch.cuda.memory_allocated() = {torch.cuda.memory_allocated()}")
+
         return p, in_queue, out_queue
 
 
@@ -281,7 +283,6 @@ class Experiment2:
         return pd.concat([test_df, inference_df], axis=1)
 
 
-    @config.debug_function
     def create_balanced_post_selection(
         self, df_test: pd.DataFrame, subreddit: str, age_range: str,
         gender: str, n_posts: int
@@ -348,7 +349,6 @@ class Experiment2:
 
     ##### Trend Inference #####
 
-    @config.debug_function
     def get_trends_from_chunk(self, chunks: List[pd.DataFrame], batch_size = None) -> List[str]:
         """
         Obtain an enumeration of consumer trends indicated by a chunk of posts
@@ -432,7 +432,6 @@ if __name__ == "__main__":
     subreddit_selection = expt.subreddit_selection
 
     relevant_df = expt.select_test_df(WHICH_SUBREDDITS, num_samples=500)
-
     relevant_df = expt.generate_demographic_inferences(relevant_df, batch_size=40)
 
     # We will focus on relevant subreddits
@@ -441,6 +440,7 @@ if __name__ == "__main__":
     for sub in subreddit_selection[WHICH_SUBREDDITS]:
         for ages in age_range:
             for gender in gender_range:
+                config.debug(f"Generating short reports for sub = {sub}, ages = {ages}, gender = {gender}")
                 post_chunks = expt.create_balanced_post_selection(relevant_df, sub, ages, gender, 25)
 
                 if len(post_chunks) == 0:
