@@ -137,6 +137,7 @@ class BatchModelIsolator:
         with torch.no_grad():
             while True:
                 if (batch := in_queue.get()) is None:
+                    print("\n\nbreaking\n\n")
                     break
 
                 try:
