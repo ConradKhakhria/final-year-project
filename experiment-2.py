@@ -541,6 +541,8 @@ class Experiment2:
                                                               overall_report_max_tokens, 4)
                 demographic_segment_reports[(a, g)] = overall_report
 
+        config.debug("Done with experiment!")
+
         expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
         expt.large_model_isolator.kill_batch_worker()
 
