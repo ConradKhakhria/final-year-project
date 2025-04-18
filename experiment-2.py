@@ -490,7 +490,7 @@ class Experiment2:
 
         # Dump metadata about demographic inference
         demographic_df = test_df[["text", "predicted_age", "predicted_gender"]]
-        expt.dump_report(demographic_df, output_path /  "demographic-inference.json")
+        demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
         trend_reports = {}
 
