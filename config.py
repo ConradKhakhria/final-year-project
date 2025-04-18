@@ -5,7 +5,8 @@ from pathlib import Path
 
 DEBUG = True
 SMALL_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-LARGE_MODEL = "mistralai/Mistral-Nemo-Instruct-2407"
+#LARGE_MODEL = "mistralai/Mistral-Nemo-Instruct-2407"
+LARGE_MODEL = SMALL_MODEL
 
 # directories
 CACHE_DIR = Path.home() / ".cache"
