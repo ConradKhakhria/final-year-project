@@ -78,7 +78,7 @@ class BatchModelIsolator:
                 batch_start += batch_size
             else:
                 self.kill_batch_worker()
-                self.p, self.in_queue, self.out_queue = self.create_batch_process_worker(enforce_json)
+                self.p, self.in_queue, self.out_queue = self.create_batch_process_worker()
 
                 new_batch_size = max(1, int(0.8 * batch_size))
                 if new_batch_size == batch_size > 1:
