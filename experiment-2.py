@@ -560,3 +560,5 @@ if __name__ == "__main__":
         overall_report_max_tokens=2000,
         num_samples=500
     )
+
+    exit()
