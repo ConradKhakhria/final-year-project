@@ -553,12 +553,11 @@ if __name__ == "__main__":
     expt = Experiment2()
 
     expt.run_experiment(
-        experiment_sub_heading="test-expt",
+        experiment_sub_heading="expt2-relevant-subs-general-trends-all",
         which_subreddits="relevant",
         demographics_max_tokens=20,
         chunk_report_max_tokens=200,
         overall_report_max_tokens=2000,
-        num_samples=500
     )
 
     exit()
