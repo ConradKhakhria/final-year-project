@@ -482,9 +482,15 @@ class Experiment2:
         gender_range = ["male", "female", "unknown"]
 
         output_path = config.RESULTS_DIR / experiment_sub_heading
+        if not output_path.exists():
+            output_path.mkdir()
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=40)
+
+        # Dump metadata about demographic inference
+        demographic_df = test_df[["text", "predicted_age", "predicted_gender"]]
+        expt.dump_report(demographic_df, output_path /  "demographic-inference.json")
 
         trend_reports = {}
 
