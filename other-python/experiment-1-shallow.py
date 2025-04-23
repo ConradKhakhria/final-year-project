@@ -24,7 +24,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-CROSS_VALIDATE = False
+CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
@@ -47,7 +47,9 @@ class DatasetLoader:
         }
 
 
-    def get_Xy(self, split: str, label: str, subset_size: int | None = None) -> Tuple[np.ndarray, np.ndarray]:
+    def get_Xy(
+        self, split: str, label: str, subset_size: int | None = None, age_type: type = int
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Returns the X and y pair
 
@@ -55,6 +57,9 @@ class DatasetLoader:
         - split: 'train' or 'test'
         - label: 'age' or 'gender'
         - subset_size: the size of the random subset to use (default None: full dataset)
+        - age_type: what type age should take:
+            - str: bucket ages (for classification)
+            - int: numeric ages (regression)
 
         returns:
         the tuple containing:
@@ -70,7 +75,7 @@ class DatasetLoader:
         X = self.X[split]
         y = self.y[split][label]
 
-        if label == "age":
+        if label == "age" and age_type is str:
             y = self.bucket_ages(y)
 
         if subset_size is not None:
@@ -236,7 +241,7 @@ if __name__ == "__main__":
     dataset = DatasetLoader()
 
     if CROSS_VALIDATE:
-        X_train_cv, y_train_age_cv = dataset.get_Xy("train", "age", subset_size=50_000)
+        X_train_cv, y_train_age_cv = dataset.get_Xy("train", "age", subset_size=5000, age_type=str)
         bms = BestModelSelector()
 
         bms.add_vectoriser("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
@@ -327,6 +332,12 @@ if __name__ == "__main__":
     # Write the confusion matrices to a JSON file that can be downloaded and inspected locally
     with open("confusion_matrices.json", "w") as f:
         json.dump(confusion_data, f)
+
+
+
+
+
+
 
 """
 Classification report for lr:
