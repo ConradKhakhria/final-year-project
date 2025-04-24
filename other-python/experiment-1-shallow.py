@@ -7,14 +7,12 @@ import os
 import pandas as pd
 import psutil
 from pathlib import Path
-from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.svm import LinearSVC, SVR
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.linear_model import LogisticRegression, Ridge
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, f1_score, \
-                            mean_absolute_error, root_mean_squared_error, \
                             classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 import sys
@@ -30,47 +28,8 @@ CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
-# Pre- and post-processing
-
-class BucketRegressor(BaseEstimator, ClassifierMixin):
-    def __init__(self, regressor, bucket_map: np.ndarray):
-        self.regressor = regressor
-        self.bucket_map = bucket_map
-
-
-    def fit(self, X, y_numeric):
-        self.reg_ = clone(self.regressor).fit(X, y_numeric)
-        return self
-
-
-    def predict(self, X):
-        y_pred_numeric = self.reg_.predict(X)
-        return self.bucket_map[y_pred_numeric.astype(int)]
-
-    # Add support for hyperparameters
-    def get_params(self, deep=True):
-        params = {"regressor": self.regressor, "bucket_map": self.bucket_map}
-        if deep and hasattr(self.regressor, "get_params"):
-            for k, v in self.regressor.get_params(deep=True).items():
-                params[f"regressor__{k}"] = v
-        return params
-
-    def set_params(self, **params):
-        reg_params = {}
-        for k, v in params.items():
-            if k.startswith("regressor__"):
-                reg_params[k[len("regressor__"):]] = v
-            else:
-                setattr(self, k, v)
-        if reg_params and hasattr(self.regressor, "set_params"):
-            self.regressor.set_params(**reg_params)
-        return self
-
-
-
-
 class DatasetLoader:
-    def __init__(self, seed: int | None = None, buckets: np.ndarray | None = None):
+    def __init__(self, buckets: np.ndarray, seed: int | None = None):
         config.debug("Loading datasets")
         self.dataset = datasets.load_dataset("blog_authorship_corpus", trust_remote_code=True)
 
@@ -87,16 +46,12 @@ class DatasetLoader:
             "test":  { "age": self.df_test["age"],  "gender": self.df_test["gender"]}
         }
 
+        self.buckets = buckets
         self.rng = np.random.default_rng(seed)
-
-        if buckets is None:
-            self.buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
-        else:
-            self.buckets = buckets
 
 
     def get_Xy(
-        self, split: str, label: str, subset_size: int | None = None, age_type: type = int
+        self, split: str, label: str, subset_size: int | None = None
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Returns the X and y pair
@@ -105,9 +60,6 @@ class DatasetLoader:
         - split: 'train' or 'test'
         - label: 'age' or 'gender'
         - subset_size: the size of the random subset to use (default None: full dataset)
-        - age_type: what type age should take:
-            - str: bucket ages (for classification)
-            - int: numeric ages (regression)
 
         returns:
         the tuple containing:
@@ -123,8 +75,8 @@ class DatasetLoader:
         X = self.X[split]
         y = self.y[split][label]
 
-        if label == "age" and age_type is str:
-            y = self.bucket_ages(y)
+        if label == "age":
+            y = self.buckets[y]
 
         if subset_size is not None:
             idxs = self.rng.choice(np.arange(len(X)), size=subset_size, replace=False)
@@ -133,15 +85,6 @@ class DatasetLoader:
             y = y[idxs]
 
         return X, y
-
-
-    def bucket_ages(self, y: list) -> np.ndarray:
-        """
-        Discretises integer ages into 5-year buckets
-
-        Assumptions: 0 <= y[i] <= 100
-        """
-        return self.buckets[y]
 
 
 def cross_validate(
@@ -170,21 +113,10 @@ def cross_validate(
     _, y_numeric = dataset.get_Xy("train", label, subset_size=subset_size, age_type=int)
 
     # Models
-    classifiers = {
-        "logistic": LogisticRegression(max_iter=2000),
-        "rf-classifier": RandomForestClassifier(n_jobs=1),
-        "svc": LinearSVC(dual=False, max_iter=2000)
-    }
-
-    regressors = {
-        "ridge": Ridge(max_iter=2000),
-        "rf-regressor": RandomForestRegressor(n_jobs=1),
-        "svr": SVR(max_iter=2000)
-    }
-
     models = {
-        **classifiers,
-        **{ name : BucketRegressor(r, buckets) for name, r in regressors.items() }
+        "logistic": LogisticRegression(max_iter=2000),
+        "rf": RandomForestClassifier(n_jobs=1),
+        "svc": SVC(max_iter=2000)
     }
 
     # Vectorisers
@@ -199,11 +131,8 @@ def cross_validate(
     # hyperparameters
     hyperparameters = {
         "logistic":  { "C": [0.1, 1, 10] },
-        "rf-classifier": { "n_estimators": [100, 200, 500], "max_depth": [10, 20, 30] },
-        "svc": { "C": [0.1, 1, 10] },
-        "ridge":  { "alpha": [0.1, 1, 10] },
-        "rf-regressor": { "n_estimators": [100, 200, 500], "max_depth": [10, 20, 30] },
-        "svr": { "C": [0.1, 1, 10] }
+        "rf": { "n_estimators": [100, 200, 500], "max_depth": [10, 20, 30] },
+        "svc": { "C": [0.1, 1, 10], "kernel": ["linear", "poly", "rbf"] },
     }
 
     # scoring
@@ -226,10 +155,7 @@ def cross_validate(
             params = {}
 
             for p_name, ps in hyperparameters[model_name].items():
-                if p_name in regressors:
-                    params[f"model__regressor__{p_name}"] = ps
-                else:
-                    params[f"model__{p_name}"] = ps
+                params[f"model__{p_name}"] = ps
 
             # Cross validate
             config.debug(f"Doing CV for {model_name}:{vec_name}")
@@ -241,14 +167,7 @@ def cross_validate(
                 refit="f1_macro",
                 n_jobs=-1
             )
-
-            if model_name in regressors:
-                if label == "age":
-                    grid.fit(X, y_numeric)
-                else:
-                    continue
-            else:
-                grid.fit(X, y_bucket)
+            grid.fit(X, y_bucket)
 
             idx = grid.best_index_
             results.append({
@@ -287,7 +206,7 @@ if __name__ == "__main__":
 
         best_svm = Pipeline([
             ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-            ("model", LinearSVC(C=0.1)),
+            ("model", SVC(C=0.1)),
         ])
 
     config.debug("Testing each model")
