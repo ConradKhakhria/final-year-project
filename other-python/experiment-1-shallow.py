@@ -7,17 +7,19 @@ import os
 import pandas as pd
 import psutil
 from pathlib import Path
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.svm import LinearSVC, SVR
-from sklearn.ensemble import RandomForestClassifier, StackingClassifier
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import make_scorer, accuracy_score, f1_score, \
+                            mean_absolute_error, root_mean_squared_error, \
+                            classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 import sys
 import time
-from typing import Dict, Tuple
+from typing import Dict, Literal, Tuple
 from sklearn.preprocessing import Normalizer
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -28,8 +30,27 @@ CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
+# Pre- and post-processing
+
+class BucketRegressor(BaseEstimator, ClassifierMixin):
+    def __init__(self, regressor, bucket_map: np.ndarray):
+        self.regressor = regressor
+        self.bucket_map = bucket_map
+
+
+    def fit(self, X, y_numeric):
+        self.reg_ = clone(self.regressor).fit(X, y_numeric)
+        return self
+
+
+    def predict(self, X):
+        y_pred_numeric = self.reg_.predict(X)
+        return self.bucket_map[y_pred_numeric]
+
+
+
 class DatasetLoader:
-    def __init__(self):
+    def __init__(self, seed: int | None = None, buckets: np.ndarray | None = None):
         config.debug("Loading datasets")
         self.dataset = datasets.load_dataset("blog_authorship_corpus", trust_remote_code=True)
 
@@ -45,6 +66,13 @@ class DatasetLoader:
             "train": { "age": self.df_train["age"], "gender": self.df_train["gender"] },
             "test":  { "age": self.df_test["age"],  "gender": self.df_test["gender"]}
         }
+
+        self.rng = np.random.default_rng(seed)
+
+        if buckets is None:
+            self.buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
+        else:
+            self.buckets = buckets
 
 
     def get_Xy(
@@ -79,7 +107,7 @@ class DatasetLoader:
             y = self.bucket_ages(y)
 
         if subset_size is not None:
-            idxs = np.random.choice(np.arange(len(X)), size=subset_size, replace=False)
+            idxs = self.rng.choice(np.arange(len(X)), size=subset_size, replace=False)
 
             X = X[idxs]
             y = y[idxs]
@@ -93,190 +121,134 @@ class DatasetLoader:
 
         Assumptions: 0 <= y[i] <= 100
         """
-        starts  = 5 * (np.arange(0, 100) // 5)
-        buckets = np.array([f"{s}-{s + 5}" for s in starts])
-
-        return buckets[y]
+        return self.buckets[y]
 
 
-class CVParameterSelector:
-    def __init__(self, model):
-        self.model = model
-        self.memory = Memory(location='./cache', verbose=0)
-        self.hyperparameters = {}
-        self.vectorisers = {}
+def cross_validate(
+    dataset: DatasetLoader, label: Literal["age", "gender"],
+    seed: int, subset_size: int | None = None
+) -> pd.DataFrame:
+    """
+    Performs cross validation to obtain the performance of each model
 
+    args:
+    - dataset: the dataset loader
+    - label: "age" or "gender"
+    - seed: the random seed to use
+    - subset_size: how big a subset
 
-    def add_parameters(self, name: str, values: list[float]):
-        """
-        Adds a hyperparameter and a set of candidate values
-        """
-        self.hyperparameters[name] = values
+    returns:
+    a Pandas DataFrame recording:
+        - model
+        - vectoriser
+        - accuracy
+        - f1 macro
+        - best parameters
+    """
+    buckets = dataset.buckets
 
+    X, y_bucket  = dataset.get_Xy("train", label, subset_size=subset_size, age_type=str)
+    _, y_numeric = dataset.get_Xy("train", label, subset_size=subset_size, age_type=int)
 
-    def add_vectoriser(self, name: str, vec):
-        """
-        Adds a vectoriser
-        """
-        self.vectorisers[name] = vec
+    # Models
+    classifiers = {
+        "logistic": LogisticRegression(max_iter=2000),
+        "rf-classifier": RandomForestClassifier(n_jobs=1),
+        "svc": LinearSVC(dual=False, max_iter=2000)
+    }
 
+    regressors = {
+        "ridge": Ridge(max_iter=2000),
+        "rf-regressor": RandomForestRegressor(n_jobs=1),
+        "svr": SVR(max_iter=2000)
+    }
 
-    def grid_search(self, X, y, cv=5) -> tuple:
-        """
-        Performs grid search CV on a dataset
+    models = {
+        **classifiers,
+        **{ name : BucketRegressor(r, buckets) for name, r in regressors.items() }
+    }
 
-        args:
-        - X: the features to validate on
-        - y: the labels
-        - cv=5: the number of folds
+    # Vectorisers
+    vectorisers = {
+        "tf-idf": TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"),
+        "b-of-w": Pipeline([
+            ("count", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")),
+            ("normaliser", Normalizer(norm='l2'))
+        ])
+    }
 
-        returns:
-        A tuple containing
-            - the untrained optimal model
-            - a dict containing all of best hyperparameters
-        """
-        parameter_grid = []
+    # hyperparameters
+    hyperparameters = {
+        "logistic":  { "C": [0.1, 1, 10] },
+        "rf-classifier": { "n_estimators": [100, 200, 500], "max_depth": [10, 20, 30] },
+        "svc": { "C": [0.1, 1, 10] },
+        "ridge":  { "alpha": [0.1, 1, 10] },
+        "rf-regressor": { "n_estimators": [100, 200, 500], "max_depth": [10, 20, 30] },
+        "svr": { "C": [0.1, 1, 10] }
+    }
 
-        # Build hyperparameter grid
-        for vec_name, vec in self.vectorisers.items():
-            params = { "vectoriser": [vec] }
+    # scoring
+    scoring = {
+        'accuracy': make_scorer(accuracy_score),
+        'f1_macro': make_scorer(f1_score, average='macro'),
+    }
 
-            for param, values in self.hyperparameters.items():
-                params[f"model__{param}"] = values
+    # Do the scoring
+    results = []
 
-            parameter_grid.append(params)
+    for vec_name, vec in vectorisers.items():
+        for model_name, model in models.items():
+            pipe = Pipeline([
+                ("vectoriser", vec),
+                ("model", model)
+            ], memory=Memory(location='./cache', verbose=0))
 
-        # Grid search
-        placeholder_pipeline = Pipeline([
-            ("vectoriser", list(self.vectorisers.values())[0]),
-            ("model", self.model)
-        ], memory=self.memory)
+            # Create param grid
+            params = {}
 
-        config.debug("Grid search for classification")
-        grid_search = GridSearchCV(placeholder_pipeline, parameter_grid, cv=cv, n_jobs=-1, verbose=10)
-        grid_search.fit(X, y)
+            for p_name, ps in hyperparameters[model_name].items():
+                params[f"model__{p_name}"] = ps
 
-        return grid_search.best_estimator_, grid_search.best_params_
+            # Cross validate
+            config.debug(f"Doing CV for {model_name}:{vec_name}")
+            grid = GridSearchCV(
+                estimator=pipe,
+                param_grid=params,
+                cv=5,
+                scoring=scoring,
+                refit="f1_macro",
+                n_jobs=-1
+            )
 
+            if model_name in regressors:
+                grid.fit(X, y_numeric)
+            else:
+                grid.fit(X, y_bucket)
 
-class BestModelSelector:
-    def __init__(self):
-        self.models = {}
-        self.vectorisers = {}
+            idx = grid.best_index_
+            results.append({
+                "model": model_name,
+                "vectoriser": vec_name,
+                "accuracy": grid.cv_results_["mean_test_accuracy"][idx],
+                "f1_macro": grid.cv_results_["mean_test_f1_macro"][idx],
+                "best_params": grid.best_params_
+            })
 
+    df = pd.DataFrame(results)
+    df.to_csv(f"{label}_model_selection_wrapped.csv", index=False)
 
-    def add_model(self, name: str, model):
-        """
-        Adds a model and its hyperparameters
-
-        args:
-        - name: the model name
-        - model: the model class
-        """
-        self.models[name] = {
-            "model": model,
-            "params": {}
-        }
-
-
-    def add_model_params(self, model_name: str, param_name: str, params: list):
-        """
-        Adds a list of model parameter values
-    
-        args:
-        - model_name: the name of the model
-        - param_name: the name of the parameter
-        - params: the values it can take
-        """
-        self.models[model_name]["params"][param_name] = params
-
-
-    def add_vectoriser(self, name: str, vec):
-        """
-        Adds a vectoriser
-
-        args:
-        - name: the vectoriser's name
-        - vec: the vectoriser
-        """
-        self.vectorisers[name] = vec
-
-
-    def get_best_models(self, X, y, cv=5) -> Dict[str, dict]:
-        """
-        Does 'cv'-fold grid search cv for each model
-
-        returns:
-            a dict mapping model name to
-                {
-                    "model": grid_search.best_estimator_,
-                    "params": grid_search.best_params_
-                }
-        """
-        best_parameters = {}
-
-        for model_name in self.models:
-            model  = self.models[model_name]["model"]
-            params = self.models[model_name]["params"]
-
-            selector = CVParameterSelector(model)
-
-            for p_name, p_values in params.items():
-                selector.add_parameters(p_name, p_values)
-
-            for vectoriser_name, vectoriser in self.vectorisers.items():
-                selector.add_vectoriser(vectoriser_name, vectoriser)
-
-            e, p = selector.grid_search(X, y, cv=cv)
-
-            best_parameters[model_name] = {
-                "model":  e,
-                "params": p
-            }
-
-        return best_parameters
+    return df
 
 
 if __name__ == "__main__":
-    dataset = DatasetLoader()
+    buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
+    dataset = DatasetLoader(buckets=buckets)
 
     if CROSS_VALIDATE:
-        X_train_cv, y_train_age_cv = dataset.get_Xy("train", "age", subset_size=5000, age_type=str)
-        bms = BestModelSelector()
+        age_results = cross_validate(buckets, "age", 42, subset_size=5000)
+        gender_results = cross_validate(buckets, "gender", 42, subset_size=5000)
 
-        bms.add_vectoriser("tfidf", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english"))
-
-        bms.add_vectoriser("bofw", Pipeline([
-            ("count", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")),
-            ("normaliser", Normalizer(norm='l2'))
-        ]))
-
-        # Logistic Regression
-        bms.add_model("lr", LogisticRegression(max_iter=2000))
-        bms.add_model_params("lr", "C", [0.1, 1, 10])
-
-        # SVM
-        bms.add_model("svm", LinearSVC(dual=False, max_iter=2000))
-        bms.add_model_params("svm", "C", [0.1, 1, 10])
-
-        # Random Forest
-        bms.add_model("rf", RandomForestClassifier(n_jobs=1))
-        bms.add_model_params("rf", "n_estimators", [100, 200, 500])
-        bms.add_model_params("rf", "max_depth", [10, 20, 30])
-
-        config.debug("Obtaining best parameters for each model")
-        best_params = bms.get_best_models(X_train_cv, y_train_age_cv)
-
-        with open("CV-RESULTS.txt", "w") as f:
-            f.write(str(best_params))
-
-        best_lr: LogisticRegression = best_params["lr"]["model"]
-        best_rf: RandomForestClassifier = best_params["rf"]["model"]
-        best_svm: LinearSVC = best_params["svm"]["model"]
-
-        print(f'    Best params for lr:\n{best_params["lr"]["params"]}')
-        print(f'    Best params for rf:\n{best_params["rf"]["params"]}')
-        print(f'    Best params for svm:\n{best_params["svm"]["params"]}')
+        exit()
     else:
         best_lr = Pipeline([
             ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
