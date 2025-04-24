@@ -110,6 +110,8 @@ class Experiment1:
         # Force age bucketing in case
         y_pred_df["age"] = self.dataset.buckets[y_pred_df["age"]]
 
+        print(y_pred_df)
+
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
         gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
