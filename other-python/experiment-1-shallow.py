@@ -206,7 +206,10 @@ def cross_validate(
             params = {}
 
             for p_name, ps in hyperparameters[model_name].items():
-                params[f"model__{p_name}"] = ps
+                if p_name in regressors:
+                    params[f"model__regressor__{p_name}"]
+                else:
+                    params[f"model__{p_name}"] = ps
 
             # Cross validate
             config.debug(f"Doing CV for {model_name}:{vec_name}")
