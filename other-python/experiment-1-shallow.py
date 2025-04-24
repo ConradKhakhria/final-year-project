@@ -227,7 +227,7 @@ def cross_validate(
 
             for p_name, ps in hyperparameters[model_name].items():
                 if p_name in regressors:
-                    params[f"model__regressor__{p_name}"]
+                    params[f"model__regressor__{p_name}"] = ps
                 else:
                     params[f"model__{p_name}"] = ps
 
