@@ -231,7 +231,7 @@ if __name__ == "__main__":
             ]),
             "svc": Pipeline([
                 ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", RandomForestClassifier(C=10, kernel="linear"))
+                ("model", SVC(C=10, kernel="linear"))
             ])
         }
 
@@ -249,7 +249,7 @@ if __name__ == "__main__":
             ]),
             "svc": Pipeline([
                 ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", RandomForestClassifier(C=1, kernel="rbf"))
+                ("model", SVC(C=1, kernel="rbf"))
             ])
         }
 
@@ -320,5 +320,26 @@ Classification report for svm:
     accuracy                           0.40        50
    macro avg       0.14      0.17      0.15        50
 weighted avg       0.33      0.40      0.35        50
+
+"""
+
+
+"""
+>>> pd.read_csv("age_model_selection_wrapped.csv")
+      model vectoriser  accuracy  f1_macro                                        best_params
+0  logistic     tf-idf    0.3508  0.202929                                   {'model__C': 10}
+1        rf     tf-idf    0.3574  0.139767  {'model__max_depth': 30, 'model__n_estimators'...
+2       svc     tf-idf    0.3322  0.210396        {'model__C': 10, 'model__kernel': 'linear'}
+3  logistic     b-of-w    0.3472  0.202759                                   {'model__C': 10}
+4        rf     b-of-w    0.3564  0.133840  {'model__max_depth': 30, 'model__n_estimators'...
+5       svc     b-of-w    0.3206  0.199015        {'model__C': 10, 'model__kernel': 'linear'}
+>>> pd.read_csv("gender_model_selection_wrapped.csv")
+      model vectoriser  accuracy  f1_macro                                        best_params
+0  logistic     tf-idf    0.6180  0.617573                                    {'model__C': 1}
+1        rf     tf-idf    0.5958  0.595127  {'model__max_depth': 30, 'model__n_estimators'...
+2       svc     tf-idf    0.6202  0.619512            {'model__C': 1, 'model__kernel': 'rbf'}
+3  logistic     b-of-w    0.6068  0.606310                                    {'model__C': 1}
+4        rf     b-of-w    0.5982  0.597691  {'model__max_depth': 30, 'model__n_estimators'...
+5       svc     b-of-w    0.6112  0.610425            {'model__C': 1, 'model__kernel': 'rbf'}
 
 """
