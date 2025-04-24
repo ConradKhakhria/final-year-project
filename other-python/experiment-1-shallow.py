@@ -113,7 +113,7 @@ def cross_validate(
     models = {
         "logistic": LogisticRegression(max_iter=2000),
         "rf": RandomForestClassifier(n_jobs=1),
-        "svc": SVC(max_iter=2000)
+        "svc": SVC()
     }
 
     # Vectorisers
