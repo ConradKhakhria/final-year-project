@@ -7,6 +7,7 @@ import os
 import pandas as pd
 import psutil
 from pathlib import Path
+from sklearn.base import BaseEstimator
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
@@ -24,7 +25,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-CROSS_VALIDATE = True
+CROSS_VALIDATE = False
 PROJECT_PATH = Path.home()
 
 
@@ -181,6 +182,36 @@ def cross_validate(
     return df
 
 
+def evaluate_models(
+    models: Dict[str, Pipeline], dataset: DatasetLoader, label: Literal["age", "gender"]
+) -> pd.DataFrame:
+    """
+    Evaluates the best models on the full dataset
+    """
+    X_train, y_train = dataset.get_Xy("train", label=label)
+    X_test, y_test = dataset.get_Xy("test", label=label)
+
+    results = []
+
+    for model_name, model in models.items():
+        config.debug(f"Fitting model {model_name}")
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+
+        results.append({
+            "model": model_name,
+            "accuracy": accuracy_score(y_test, y_pred),
+            "f1_macro": f1_score(y_test, y_pred),
+            "confusion": confusion_matrix(y_test, y_pred)
+        })
+
+    df = pd.DataFrame(results)
+    df.to_csv(f"final_evaluation_{label}.csv")
+
+    return df
+
+
+
 if __name__ == "__main__":
     buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
     dataset = DatasetLoader(seed=42, buckets=buckets)
@@ -188,65 +219,42 @@ if __name__ == "__main__":
     if CROSS_VALIDATE:
         age_results = cross_validate(dataset, "age", subset_size=5000)
         gender_results = cross_validate(dataset, "gender", subset_size=5000)
-
-        exit()
     else:
-        best_lr = Pipeline([
-            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-            ("model", LogisticRegression(C=1)),
-        ])
+        best_age_models = {
+            "lr": Pipeline([
+                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
+                ("model", LogisticRegression(C=10, max_iter=2000))
+            ]),
+            "rf": Pipeline([
+                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
+                ("model", RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1))
+            ]),
+            "svc": Pipeline([
+                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
+                ("model", RandomForestClassifier(C=10, kernel="linear"))
+            ])
+        }
 
-        best_rf = Pipeline([
-            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-            ("model", RandomForestClassifier(max_depth=30, n_estimators=200, n_jobs=4)),
-        ])
+        best_gender_models = {
+            "lr": Pipeline([
+                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
+                ("model", LogisticRegression(C=1, max_iter=2000))
+            ]),
+            "rf": Pipeline([
+                ("vectoriser", Pipeline([
+                    ("count", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")),
+                    ("normaliser", Normalizer(norm='l2'))
+                ])),
+                ("model", RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1))
+            ]),
+            "svc": Pipeline([
+                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
+                ("model", RandomForestClassifier(C=1, kernel="rbf"))
+            ])
+        }
 
-        best_svm = Pipeline([
-            ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-            ("model", SVC(C=0.1)),
-        ])
-
-    config.debug("Testing each model")
-    X_train, y_train_age = dataset.get_Xy("train", "age")
-    X_test, y_test_age = dataset.get_Xy("test", "age")
-
-    config.debug("Fitting each model")
-    print("fitting logistic regression")
-    config.debug(psutil.virtual_memory())
-    best_lr.fit(X_train, y_train_age)
-
-    print("fitting random forest")
-    config.debug(psutil.virtual_memory())
-    best_rf.fit(X_train, y_train_age)
-
-    print("fitting svm")
-    config.debug(psutil.virtual_memory())
-    best_svm.fit(X_train, y_train_age)
-
-    config.debug("Running predictions")
-    y_pred_lr = best_lr.predict(X_test)
-    y_pred_rf = best_rf.predict(X_test)
-    y_pred_svm = best_svm.predict(X_test)
-
-    print(f"Classification report for lr:\n{classification_report(y_test_age, y_pred_lr)}")
-    print(f"Classification report for rf:\n{classification_report(y_test_age, y_pred_rf)}")
-    print(f"Classification report for svm:\n{classification_report(y_test_age, y_pred_svm)}")
-
-    cm_lr = confusion_matrix(y_test_age, y_pred_lr)
-    cm_rf = confusion_matrix(y_test_age, y_pred_rf)
-    cm_svm = confusion_matrix(y_test_age, y_pred_svm)
-
-    confusion_data = {
-        "LogisticRegression": cm_lr.tolist(),
-        "RandomForest": cm_rf.tolist(),
-        "LinearSVC": cm_svm.tolist()
-    }
-
-    # Write the confusion matrices to a JSON file that can be downloaded and inspected locally
-    with open("confusion_matrices.json", "w") as f:
-        json.dump(confusion_data, f)
-
-
+        evaluate_models(best_age_models, dataset, "age")
+        evaluate_models(best_gender_models, dataset, "gender")
 
 
 
