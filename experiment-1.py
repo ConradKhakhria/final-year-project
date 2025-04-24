@@ -131,7 +131,7 @@ class Experiment1:
         X_test = X_test.iloc[idxs].reset_index(drop=True)
         y_test = [y_test[i] for i in idxs]
 
-        return X_test, y_test
+        return X_test, np.array(y_test)
 
 
     def _create_evaluation(
