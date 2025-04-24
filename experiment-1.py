@@ -107,11 +107,6 @@ class Experiment1:
         y_pred_df = pd.DataFrame(y_pred)
         y_true_df = pd.DataFrame(list(self.y_test))
 
-        # Force age bucketing in case
-        y_pred_df["age"] = self.dataset.buckets[y_pred_df["age"].to_numpy()]
-
-        print(y_pred_df)
-
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
         gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
@@ -152,6 +147,9 @@ class Experiment1:
         valid_idxs = y_pred_df[label].notnull()
         y_pred = y_pred_df[label][valid_idxs]
         y_true = y_true_df[label][valid_idxs]
+
+        if label == "age":
+            y_pred = self.dataset.buckets[y_pred.to_numpy()]
 
         return {
             "model": model_name,
