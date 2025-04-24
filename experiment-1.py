@@ -90,8 +90,6 @@ class Experiment1:
         returns:
         a dictionary for age prediction evaluation and gender prediction evaluation
         """
-        pp_path = config.CODE_DIR / "pre-prompts" / pre_prompt_filename
-
         # This is horrible
         config.SMALL_MODEL = model_name
         isolator = model.BatchModelIsolator("small")
@@ -101,7 +99,7 @@ class Experiment1:
             batch_size=20,
             cfg={
                 "max_new_tokens": 20,
-                "pre_prompt_path": pp_path,
+                "pre_prompt_name": pre_prompt_filename,
                 "enforce_json": True
             }
         )
