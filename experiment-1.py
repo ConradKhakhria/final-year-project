@@ -162,7 +162,7 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
-    expt1 = Experiment1(buckets, num_samples=5000)
+    expt1 = Experiment1(buckets, num_samples=50)
 
     # Parameters to test
     prompt_names = [
