@@ -201,7 +201,7 @@ def evaluate_models(
         results.append({
             "model": model_name,
             "accuracy": accuracy_score(y_test, y_pred),
-            "f1_macro": f1_score(y_test, y_pred),
+            "f1_macro": f1_score(y_test, y_pred, average="macro", zero_division=0),
             "confusion": confusion_matrix(y_test, y_pred)
         })
 
