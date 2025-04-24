@@ -151,12 +151,9 @@ class Experiment1:
         if label == "age":
             y_pred = self.dataset.buckets[y_pred.to_numpy().astype(int)]
 
-        print(y_true)
-        print(y_pred)
-
         return {
             "model": model_name,
-            "pre_prompt": pp_filename,
+            "pre_prompt": pp_filename[:-4],
             "accuracy": accuracy_score(y_true, y_pred),
             "f1_macro": f1_score(y_true, y_pred, average="macro", zero_division=0),
             "confusion": confusion_matrix(y_true, y_pred),
@@ -168,12 +165,12 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
-    expt1 = Experiment1(buckets, num_samples=50)
+    expt1 = Experiment1(buckets, num_samples=5000)
 
     # Parameters to test
     prompt_names = [
         "expt1-zero-shot.txt",
-#        "expt1-few-shot.txt"
+        "expt1-few-shot.txt"
     ]
 
     model_names = [
