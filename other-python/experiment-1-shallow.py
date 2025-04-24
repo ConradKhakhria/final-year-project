@@ -223,7 +223,7 @@ if __name__ == "__main__":
         best_age_models = {
             "lr": Pipeline([
                 ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", LogisticRegression(C=10, max_iter=2000))
+                ("model", LogisticRegression(C=10, max_iter=2000, solver="saga"))
             ]),
             "rf": Pipeline([
                 ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
@@ -238,7 +238,7 @@ if __name__ == "__main__":
         best_gender_models = {
             "lr": Pipeline([
                 ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", LogisticRegression(C=1, max_iter=2000))
+                ("model", LogisticRegression(C=1, max_iter=2000, solver="saga"))
             ]),
             "rf": Pipeline([
                 ("vectoriser", Pipeline([
