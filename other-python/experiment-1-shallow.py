@@ -225,6 +225,7 @@ if __name__ == "__main__":
         }
 
         # pre-vectorise training and testing sets
+        config.debug("Vectorising datasets")
         X_train, y_train_age = dataset.get_Xy("train", "age")
         _, y_train_gender    = dataset.get_Xy("train", "gender")
         X_test, y_test_age   = dataset.get_Xy("test", "age")
@@ -238,6 +239,7 @@ if __name__ == "__main__":
         age_results = []
 
         for name, model in best_age_models.items():
+            config.debug(f"Evaluating model {name} for age")
             r = evaluate_model(model, X_train_vec["tf-idf"],
                                X_test_vec["tf-idf"], y_train_age,
                                y_test_age)
@@ -248,6 +250,7 @@ if __name__ == "__main__":
         gender_results = []
 
         for name, model in best_gender_models.items():
+            config.debug(f"Evaluating model {name} for gender")
             if name == "rf":
                 r = evaluate_model(model, X_train_vec["b-of-w"],
                                    X_test_vec["b-of-w"], y_train_age,
