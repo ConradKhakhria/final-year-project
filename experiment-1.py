@@ -82,10 +82,6 @@ class Experiment1:
         self.dataset = DatasetLoader(buckets, seed=42)
         self.X_test, self.y_test = self._format_dataset(num_samples)
 
-        print(self.y_test)
-        print(type(self.y_test))
-        exit()
-
 
     def run_experiment(self, model_name: str, pre_prompt_filename: str) -> Tuple[dict, dict]:
         """
@@ -109,7 +105,7 @@ class Experiment1:
         )
         y_pred = model.extract_json(y_pred_strings, {"age": None, "gender": None})
         y_pred_df = pd.DataFrame(y_pred)
-        y_true_df = pd.DataFrame(self.y_test)
+        y_true_df = pd.DataFrame(list(self.y_test))
 
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
@@ -150,9 +146,6 @@ class Experiment1:
         """
         valid_idxs = y_pred_df[label].notnull()
         y_pred = y_pred_df[label][valid_idxs]
-
-        print(y_true_df)
-
         y_true = y_true_df[label][valid_idxs]
 
         return {
