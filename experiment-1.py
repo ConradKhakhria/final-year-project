@@ -151,6 +151,9 @@ class Experiment1:
         if label == "age":
             y_pred = self.dataset.buckets[y_pred.to_numpy().astype(int)]
 
+        print(y_true)
+        print(y_pred)
+
         return {
             "model": model_name,
             "pre_prompt": pp_filename,
