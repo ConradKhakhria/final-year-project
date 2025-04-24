@@ -22,7 +22,7 @@ class DatasetLoader:
         self.dataset = datasets.load_dataset("blog_authorship_corpus", trust_remote_code=True)
 
         self.df_train = self.dataset["train"].to_pandas()
-        self.df_test = pd.read_parquet(config.RESULTS_DIR / "experiment-1-test-set.parquet")
+        self.df_test = self.dataset["validation"].to_pandas()
 
         self.X = {
             "train": self.df_train["text"],
