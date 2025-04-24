@@ -107,10 +107,6 @@ class Experiment1:
         y_pred_df = pd.DataFrame(y_pred)
         y_true_df = pd.DataFrame(list(self.y_test))
 
-        print(self.y_test)
-        print(y_true_df)
-        print(y_pred_df)
-
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
         gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
@@ -131,7 +127,7 @@ class Experiment1:
         _, y_test_gender   = self.dataset.get_Xy("test", "gender", subset_size=num_samples)
 
         # combine age and gender
-        y_test = [{"age": a, "gender": g} for a, g in zip(y_test_age, y_test_gender)]
+        y_test = [{"age": self.dataset.buckets[a], "gender": g} for a, g in zip(y_test_age, y_test_gender)]
 
         # sort by string length
         idxs = X_test.str.len().argsort()
