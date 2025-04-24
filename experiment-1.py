@@ -149,7 +149,7 @@ class Experiment1:
         y_true = y_true_df[label][valid_idxs]
 
         if label == "age":
-            y_pred = self.dataset.buckets[y_pred.to_numpy()]
+            y_pred = self.dataset.buckets[y_pred.to_numpy().astype(int)]
 
         return {
             "model": model_name,
