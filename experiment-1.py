@@ -105,9 +105,12 @@ class Experiment1:
         )
         y_pred = model.extract_json(y_pred_strings, {"age": None, "gender": None})
         y_pred_df = pd.DataFrame(y_pred)
+        y_true_df = pd.DataFrame(self.y_test)
 
-        age_evaluation = self._create_evaluation(y_pred_df, "age", model_name, pre_prompt_filename)
-        gender_evaluation = self._create_evaluation(y_pred_df, "gender", model_name, pre_prompt_filename)
+        age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
+                                                 model_name, pre_prompt_filename)
+        gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
+                                                    model_name, pre_prompt_filename)
 
         return age_evaluation, gender_evaluation
 
@@ -135,14 +138,15 @@ class Experiment1:
 
 
     def _create_evaluation(
-        self, y_pred_df: pd.DataFrame, label: str, model_name: str, pp_filename: str
+        self, y_pred_df: pd.DataFrame, y_true_df: pd.DataFrame,
+        label: str, model_name: str, pp_filename: str
     ) -> dict:
         """
         Creates an evaluation dictionary for the results and a given label
         """
         valid_idxs = y_pred_df[label].notnull()
         y_pred = y_pred_df[label][valid_idxs]
-        y_true = self.y_test[valid_idxs]
+        y_true = y_true_df[label][valid_idxs]
 
         return {
             "model": model_name,
