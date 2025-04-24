@@ -244,11 +244,11 @@ def cross_validate(
 
 if __name__ == "__main__":
     buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
-    dataset = DatasetLoader(buckets=buckets)
+    dataset = DatasetLoader(seed=42, buckets=buckets)
 
     if CROSS_VALIDATE:
-        age_results = cross_validate(dataset, "age", 42, subset_size=5000)
-        gender_results = cross_validate(dataset, "gender", 42, subset_size=5000)
+        age_results = cross_validate(dataset, "age", subset_size=5000)
+        gender_results = cross_validate(dataset, "gender", subset_size=5000)
 
         exit()
     else:
