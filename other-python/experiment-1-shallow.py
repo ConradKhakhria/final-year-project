@@ -45,7 +45,7 @@ class BucketRegressor(BaseEstimator, ClassifierMixin):
 
     def predict(self, X):
         y_pred_numeric = self.reg_.predict(X)
-        return self.bucket_map[y_pred_numeric]
+        return self.bucket_map[y_pred_numeric.astype(int)]
 
     # Add support for hyperparameters
     def get_params(self, deep=True):
