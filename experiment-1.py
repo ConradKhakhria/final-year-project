@@ -83,6 +83,7 @@ class Experiment1:
         self.X_test, self.y_test = self._format_dataset(num_samples)
 
         print(self.y_test)
+        print(type(self.y_test))
         exit()
 
 
