@@ -125,8 +125,7 @@ class DatasetLoader:
 
 
 def cross_validate(
-    dataset: DatasetLoader, label: Literal["age", "gender"],
-    seed: int, subset_size: int | None = None
+    dataset: DatasetLoader, label: Literal["age", "gender"], subset_size: int | None = None
 ) -> pd.DataFrame:
     """
     Performs cross validation to obtain the performance of each model
@@ -221,7 +220,10 @@ def cross_validate(
             )
 
             if model_name in regressors:
-                grid.fit(X, y_numeric)
+                if label == "age":
+                    grid.fit(X, y_numeric)
+                else:
+                    continue
             else:
                 grid.fit(X, y_bucket)
 
@@ -245,8 +247,8 @@ if __name__ == "__main__":
     dataset = DatasetLoader(buckets=buckets)
 
     if CROSS_VALIDATE:
-        age_results = cross_validate(buckets, "age", 42, subset_size=5000)
-        gender_results = cross_validate(buckets, "gender", 42, subset_size=5000)
+        age_results = cross_validate(dataset, "age", 42, subset_size=5000)
+        gender_results = cross_validate(dataset, "gender", 42, subset_size=5000)
 
         exit()
     else:
