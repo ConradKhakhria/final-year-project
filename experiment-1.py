@@ -82,6 +82,9 @@ class Experiment1:
         self.dataset = DatasetLoader(buckets, seed=42)
         self.X_test, self.y_test = self._format_dataset(num_samples)
 
+        print(self.y_test)
+        exit()
+
 
     def run_experiment(self, model_name: str, pre_prompt_filename: str) -> Tuple[dict, dict]:
         """
