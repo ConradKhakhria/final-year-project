@@ -179,7 +179,7 @@ class BatchModelIsolator:
         - batch_size: the number of batches to process at a time
         - cfg: a dict containing overrides for:
             1. max_new_tokens
-            2. pre_prompt_path
+            2. pre_prompt_name
             3. enforce_json
         """
         cfg_modified = False
