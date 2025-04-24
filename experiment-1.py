@@ -107,6 +107,11 @@ class Experiment1:
         y_pred_df = pd.DataFrame(y_pred)
         y_true_df = pd.DataFrame(list(self.y_test))
 
+        print(self.y_test)
+        print(y_true_df)
+        print(y_pred_df)
+        exit()
+
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
         gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
