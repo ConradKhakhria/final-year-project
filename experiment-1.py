@@ -108,7 +108,7 @@ class Experiment1:
         y_true_df = pd.DataFrame(list(self.y_test))
 
         # Force age bucketing in case
-        y_pred_df["age"] = self.dataset.buckets[y_pred_df["age"]]
+        y_pred_df["age"] = self.dataset.buckets[y_pred_df["age"].to_numpy()]
 
         print(y_pred_df)
 
