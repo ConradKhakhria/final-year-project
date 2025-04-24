@@ -110,7 +110,6 @@ class Experiment1:
         print(self.y_test)
         print(y_true_df)
         print(y_pred_df)
-        exit()
 
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
