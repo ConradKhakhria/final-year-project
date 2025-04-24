@@ -107,10 +107,7 @@ def cross_validate(
         - f1 macro
         - best parameters
     """
-    buckets = dataset.buckets
-
-    X, y_bucket  = dataset.get_Xy("train", label, subset_size=subset_size, age_type=str)
-    _, y_numeric = dataset.get_Xy("train", label, subset_size=subset_size, age_type=int)
+    X, y  = dataset.get_Xy("train", label, subset_size=subset_size)
 
     # Models
     models = {
@@ -167,7 +164,7 @@ def cross_validate(
                 refit="f1_macro",
                 n_jobs=-1
             )
-            grid.fit(X, y_bucket)
+            grid.fit(X, y)
 
             idx = grid.best_index_
             results.append({
