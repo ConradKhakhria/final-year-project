@@ -7,9 +7,9 @@ import os
 import pandas as pd
 import psutil
 from pathlib import Path
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC, SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
@@ -18,7 +18,7 @@ from sklearn.metrics import make_scorer, accuracy_score, f1_score, \
 from sklearn.model_selection import GridSearchCV
 import sys
 import time
-from typing import Dict, Literal, Tuple
+from typing import Dict, List, Literal, Tuple
 from sklearn.preprocessing import Normalizer
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -35,7 +35,7 @@ class DatasetLoader:
         self.dataset = datasets.load_dataset("blog_authorship_corpus", trust_remote_code=True)
 
         self.df_train = self.dataset["train"].to_pandas()
-        self.df_test = pd.read_parquet(PROJECT_PATH / "results" / "experiment-1-test-set.parquet")
+        self.df_test = self.dataset["validation"]
 
         self.X = {
             "train": self.df_train["text"],
@@ -182,34 +182,18 @@ def cross_validate(
     return df
 
 
-def evaluate_models(
-    models: Dict[str, Pipeline], dataset: DatasetLoader, label: Literal["age", "gender"]
-) -> pd.DataFrame:
+def evaluate_model(model: ClassifierMixin, X_train, X_test, y_train, y_test) -> dict:
     """
-    Evaluates the best models on the full dataset
+    Evaluates a model with pre-vectorised text input
     """
-    X_train, y_train = dataset.get_Xy("train", label=label)
-    X_test, y_test = dataset.get_Xy("test", label=label)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
 
-    results = []
-
-    for model_name, model in models.items():
-        config.debug(f"Fitting model {model_name}")
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-
-        results.append({
-            "model": model_name,
-            "accuracy": accuracy_score(y_test, y_pred),
-            "f1_macro": f1_score(y_test, y_pred, average="macro", zero_division=0),
-            "confusion": confusion_matrix(y_test, y_pred)
-        })
-
-    df = pd.DataFrame(results)
-    df.to_csv(f"final_evaluation_{label}.csv")
-
-    return df
-
+    return {
+        "accuracy": accuracy_score(y_test, y_pred),
+        "f1_macro": f1_score(y_test, y_pred, average="macro", zero_division=0),
+        "confusion": confusion_matrix(y_test, y_pred)
+    }
 
 
 if __name__ == "__main__":
@@ -221,42 +205,64 @@ if __name__ == "__main__":
         gender_results = cross_validate(dataset, "gender", subset_size=5000)
     else:
         best_age_models = {
-            "lr": Pipeline([
-                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", LogisticRegression(C=10, max_iter=2000, solver="saga"))
-            ]),
-            "rf": Pipeline([
-                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1))
-            ]),
-            "svc": Pipeline([
-                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", SVC(C=10, kernel="linear"))
-            ])
+            "lr":  LogisticRegression(C=10, max_iter=2000, solver="saga", n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
+            "svc": LinearSVC(C=10)
         }
 
         best_gender_models = {
-            "lr": Pipeline([
-                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", LogisticRegression(C=1, max_iter=2000, solver="saga"))
-            ]),
-            "rf": Pipeline([
-                ("vectoriser", Pipeline([
-                    ("count", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")),
-                    ("normaliser", Normalizer(norm='l2'))
-                ])),
-                ("model", RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1))
-            ]),
-            "svc": Pipeline([
-                ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", SVC(C=1, kernel="linear"))
+            "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
+            "svc": LinearSVC(C=1)   
+        }
+
+        vectorisers = {
+            "tf-idf": TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english'),
+            "b-of-w": Pipeline([
+                ("count", CountVectorizer(max_features=5000, ngram_range=(1, 2), stop_words="english")),
+                ("normaliser", Normalizer(norm='l2'))
             ])
         }
 
-        evaluate_models(best_age_models, dataset, "age")
-        evaluate_models(best_gender_models, dataset, "gender")
+        # pre-vectorise training and testing sets
+        X_train, y_train_age = dataset.get_Xy("train", "age")
+        _, y_train_gender    = dataset.get_Xy("train", "gender")
+        X_test, y_test_age   = dataset.get_Xy("test", "age")
+        _, y_test_gender     = dataset.get_Xy("test", "gender")
 
+        X_train_vec = { name : vec.fit_transform(X_train) for name, vec in vectorisers.items() }
+        X_test_vec  = { name : vec.transform(X_test) for name, vec in vectorisers.items() }
 
+        # Get results for age models
+        # All age models prefer TF-IDF
+        age_results = []
+
+        for name, model in best_age_models.items():
+            r = evaluate_model(model, X_train_vec["tf-idf"],
+                               X_test_vec["tf-idf"], y_train_age,
+                               y_test_age)
+            age_results.append({ "name": name, **r })
+
+        # Get results for gender models
+        # Here, random forest marginally prefers bag-of-words
+        gender_results = []
+
+        for name, model in best_gender_models.items():
+            if name == "rf":
+                r = evaluate_model(model, X_train_vec["b-of-w"],
+                                   X_test_vec["b-of-w"], y_train_age,
+                                   y_test_age)
+            else:
+                r = evaluate_model(model, X_train_vec["tf-idf"],
+                                   X_test_vec["tf-idf"], y_train_age,
+                                   y_test_age) 
+            age_results.append({ "name": name, **r })
+
+        df_age = pd.DataFrame(age_results)
+        df_gender = pd.DataFrame(gender_results)
+
+        df_age.to_csv(config.RESULTS_DIR / "full-testing-age-evaluation.csv")
+        df_gender.to_csv(config.RESULTS_DIR / "full-testing-gender-evaluation.csv")
 
 
 
