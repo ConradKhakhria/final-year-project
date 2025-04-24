@@ -146,6 +146,9 @@ class Experiment1:
         """
         valid_idxs = y_pred_df[label].notnull()
         y_pred = y_pred_df[label][valid_idxs]
+
+        print(y_true_df)
+
         y_true = y_true_df[label][valid_idxs]
 
         return {
