@@ -47,6 +47,26 @@ class BucketRegressor(BaseEstimator, ClassifierMixin):
         y_pred_numeric = self.reg_.predict(X)
         return self.bucket_map[y_pred_numeric]
 
+    # Add support for hyperparameters
+    def get_params(self, deep=True):
+        params = {"regressor": self.regressor, "bucket_map": self.bucket_map}
+        if deep and hasattr(self.regressor, "get_params"):
+            for k, v in self.regressor.get_params(deep=True).items():
+                params[f"regressor__{k}"] = v
+        return params
+
+    def set_params(self, **params):
+        reg_params = {}
+        for k, v in params.items():
+            if k.startswith("regressor__"):
+                reg_params[k[len("regressor__"):]] = v
+            else:
+                setattr(self, k, v)
+        if reg_params and hasattr(self.regressor, "set_params"):
+            self.regressor.set_params(**reg_params)
+        return self
+
+
 
 
 class DatasetLoader:
