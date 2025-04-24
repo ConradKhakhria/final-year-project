@@ -249,7 +249,7 @@ if __name__ == "__main__":
             ]),
             "svc": Pipeline([
                 ("vectoriser", TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')),
-                ("model", SVC(C=1, kernel="rbf"))
+                ("model", SVC(C=1, kernel="linear"))
             ])
         }
 
