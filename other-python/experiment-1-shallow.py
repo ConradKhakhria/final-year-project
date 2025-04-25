@@ -27,7 +27,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-CROSS_VALIDATE = True
+CROSS_VALIDATE = False
 PROJECT_PATH = Path.home()
 
 # To reduce crazy memory usage
