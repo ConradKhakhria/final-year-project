@@ -30,11 +30,18 @@ import config
 CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
+# To reduce crazy memory usage
+BUCKETS = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
+BUCKET_MIDPOINTS = {}
+
+for b in BUCKETS:
+    BUCKET_MIDPOINTS[b] = sum(map(int, b.split("-"))) / 2
+
 
 def mae_age_scorer(estimator, X, y_true):
     y_pred = estimator.predict(X)
-    y_true_mid = np.array([dataset.bucket_midpoints[y] for y in y_true])
-    y_pred_mid = np.array([dataset.bucket_midpoints[y] for y in y_pred])
+    y_true_mid = np.array([BUCKET_MIDPOINTS[y] for y in y_true])
+    y_pred_mid = np.array([BUCKET_MIDPOINTS[y] for y in y_pred])
 
     return -np.mean(np.abs(y_true_mid - y_pred_mid))
 
@@ -58,11 +65,6 @@ class DatasetLoader:
         }
 
         self.buckets = buckets
-        self.bucket_midpoints = {}
-        for i, bucket in enumerate(buckets):
-            start, end = map(int, bucket.split('-'))
-            self.bucket_midpoints[bucket] = (start + end) / 2
-
         self.rng = np.random.default_rng(seed)
 
 
