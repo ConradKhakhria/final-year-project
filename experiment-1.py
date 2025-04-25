@@ -115,8 +115,6 @@ class Experiment1:
         y_pred_df = pd.DataFrame(y_pred)
         y_true_df = pd.DataFrame(list(self.y_test))
 
-        print(y_pred)
-
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
         gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
@@ -155,12 +153,14 @@ class Experiment1:
         Creates an evaluation dictionary for the results and a given label
         """
         valid_idxs = y_pred_df[label].notnull()
-        y_pred = y_pred_df[label][valid_idxs]
-        y_true = y_true_df[label][valid_idxs]
 
-        print(f"label: {label}")
-        print(f"y_true:\n{y_true}")
-        print(f"y_pred:\n{y_pred}")
+        if label == "age":
+            valid_format_idxs = y_pred_df[label].isin(self.dataset.buckets)
+        else:
+            valid_format_idxs = y_pred_df[label].isin(["male", "female"])
+
+        y_pred = y_pred_df[label][valid_format_idxs]
+        y_true = y_true_df[label][valid_format_idxs]
 
         results = {
             "model": model_name,
@@ -168,7 +168,8 @@ class Experiment1:
             "accuracy": accuracy_score(y_true, y_pred),
             "f1_macro": f1_score(y_true, y_pred, average="macro", zero_division=0),
             "confusion": confusion_matrix(y_true, y_pred),
-            "valid_json": valid_idxs.astype(int).sum() / len(y_pred_df)
+            "valid_json": valid_idxs.astype(int).sum() / len(y_pred_df),
+            "valid_format": valid_format_idxs.astype(int).sum() / len(y_pred_df)
         }
 
         if label == "age":
