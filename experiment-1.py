@@ -111,11 +111,11 @@ class Experiment1:
             }
         )
 
-        print(f"pred strings:\n{y_pred_strings}")
-
         y_pred = model.extract_json(y_pred_strings, {"age": None, "gender": None})
         y_pred_df = pd.DataFrame(y_pred)
         y_true_df = pd.DataFrame(list(self.y_test))
+
+        print(y_pred)
 
         age_evaluation = self._create_evaluation(y_pred_df, y_true_df, "age",
                                                  model_name, pre_prompt_filename)
