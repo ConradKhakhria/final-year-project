@@ -2,7 +2,6 @@
 import datasets
 from joblib import Memory
 import json
-# import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
@@ -17,7 +16,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, f1_score, \
                             classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
-# import seaborn as sns
 import sys
 import time
 from typing import Dict, List, Literal, Tuple
@@ -27,7 +25,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-CROSS_VALIDATE = False
+CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 # To reduce crazy memory usage
@@ -131,7 +129,7 @@ def cross_validate(
     models = {
         "logistic": LogisticRegression(max_iter=2000),
         "rf": RandomForestClassifier(n_jobs=1),
-        "svc": SVC()
+        "svc": LinearSVC()
     }
 
     # Vectorisers
@@ -147,7 +145,7 @@ def cross_validate(
     hyperparameters = {
         "logistic":  { "C": [0.1, 1, 10] },
         "rf": { "n_estimators": [100, 200, 500], "max_depth": [10, 20, 30] },
-        "svc": { "C": [0.1, 1, 10], "kernel": ["linear", "poly", "rbf"] },
+        "svc": { "C": [0.1, 1, 10] },
     }
 
     # scoring - different for age and gender
@@ -244,20 +242,6 @@ def evaluate_model(model: ClassifierMixin, X_train, X_test, y_train, y_test, dat
     return result
 
 
-def plot_confusion_matrix(cm, class_names, title, filename):
-    """
-    Plots a confusion matrix
-    """
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-
-
 if __name__ == "__main__":
     buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
     dataset = DatasetLoader(seed=42, buckets=buckets)
@@ -273,9 +257,9 @@ if __name__ == "__main__":
         print(gender_results[["model", "vectoriser", "accuracy", "f1_macro"]].sort_values("f1_macro", ascending=False))
     else:
         best_age_models = {
-            "lr":  LogisticRegression(C=10, max_iter=2000, solver="saga", n_jobs=-1),
+            "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
             "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
-            "svc": LinearSVC(C=10)
+            "svc": LinearSVC(C=1)
         }
 
         best_gender_models = {
@@ -292,6 +276,19 @@ if __name__ == "__main__":
             ])
         }
 
+        vectoriser_preferences = {
+            "age": {
+                "svc": "tf-idf",
+                "lr":  "b-of-w",
+                "rf":  "tf-idf"
+            },
+            "gender": {
+                "svc": "tf-idf",
+                "lr":  "tf-idf",
+                "rf":  "b-of-w"
+            }
+        }
+
         # pre-vectorise training and testing sets
         config.debug("Vectorising datasets")
         X_train, y_train_age = dataset.get_Xy("train", "age")
@@ -303,48 +300,25 @@ if __name__ == "__main__":
         X_test_vec  = { name : vec.transform(X_test) for name, vec in vectorisers.items() }
 
         # Get results for age models
-        # All age models prefer TF-IDF
         age_results = []
 
         for name, model in best_age_models.items():
             config.debug(f"Evaluating model {name} for age")
-            r = evaluate_model(model, X_train_vec["tf-idf"],
-                               X_test_vec["tf-idf"], y_train_age,
+            pref_vec = vectoriser_preferences["age"][name]
+            m_X_train, m_X_test = X_train_vec[pref_vec], X_test_vec[pref_vec]
+            r = evaluate_model(model, m_X_train, m_X_test, y_train_age,
                                y_test_age, dataset=dataset, is_age=True)
-
-            # Plot confusion matrix
-#            plot_confusion_matrix(
-#                r["confusion"], 
-#                np.unique(y_test_age), 
-#                f"Age Prediction Confusion Matrix - {name.upper()}", 
-#                f"age_confusion_matrix_{name}.png"
-#            )
-            
             age_results.append({ "name": name, **r })
 
         # Get results for gender models
-        # Here, random forest marginally prefers bag-of-words
         gender_results = []
 
         for name, model in best_gender_models.items():
             config.debug(f"Evaluating model {name} for gender")
-            if name == "rf":
-                r = evaluate_model(model, X_train_vec["b-of-w"],
-                                   X_test_vec["b-of-w"], y_train_gender,
-                                   y_test_gender)
-            else:
-                r = evaluate_model(model, X_train_vec["tf-idf"],
-                                   X_test_vec["tf-idf"], y_train_gender,
-                                   y_test_gender) 
-                
-#            # Plot confusion matrix
-#            plot_confusion_matrix(
-#                r["confusion"], 
-#                np.unique(y_test_gender), 
-#                f"Gender Prediction Confusion Matrix - {name.upper()}", 
-#                f"gender_confusion_matrix_{name}.png"
-#            )
-            
+            pref_vec = vectoriser_preferences["gender"][name]
+            m_X_train, m_X_test = X_train_vec[pref_vec], X_test_vec[pref_vec]
+            r = evaluate_model(model, m_X_train, m_X_test, y_train_gender,
+                               y_test_gender, dataset=dataset, is_age=True)
             gender_results.append({ "name": name, **r })
 
         # Create DataFrames with results
