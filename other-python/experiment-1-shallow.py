@@ -259,13 +259,13 @@ if __name__ == "__main__":
         best_age_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
             "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
-            "svc": LinearSVC(C=1)
+            "svc": LinearSVC(C=0.1)
         }
 
         best_gender_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
             "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
-            "svc": LinearSVC(C=1)   
+            "svc": LinearSVC(C=0.1)   
         }
 
         vectorisers = {
