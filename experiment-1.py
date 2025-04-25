@@ -103,7 +103,7 @@ class Experiment1:
 
         y_pred_strings = isolator.process_prompts(
             prompts=self.X_test,
-            batch_size=60,
+            batch_size=200,
             cfg={
                 "max_new_tokens": 20,
                 "pre_prompt_name": pre_prompt_filename,
