@@ -218,6 +218,8 @@ def evaluate_model(model: ClassifierMixin, X_train, X_test, y_train, y_test, dat
     
     For age, also calculates MAE based on bucket midpoints
     """
+    global BUCKETS, BUCKET_MIDPOINTS
+
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     
@@ -229,13 +231,13 @@ def evaluate_model(model: ClassifierMixin, X_train, X_test, y_train, y_test, dat
     
     # For age, also calculate MAE
     if is_age and dataset is not None:
-        y_test_mid = np.array([dataset.bucket_midpoints[y] for y in y_test])
-        y_pred_mid = np.array([dataset.bucket_midpoints[y] for y in y_pred])
+        y_test_mid = np.array([BUCKET_MIDPOINTS[y] for y in y_test])
+        y_pred_mid = np.array([BUCKET_MIDPOINTS[y] for y in y_pred])
         result["mae"] = np.mean(np.abs(y_test_mid - y_pred_mid))
         
         # Also calculate adjacent-category accuracy
-        y_test_indices = np.array([list(dataset.buckets).index(y) for y in y_test])
-        y_pred_indices = np.array([list(dataset.buckets).index(y) for y in y_pred])
+        y_test_indices = np.array([list(BUCKETS).index(y) for y in y_test])
+        y_pred_indices = np.array([list(BUCKETS).index(y) for y in y_pred])
         adjacent_correct = np.sum(np.abs(y_test_indices - y_pred_indices) <= 1)
         result["adjacent_accuracy"] = adjacent_correct / len(y_test)
     
