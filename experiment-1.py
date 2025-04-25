@@ -152,6 +152,21 @@ class Experiment1:
         """
         Creates an evaluation dictionary for the results and a given label
         """
+        print(f"columns = {y_pred_df.columns}")
+
+        if sorted(list(y_pred_df.columns)) != ["age", "gender"]:
+            y_pred_df.to_csv(config.RESULTS_DIR / f"{model_name}_{pp_filename[:-4]}_whoops.csv")
+            
+            return {
+                "model": model_name,
+                "pre_prompt": pp_filename[:-4],
+                "accuracy": None,
+                "f1_macro": None,
+                "confusion": None,
+                "valid_json": 0,
+                "valid_format": 0
+            }
+
         valid_idxs = y_pred_df[label].notnull()
 
         if label == "age":
