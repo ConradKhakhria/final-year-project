@@ -155,6 +155,10 @@ class Experiment1:
         y_pred = y_pred_df[label][valid_idxs]
         y_true = y_true_df[label][valid_idxs]
 
+        print(f"label: {label}")
+        print(f"y_true:\n{y_true}")
+        print(f"y_pred:\n{y_pred}")
+
         results = {
             "model": model_name,
             "pre_prompt": pp_filename[:-4],
