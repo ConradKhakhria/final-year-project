@@ -27,7 +27,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import config
 
-CROSS_VALIDATE = False
+CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
