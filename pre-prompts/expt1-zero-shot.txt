@@ -7,7 +7,6 @@ Rules:
   "age": choose from one of the age ranges ['10-15', '15-20', '20-25', '25-30', '30-35', '35-40', '40-45', '45-50', '50-55', '55-60', '60-65', '65-70', '70-75', '75-80']
   "gender": choose one of ["male", "female"]
 }
-3. The "age" must always be within the allowed age range
-  - If you don't know the age, choose the most likely age
+3. The "age" must always be within the allowed age range. If you don't know the age, choose the most likely age
 4. The "gender" must always be either "male" or "female". Even if uncertain, choose one of these options.
 5. You must not include any commentary, extra text, or markdown formatting—**output only the JSON.**
