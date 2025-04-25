@@ -260,13 +260,13 @@ if __name__ == "__main__":
     else:
         best_age_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
-            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=50_000, n_jobs=-1),
             "svc": LinearSVC(C=0.1)
         }
 
         best_gender_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
-            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=50_000, n_jobs=-1),
             "svc": LinearSVC(C=0.1)   
         }
 
@@ -320,7 +320,7 @@ if __name__ == "__main__":
             pref_vec = vectoriser_preferences["gender"][name]
             m_X_train, m_X_test = X_train_vec[pref_vec], X_test_vec[pref_vec]
             r = evaluate_model(model, m_X_train, m_X_test, y_train_gender,
-                               y_test_gender, dataset=dataset, is_age=True)
+                               y_test_gender, dataset=dataset, is_age=False)
             gender_results.append({ "name": name, **r })
 
         # Create DataFrames with results
