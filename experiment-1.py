@@ -82,6 +82,10 @@ class Experiment1:
         self.dataset = DatasetLoader(buckets, seed=42)
         self.X_test, self.y_test = self._format_dataset(num_samples)
 
+        self.bucket_midpoints = {}
+        for b in buckets:
+            self.bucket_midpoints[b] = sum(map(int, b.split("-"))) / 2
+
 
     def run_experiment(self, model_name: str, pre_prompt_filename: str) -> Tuple[dict, dict]:
         """
@@ -148,10 +152,7 @@ class Experiment1:
         y_pred = y_pred_df[label][valid_idxs]
         y_true = y_true_df[label][valid_idxs]
 
-        if label == "age":
-            y_pred = self.dataset.buckets[y_pred.to_numpy().astype(int)]
-
-        return {
+        results = {
             "model": model_name,
             "pre_prompt": pp_filename[:-4],
             "accuracy": accuracy_score(y_true, y_pred),
@@ -159,6 +160,18 @@ class Experiment1:
             "confusion": confusion_matrix(y_true, y_pred),
             "valid_json": valid_idxs.astype(int).sum() / len(y_pred_df)
         }
+
+        if label == "age":
+            y_true_mid = np.array([self.bucket_midpoints[y] for y in y_true])
+            y_pred_mid = np.array([self.bucket_midpoints[y] for y in y_pred])
+            results["mae"] = np.mean(np.abs(y_true_mid - y_pred_mid))
+
+            y_test_indices = np.array([list(self.dataset.buckets).index(y) for y in y_true])
+            y_pred_indices = np.array([list(self.dataset.buckets).index(y) for y in y_pred])
+            adjacent_correct = np.sum(np.abs(y_test_indices - y_pred_indices) <= 1)
+            results["adjacent_accuracy"] = adjacent_correct / len(y_true)
+
+        return results
 
 
 if __name__ == "__main__":
