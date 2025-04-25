@@ -2,6 +2,7 @@
 import datasets
 from joblib import Memory
 import json
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
@@ -16,6 +17,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import make_scorer, accuracy_score, f1_score, \
                             classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
+import seaborn as sns
 import sys
 import time
 from typing import Dict, List, Literal, Tuple
@@ -27,6 +29,16 @@ import config
 
 CROSS_VALIDATE = False
 PROJECT_PATH = Path.home()
+
+
+def mae_age_scorer(y_true, y_pred):
+    """
+    Uses mid-points to determine the MAE for categorical age predictions
+    """
+    y_true_mid = np.array([dataset.bucket_midpoints[y] for y in y_true])
+    y_pred_mid = np.array([dataset.bucket_midpoints[y] for y in y_pred])
+
+    return -np.mean(np.abs(y_true_mid - y_pred_mid))
 
 
 class DatasetLoader:
@@ -48,6 +60,11 @@ class DatasetLoader:
         }
 
         self.buckets = buckets
+        self.bucket_midpoints = {}
+        for i, bucket in enumerate(buckets):
+            start, end = map(int, bucket.split('-'))
+            self.bucket_midpoints[bucket] = (start + end) / 2
+
         self.rng = np.random.default_rng(seed)
 
 
@@ -97,7 +114,6 @@ def cross_validate(
     args:
     - dataset: the dataset loader
     - label: "age" or "gender"
-    - seed: the random seed to use
     - subset_size: how big a subset
 
     returns:
@@ -106,9 +122,10 @@ def cross_validate(
         - vectoriser
         - accuracy
         - f1 macro
+        - mae (for age only)
         - best parameters
     """
-    X, y  = dataset.get_Xy("train", label, subset_size=subset_size)
+    X, y = dataset.get_Xy("train", label, subset_size=subset_size)
 
     # Models
     models = {
@@ -133,11 +150,20 @@ def cross_validate(
         "svc": { "C": [0.1, 1, 10], "kernel": ["linear", "poly", "rbf"] },
     }
 
-    # scoring
-    scoring = {
-        'accuracy': make_scorer(accuracy_score),
-        'f1_macro': make_scorer(f1_score, average='macro'),
-    }
+    # scoring - different for age and gender
+    if label == "age":
+        scoring = {
+            'accuracy': make_scorer(accuracy_score),
+            'f1_macro': make_scorer(f1_score, average='macro'),
+            'mae_age':  mae_age_scorer,
+        }
+        refit = "mae_age"  # Optimize for MAE with age
+    else:
+        scoring = {
+            'accuracy': make_scorer(accuracy_score),
+            'f1_macro': make_scorer(f1_score, average='macro'),
+        }
+        refit = "f1_macro"
 
     # Do the scoring
     results = []
@@ -162,38 +188,74 @@ def cross_validate(
                 param_grid=params,
                 cv=5,
                 scoring=scoring,
-                refit="f1_macro",
+                refit=refit,
                 n_jobs=-1
             )
             grid.fit(X, y)
 
             idx = grid.best_index_
-            results.append({
+            result = {
                 "model": model_name,
                 "vectoriser": vec_name,
                 "accuracy": grid.cv_results_["mean_test_accuracy"][idx],
                 "f1_macro": grid.cv_results_["mean_test_f1_macro"][idx],
                 "best_params": grid.best_params_
-            })
+            }
+
+            # Add MAE for age
+            if label == "age":
+                result["mae"] = -grid.cv_results_[f"mean_test_mae_age"][idx]
+                
+            results.append(result)
 
     df = pd.DataFrame(results)
-    df.to_csv(f"{label}_model_selection_wrapped.csv", index=False)
+    df.to_csv(f"{label}_model_selection_with_metrics.csv", index=False)
 
     return df
 
 
-def evaluate_model(model: ClassifierMixin, X_train, X_test, y_train, y_test) -> dict:
+def evaluate_model(model: ClassifierMixin, X_train, X_test, y_train, y_test, dataset=None, is_age=False) -> dict:
     """
     Evaluates a model with pre-vectorised text input
+    
+    For age, also calculates MAE based on bucket midpoints
     """
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-
-    return {
+    
+    result = {
         "accuracy": accuracy_score(y_test, y_pred),
         "f1_macro": f1_score(y_test, y_pred, average="macro", zero_division=0),
         "confusion": confusion_matrix(y_test, y_pred)
     }
+    
+    # For age, also calculate MAE
+    if is_age and dataset is not None:
+        y_test_mid = np.array([dataset.bucket_midpoints[y] for y in y_test])
+        y_pred_mid = np.array([dataset.bucket_midpoints[y] for y in y_pred])
+        result["mae"] = np.mean(np.abs(y_test_mid - y_pred_mid))
+        
+        # Also calculate adjacent-category accuracy
+        y_test_indices = np.array([list(dataset.buckets).index(y) for y in y_test])
+        y_pred_indices = np.array([list(dataset.buckets).index(y) for y in y_pred])
+        adjacent_correct = np.sum(np.abs(y_test_indices - y_pred_indices) <= 1)
+        result["adjacent_accuracy"] = adjacent_correct / len(y_test)
+    
+    return result
+
+
+def plot_confusion_matrix(cm, class_names, title, filename):
+    """
+    Plots a confusion matrix
+    """
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
 
 
 if __name__ == "__main__":
@@ -203,6 +265,12 @@ if __name__ == "__main__":
     if CROSS_VALIDATE:
         age_results = cross_validate(dataset, "age", subset_size=5000)
         gender_results = cross_validate(dataset, "gender", subset_size=5000)
+        
+        print("Age Model Selection Results:")
+        print(age_results[["model", "vectoriser", "accuracy", "f1_macro", "mae"]].sort_values("mae"))
+        
+        print("\nGender Model Selection Results:")
+        print(gender_results[["model", "vectoriser", "accuracy", "f1_macro"]].sort_values("f1_macro", ascending=False))
     else:
         best_age_models = {
             "lr":  LogisticRegression(C=10, max_iter=2000, solver="saga", n_jobs=-1),
@@ -242,7 +310,16 @@ if __name__ == "__main__":
             config.debug(f"Evaluating model {name} for age")
             r = evaluate_model(model, X_train_vec["tf-idf"],
                                X_test_vec["tf-idf"], y_train_age,
-                               y_test_age)
+                               y_test_age, dataset=dataset, is_age=True)
+
+            # Plot confusion matrix
+#            plot_confusion_matrix(
+#                r["confusion"], 
+#                np.unique(y_test_age), 
+#                f"Age Prediction Confusion Matrix - {name.upper()}", 
+#                f"age_confusion_matrix_{name}.png"
+#            )
+            
             age_results.append({ "name": name, **r })
 
         # Get results for gender models
@@ -253,19 +330,69 @@ if __name__ == "__main__":
             config.debug(f"Evaluating model {name} for gender")
             if name == "rf":
                 r = evaluate_model(model, X_train_vec["b-of-w"],
-                                   X_test_vec["b-of-w"], y_train_age,
-                                   y_test_age)
+                                   X_test_vec["b-of-w"], y_train_gender,
+                                   y_test_gender)
             else:
                 r = evaluate_model(model, X_train_vec["tf-idf"],
-                                   X_test_vec["tf-idf"], y_train_age,
-                                   y_test_age) 
-            age_results.append({ "name": name, **r })
+                                   X_test_vec["tf-idf"], y_train_gender,
+                                   y_test_gender) 
+                
+#            # Plot confusion matrix
+#            plot_confusion_matrix(
+#                r["confusion"], 
+#                np.unique(y_test_gender), 
+#                f"Gender Prediction Confusion Matrix - {name.upper()}", 
+#                f"gender_confusion_matrix_{name}.png"
+#            )
+            
+            gender_results.append({ "name": name, **r })
 
+        # Create DataFrames with results
         df_age = pd.DataFrame(age_results)
         df_gender = pd.DataFrame(gender_results)
 
-        df_age.to_csv(config.RESULTS_DIR / "full-testing-age-evaluation.csv")
-        df_gender.to_csv(config.RESULTS_DIR / "full-testing-gender-evaluation.csv")
+        # Save results
+        age_results_for_csv = [{
+            "model": r["name"],
+            "accuracy": r["accuracy"],
+            "f1_macro": r["f1_macro"],
+            "mae": r["mae"],
+            "adjacent_accuracy": r["adjacent_accuracy"]
+        } for r in age_results]
+
+        gender_results_for_csv = [{
+            "model": r["name"],
+            "accuracy": r["accuracy"],
+            "f1_macro": r["f1_macro"]
+        } for r in gender_results]
+
+        pd.DataFrame(age_results_for_csv).to_csv(config.RESULTS_DIR / "full-testing-age-evaluation.csv")
+        pd.DataFrame(gender_results_for_csv).to_csv(config.RESULTS_DIR / "full-testing-gender-evaluation.csv")
+        
+        # Print evaluation metrics to console
+        print("\n===== AGE PREDICTION RESULTS =====")
+        print(pd.DataFrame(age_results_for_csv).sort_values("mae"))
+        print("\n===== GENDER PREDICTION RESULTS =====")
+        print(pd.DataFrame(gender_results_for_csv).sort_values("f1_macro", ascending=False))
+        
+        # Print classification reports
+        for name, model in best_age_models.items():
+            print(f"\nClassification report for {name} (age):")
+            model.fit(X_train_vec["tf-idf"], y_train_age)
+            y_pred = model.predict(X_test_vec["tf-idf"])
+            print(classification_report(y_test_age, y_pred, zero_division=0))
+            
+            # Calculate distance-based confusion analysis
+            y_test_indices = np.array([list(dataset.buckets).index(y) for y in y_test_age])
+            y_pred_indices = np.array([list(dataset.buckets).index(y) for y in y_pred])
+            distances = np.abs(y_test_indices - y_pred_indices)
+            
+            print(f"Distance-based error analysis for {name}:")
+            print(f"Exact match: {np.sum(distances == 0) / len(distances):.2%}")
+            print(f"Off by 1 bucket: {np.sum(distances == 1) / len(distances):.2%}")
+            print(f"Off by 2 buckets: {np.sum(distances == 2) / len(distances):.2%}")
+            print(f"Off by >2 buckets: {np.sum(distances > 2) / len(distances):.2%}")
+            print(f"Average distance (in buckets): {np.mean(distances):.2f}")
 
 
 
