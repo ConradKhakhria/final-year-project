@@ -155,7 +155,7 @@ class Experiment1:
         print(f"columns = {y_pred_df.columns}")
 
         if sorted(list(y_pred_df.columns)) != ["age", "gender"]:
-            y_pred_df.to_csv(config.RESULTS_DIR / f"{model_name}_{pp_filename[:-4]}_whoops.csv")
+            y_pred_df.to_csv(config.RESULTS_DIR / f"{model_name.split('/')[1]}_{pp_filename[:-4]}_whoops.csv")
             
             return {
                 "model": model_name,
