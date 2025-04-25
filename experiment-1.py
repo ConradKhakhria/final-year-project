@@ -15,6 +15,9 @@ import config
 import model
 
 
+NUM_SAMPLES = 50
+
+
 # copied directly from experiment-1-shallow.py
 class DatasetLoader:
     def __init__(self, buckets: np.ndarray, seed: int | None = None):
@@ -178,7 +181,7 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     buckets = np.array([f"{s}-{s + 5}" for s in (5 * (np.arange(0, 100) // 5))])
-    expt1 = Experiment1(buckets, num_samples=5000)
+    expt1 = Experiment1(buckets, num_samples=NUM_SAMPLES)
 
     # Parameters to test
     prompt_names = [
@@ -187,7 +190,9 @@ if __name__ == "__main__":
     ]
 
     model_names = [
-        "mistralai/Mistral-7B-Instruct-v0.3"
+        "mistralai/Mistral-7B-Instruct-v0.3",
+        "meta-llama/Llama-2-7b-chat-hf",
+        "google/gemma-3-4b-it"
     ]
 
     # Evaluate
@@ -202,5 +207,19 @@ if __name__ == "__main__":
     df_age = pd.DataFrame(age_results)
     df_gender = pd.DataFrame(gender_results)
 
-    df_age.to_csv(config.RESULTS_DIR / f"age_evaluation_llm.csv")
-    df_gender.to_csv(config.RESULTS_DIR / f"gender_evaluation_llm.csv")
+    # Filenames
+    if NUM_SAMPLES is not None:
+        df_age_name = f"age_evaluation_llm_{NUM_SAMPLES}_samples.csv"
+        df_gender_name = f"gender_evaluation_llm_{NUM_SAMPLES}_samples.csv"
+    else:
+        df_age_name = "age_evaluation_llm.csv"
+        df_gender_name = "gender_evaluation_llm.csv"
+
+    df_age.to_csv(config.RESULTS_DIR / df_age_name)
+    df_gender.to_csv(config.RESULTS_DIR / df_gender_name)
+
+    # Print evaluation metrics to console
+    print("\n===== AGE PREDICTION RESULTS =====")
+    print(df_age)
+    print("\n===== GENDER PREDICTION RESULTS =====")
+    print(df_gender)
