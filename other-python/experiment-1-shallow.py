@@ -31,10 +31,8 @@ CROSS_VALIDATE = True
 PROJECT_PATH = Path.home()
 
 
-def mae_age_scorer(y_true, y_pred):
-    """
-    Uses mid-points to determine the MAE for categorical age predictions
-    """
+def mae_age_scorer(estimator, X, y_true):
+    y_pred = estimator.predict(X)
     y_true_mid = np.array([dataset.bucket_midpoints[y] for y in y_true])
     y_pred_mid = np.array([dataset.bucket_midpoints[y] for y in y_pred])
 
