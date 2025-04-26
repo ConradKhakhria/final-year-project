@@ -188,14 +188,17 @@ class Experiment1:
         y_pred = y_pred_df[label][valid_format_idxs]
         y_true = y_true_df[label][valid_format_idxs]
 
+        valid_json = valid_idxs.astype(int).sum() / len(y_pred_df)
+        valid_format = valid_format_idxs.astype(int).sum() / len(y_pred_df)
+
         results = {
             "model": model_name,
             "pre_prompt": pp_filename[:-4],
             "accuracy": accuracy_score(y_true, y_pred),
             "f1_macro": f1_score(y_true, y_pred, average="macro", zero_division=0),
             "confusion": confusion_matrix(y_true, y_pred),
-            "valid_json": valid_idxs.astype(int).sum() / len(y_pred_df),
-            "valid_format": valid_format_idxs.astype(int).sum() / len(y_pred_df)
+            "valid_json": f"{100 * valid_json}%",
+            "valid_format": f"{100 * valid_format}%"
         }
 
         if label == "age":
