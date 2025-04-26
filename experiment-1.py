@@ -124,7 +124,7 @@ class Experiment1:
         filename = f"{model_short_name}-{pre_prompt_short_name}-actual-string-output.txt"
         out_file = config.RESULTS_DIR / filename
 
-        with open(out_file) as f:
+        with open(out_file, "w") as f:
             for i, s in enumerate(y_pred_strings):
                 f.write(f"string {i + 1}:\n{s}\n\n")
 
