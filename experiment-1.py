@@ -121,7 +121,8 @@ class Experiment1:
         # Record the actual string outputs:
         model_short_name = model_name.split("/")[1]
         pre_prompt_short_name = pre_prompt_filename[:-4]
-        out_file = config.RESULTS_DIR / f"{model_short_name}-{pre_prompt_filename}-actual-string-output.txt"
+        filename = f"{model_short_name}-{pre_prompt_short_name}-actual-string-output.txt"
+        out_file = config.RESULTS_DIR / filename
 
         with open(out_file) as f:
             for i, s in enumerate(y_pred_strings):
