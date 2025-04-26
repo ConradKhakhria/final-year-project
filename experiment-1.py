@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = 5000
+NUM_SAMPLES = 50
 
 
 # copied directly from experiment-1-shallow.py
@@ -176,8 +176,8 @@ class Experiment1:
                 "accuracy": None,
                 "f1_macro": None,
                 "confusion": None,
-                "valid_json": 0,
-                "valid_format": 0
+                "valid_json": None,
+                "valid_format": None
             }
 
         valid_idxs = y_pred_df[label].notnull()
