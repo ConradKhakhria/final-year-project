@@ -90,9 +90,16 @@ class Experiment1:
             self.bucket_midpoints[b] = sum(map(int, b.split("-"))) / 2
 
 
-    def run_experiment(self, model_name: str, pre_prompt_filename: str) -> Tuple[dict, dict]:
+    def run_experiment(
+        self, model_name: str, pre_prompt_filename: str, batch_size: int
+    ) -> Tuple[dict, dict]:
         """
         Runs the experiment on a model and pre prompt
+
+        args:
+        - model_name: the name of the model to use
+        - pre_prompt_filename: the pre-prompt to use
+        - batch_size: the number of prompts to run simultaneously
 
         returns:
         a dictionary for age prediction evaluation and gender prediction evaluation
@@ -103,7 +110,7 @@ class Experiment1:
 
         y_pred_strings = isolator.process_prompts(
             prompts=self.X_test,
-            batch_size=200,
+            batch_size=batch_size,
             cfg={
                 "max_new_tokens": 30,
                 "pre_prompt_name": pre_prompt_filename,
@@ -217,17 +224,34 @@ if __name__ == "__main__":
     ]
 
     model_names = [
-#        "mistralai/Mistral-7B-Instruct-v0.3",
-        "meta-llama/Llama-2-7b-chat-hf",
-#        "google/gemma-3-4b-it"
+#        "mistral",
+        "llama-2",
+#        "gemma-3",
     ]
+
+    model_configs = {
+        "mistral": {
+            "full_name": "mistralai/Mistral-7B-Instruct-v0.3",
+            "batch_size": 200
+        },
+        "llama-2": {
+            "full_name": "meta-llama/Llama-2-7b-chat-hf",
+            "batch_size": 50
+        },
+        "gemma-3": {
+            "full_name": "google/gemma-3-4b-it",
+            "batch_size": 160
+        }
+    }
 
     # Evaluate
     age_results = []
     gender_results = []
 
     for model_name, preprompt_filename in itertools.product(model_names, prompt_names):
-        age, gender = expt1.run_experiment(model_name, preprompt_filename)
+        full_name = model_configs[model_name]["full_name"]
+        batch_size = model_configs[model_name]["batch_size"]
+        age, gender = expt1.run_experiment(full_name, preprompt_filename, batch_size)
         age_results.append(age)
         gender_results.append(gender)
 
