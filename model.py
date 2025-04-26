@@ -35,7 +35,7 @@ class BatchModel:
             bnb_4bit_quant_type="nf4"
         )
 
-        config.debug(f"Loading model {model_id}")
+        config.output(f"Loading model {model_id}")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             device_map="auto",
@@ -70,7 +70,7 @@ class BatchModel:
         """
         Sets the pre-prompt from a path
         """
-        config.debug(f"Loading pre-prompt from {path}")
+        config.output(f"Loading pre-prompt from {path}")
 
         with open(path) as f:
             self.pre_prompt = f.read()
