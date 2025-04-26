@@ -16,7 +16,7 @@ Here are some examples:
 [input]: just got my first apartment!! can't wait to decorate it the way I want
 [output]:
 {
-  "age": '20-25',
+  "age": "20-25",
   "gender": "female"
 }
 
@@ -24,7 +24,7 @@ Here are some examples:
 [input]: woke up with back pain and made three cups of coffee before 9am
 [output]:
 {
-  "age": '40-45',
+  "age": "40-45",
   "gender": "male"
 }
 
@@ -32,7 +32,7 @@ Here are some examples:
 [input]: omg school is so boring why do i need math in real life???
 [output]:
 {
-  "age": '15-20',
+  "age": "15-20",
   "gender": "female"
 }
 
@@ -40,7 +40,7 @@ Here are some examples:
 [input]: can’t believe my son is graduating high school already!
 [output]:
 {
-  "age": '40-45',
+  "age": "40-45",
   "gender": "male"
 }
 
