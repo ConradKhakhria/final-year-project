@@ -333,13 +333,15 @@ if __name__ == "__main__":
             "accuracy": r["accuracy"],
             "f1_macro": r["f1_macro"],
             "mae": r["mae"],
-            "adjacent_accuracy": r["adjacent_accuracy"]
+            "adjacent_accuracy": r["adjacent_accuracy"],
+            "confusion": r["confusion"]
         } for r in age_results]
 
         gender_results_for_csv = [{
             "model": r["name"],
             "accuracy": r["accuracy"],
-            "f1_macro": r["f1_macro"]
+            "f1_macro": r["f1_macro"],
+            "confusion": r["confusion"]
         } for r in gender_results]
 
         pd.DataFrame(age_results_for_csv).to_csv(config.RESULTS_DIR / "full-testing-age-evaluation.csv")
