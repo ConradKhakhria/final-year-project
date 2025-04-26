@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = 50
+NUM_SAMPLES = 5000
 
 
 # copied directly from experiment-1-shallow.py
