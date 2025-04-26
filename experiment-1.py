@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = 5000
+NUM_SAMPLES = 500
 
 
 # copied directly from experiment-1-shallow.py
@@ -111,7 +111,7 @@ class Experiment1:
             }
         )
 
-        with open(config.RESULTS_DIR / "actual-string-output.txt", "w") as f:
+        with open(config.RESULTS_DIR / f"{model_name.split('/')[1]}-actual-string-output.txt", "w") as f:
             for i, s in enumerate(y_pred_strings):
                 f.write(f"string {i + 1}:\n{s}\n\n")
 
@@ -213,13 +213,13 @@ if __name__ == "__main__":
     # Parameters to test
     prompt_names = [
         "expt1-zero-shot.txt",
-        "expt1-few-shot.txt"
+#        "expt1-few-shot.txt"
     ]
 
     model_names = [
-        "mistralai/Mistral-7B-Instruct-v0.3",
+#        "mistralai/Mistral-7B-Instruct-v0.3",
         "meta-llama/Llama-2-7b-chat-hf",
-        "google/gemma-3-4b-it"
+#        "google/gemma-3-4b-it"
     ]
 
     # Evaluate
