@@ -105,7 +105,7 @@ class Experiment1:
             prompts=self.X_test,
             batch_size=200,
             cfg={
-                "max_new_tokens": 20,
+                "max_new_tokens": 30,
                 "pre_prompt_name": pre_prompt_filename,
                 "enforce_json": True
             }
