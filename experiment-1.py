@@ -257,7 +257,7 @@ if __name__ == "__main__":
         },
         "llama-2": {
             "full_name": "meta-llama/Llama-2-7b-chat-hf",
-            "batch_size": 10
+            "batch_size": 50
         },
         "gemma-3": {
             "full_name": "google/gemma-3-4b-it",
