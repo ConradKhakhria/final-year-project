@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = 5000
+NUM_SAMPLES = 1000
 
 
 # copied directly from experiment-1-shallow.py
@@ -110,6 +110,10 @@ class Experiment1:
                 "enforce_json": True
             }
         )
+
+        with open(config.RESULTS_DIR / "actual-string-output.txt") as f:
+            for i, s in enumerate(y_pred_strings):
+                f.write(f"string {i + 1}:\n{s}\n\n")
 
         y_pred = model.extract_json(y_pred_strings, {"age": None, "gender": None})
         y_pred_df = pd.DataFrame(y_pred)
@@ -209,13 +213,13 @@ if __name__ == "__main__":
     # Parameters to test
     prompt_names = [
         "expt1-zero-shot.txt",
-        "expt1-few-shot.txt"
+#        "expt1-few-shot.txt"
     ]
 
     model_names = [
         "mistralai/Mistral-7B-Instruct-v0.3",
-        "meta-llama/Llama-2-7b-chat-hf",
-        "google/gemma-3-4b-it"
+#        "meta-llama/Llama-2-7b-chat-hf",
+#        "google/gemma-3-4b-it"
     ]
 
     # Evaluate
@@ -238,8 +242,8 @@ if __name__ == "__main__":
         df_age_name = "age_evaluation_llm.csv"
         df_gender_name = "gender_evaluation_llm.csv"
 
-    df_age.to_csv(config.RESULTS_DIR / df_age_name)
-    df_gender.to_csv(config.RESULTS_DIR / df_gender_name)
+    # df_age.to_csv(config.RESULTS_DIR / df_age_name)
+    # df_gender.to_csv(config.RESULTS_DIR / df_gender_name)
 
     # Print evaluation metrics to console
     print("\n===== AGE PREDICTION RESULTS =====")
