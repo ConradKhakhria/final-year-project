@@ -118,7 +118,12 @@ class Experiment1:
             }
         )
 
-        with open(config.RESULTS_DIR / f"{model_name.split('/')[1]}-actual-string-output.txt", "w") as f:
+        # Record the actual string outputs:
+        model_short_name = model_name.split("/")[1]
+        pre_prompt_short_name = pre_prompt_filename[:-4]
+        out_file = config.RESULTS_DIR / f"{model_short_name}-{pre_prompt_filename}-actual-string-output.txt"
+
+        with open(out_file) as f:
             for i, s in enumerate(y_pred_strings):
                 f.write(f"string {i + 1}:\n{s}\n\n")
 
