@@ -252,11 +252,7 @@ class BatchModelIsolator:
         )
         p.start()
 
-        config.debug(
-            "Created new batch worker\n"
-            f" - torch.cuda.memory_allocated() = {torch.cuda.memory_allocated()}\n"
-            f" - torch.cuda.memory_reserved() = {torch.cuda.memory_reserved()}"
-        )
+        config.debug("Created new batch worker")
 
         return p, in_queue, out_queue
 
