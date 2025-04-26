@@ -111,7 +111,7 @@ class Experiment1:
             }
         )
 
-        with open(config.RESULTS_DIR / "actual-string-output.txt") as f:
+        with open(config.RESULTS_DIR / "actual-string-output.txt", "w") as f:
             for i, s in enumerate(y_pred_strings):
                 f.write(f"string {i + 1}:\n{s}\n\n")
 
