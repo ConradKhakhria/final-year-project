@@ -89,6 +89,15 @@ class Experiment1:
         for b in buckets:
             self.bucket_midpoints[b] = sum(map(int, b.split("-"))) / 2
 
+        # Output directories
+        self.string_output = config.RESULTS_DIR / "string-output"
+        self.errors = config.RESULTS_DIR / "whoopsies"
+        self.evaluation = config.RESULTS_DIR / "evaluation"
+
+        self.string_output.mkdir(parents=True, exist_ok=True)
+        self.errors.mkdir(parents=True, exist_ok=True)
+        self.evaluation.mkdir(parents=True, exist_ok=True)
+
 
     def run_experiment(
         self, model_name: str, pre_prompt_filename: str, batch_size: int
@@ -121,8 +130,7 @@ class Experiment1:
         # Record the actual string outputs:
         model_short_name = model_name.split("/")[1]
         pre_prompt_short_name = pre_prompt_filename[:-4]
-        filename = f"{model_short_name}-{pre_prompt_short_name}-actual-string-output.txt"
-        out_file = config.RESULTS_DIR / filename
+        out_file = self.string_output / f"{model_short_name}-{pre_prompt_short_name}.txt"
 
         with open(out_file, "w") as f:
             for i, s in enumerate(y_pred_strings):
@@ -174,7 +182,9 @@ class Experiment1:
         print(f"columns = {y_pred_df.columns}")
 
         if not {"age", "gender"}.issubset(y_pred_df.columns):
-            y_pred_df.to_csv(config.RESULTS_DIR / f"{model_name.split('/')[1]}_{pp_filename[:-4]}_whoops.csv")
+            model_short_name = model_name.split("/")[1]
+            pre_prompt_short_name = pp_filename[:-4]
+            y_pred_df.to_csv(self.errors / f"{model_short_name}_{pre_prompt_short_name}.csv")
 
             return {
                 "model": model_name,
@@ -277,8 +287,8 @@ if __name__ == "__main__":
         df_age_name = "age_evaluation_llm.csv"
         df_gender_name = "gender_evaluation_llm.csv"
 
-    # df_age.to_csv(config.RESULTS_DIR / df_age_name)
-    # df_gender.to_csv(config.RESULTS_DIR / df_gender_name)
+    df_age.to_csv(expt1.evaluation / df_age_name)
+    df_gender.to_csv(expt1.evaluation / df_gender_name)
 
     # Print evaluation metrics to console
     print("\n===== AGE PREDICTION RESULTS =====")
