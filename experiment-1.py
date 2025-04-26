@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = 500
+NUM_SAMPLES = 50
 
 
 # copied directly from experiment-1-shallow.py
@@ -225,13 +225,13 @@ if __name__ == "__main__":
     # Parameters to test
     prompt_names = [
         "expt1-zero-shot.txt",
-#        "expt1-few-shot.txt"
+        "expt1-few-shot.txt"
     ]
 
     model_names = [
-#        "mistral",
+        "mistral",
         "llama-2",
-#        "gemma-3",
+        "gemma-3",
     ]
 
     model_configs = {
