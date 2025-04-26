@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 5000
 
 
 # copied directly from experiment-1-shallow.py
@@ -213,13 +213,13 @@ if __name__ == "__main__":
     # Parameters to test
     prompt_names = [
         "expt1-zero-shot.txt",
-#        "expt1-few-shot.txt"
+        "expt1-few-shot.txt"
     ]
 
     model_names = [
         "mistralai/Mistral-7B-Instruct-v0.3",
-#        "meta-llama/Llama-2-7b-chat-hf",
-#        "google/gemma-3-4b-it"
+        "meta-llama/Llama-2-7b-chat-hf",
+        "google/gemma-3-4b-it"
     ]
 
     # Evaluate
