@@ -131,6 +131,8 @@ class Experiment1:
         gender_evaluation = self._create_evaluation(y_pred_df, y_true_df, "gender",
                                                     model_name, pre_prompt_filename)
 
+        del isolator
+
         return age_evaluation, gender_evaluation
 
 
