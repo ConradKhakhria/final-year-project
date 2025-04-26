@@ -260,13 +260,13 @@ if __name__ == "__main__":
     else:
         best_age_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
-            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=50_000, n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=500, n_jobs=-1),
             "svc": LinearSVC(C=0.1)
         }
 
         best_gender_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
-            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=50_000, n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=500, n_jobs=-1),
             "svc": LinearSVC(C=0.1)   
         }
 
