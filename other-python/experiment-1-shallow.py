@@ -260,13 +260,13 @@ if __name__ == "__main__":
     else:
         best_age_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
-            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=500, n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=50_000, n_jobs=-1),
             "svc": LinearSVC(C=0.1)
         }
 
         best_gender_models = {
             "lr":  LogisticRegression(C=1, max_iter=2000, solver="saga", n_jobs=-1),
-            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=500, n_jobs=-1),
+            "rf":  RandomForestClassifier(max_depth=30, n_estimators=500, max_samples=50_000, n_jobs=-1),
             "svc": LinearSVC(C=0.1)   
         }
 
@@ -293,10 +293,10 @@ if __name__ == "__main__":
 
         # pre-vectorise training and testing sets
         config.debug("Vectorising datasets")
-        X_train, y_train_age = dataset.get_Xy("train", "age", subset_size=500)
-        _, y_train_gender    = dataset.get_Xy("train", "gender", subset_size=500)
-        X_test, y_test_age   = dataset.get_Xy("test", "age", subset_size=500)
-        _, y_test_gender     = dataset.get_Xy("test", "gender", subset_size=500)
+        X_train, y_train_age = dataset.get_Xy("train", "age")
+        _, y_train_gender    = dataset.get_Xy("train", "gender")
+        X_test, y_test_age   = dataset.get_Xy("test", "age")
+        _, y_test_gender     = dataset.get_Xy("test", "gender")
 
         X_train_vec = { name : vec.fit_transform(X_train) for name, vec in vectorisers.items() }
         X_test_vec  = { name : vec.transform(X_test) for name, vec in vectorisers.items() }
