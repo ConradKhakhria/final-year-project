@@ -393,7 +393,7 @@ if __name__ == "__main__":
     for name, model_id in model_ids.items():
         expt.run_experiment(
             experiment_sub_heading="expt2-relevant-subs-general-trends-all",
-            which_subreddits="irrelevant",
+            which_subreddits="relevant",
             demographics_max_tokens=30,
             chunk_report_max_tokens=200,
             overall_report_max_tokens=2000,
