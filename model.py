@@ -155,12 +155,8 @@ class BatchModel:
 
 
 class BatchModelIsolator:
-    def __init__(self, which_model: Literal["small", "large"]):
-        if which_model == "small":
-            self.model_id = config.SMALL_MODEL
-        else:
-            self.model_id = config.LARGE_MODEL
-
+    def __init__(self, model_id: str):
+        self.model_id = model_id
         self.p: Optional[mp.Process]  = None
         self.in_queue: Optional[mp.Queue] = None
         self.out_queue: Optional[mp.Queue] = None

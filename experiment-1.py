@@ -113,9 +113,7 @@ class Experiment1:
         returns:
         a dictionary for age prediction evaluation and gender prediction evaluation
         """
-        # This is horrible
-        config.SMALL_MODEL = model_name
-        isolator = model.BatchModelIsolator("small")
+        isolator = model.BatchModelIsolator(model_name)
 
         y_pred_strings = isolator.process_prompts(
             prompts=self.X_test,
