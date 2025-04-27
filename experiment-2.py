@@ -89,12 +89,9 @@ class Experiment2:
 
         # Post-processing
         def format_age(age: Any) -> str:
-            try:
-                if 0 <= (age_int := int(float(age))) <= 100:
-                    return bins[age_int]
-                else:
-                    return "unknown"
-            except (ValueError, TypeError):
+            if isinstance(age, str) and age in bins:
+                return age
+            else:
                 return "unknown"
 
 
