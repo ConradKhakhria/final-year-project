@@ -322,7 +322,7 @@ class Experiment2:
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=40)
 
-        print(test_df)
+        test_df.to_parquet(output_path / "what-the-fuck.parquet")
 
         # Dump metadata about demographic inference
         demographic_df = test_df[["text", "predicted_age", "predicted_gender"]]
