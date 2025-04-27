@@ -79,6 +79,9 @@ class Experiment2:
             }
         )
 
+        for o in outputs:
+            print(f"=== output string ===\n{o}\n\n")
+
         json_output = model.extract_json(outputs, {"age": None, "gender": None})
         inference_df = pd.DataFrame.from_records(json_output).rename(
             columns={
@@ -86,9 +89,6 @@ class Experiment2:
                 "gender": "predicted_gender"
             }
         )
-
-        print(inference_df.columns)
-        print(inference_df)
 
         # Post-processing
         def format_age(age: Any) -> str:
