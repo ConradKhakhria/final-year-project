@@ -16,7 +16,7 @@ import model
 
 
 class Experiment2:
-    def __init__(self):
+    def __init__(self, seed: int):
         config.debug("Loading dataset")
 
         self.data_dir = config.CODE_DIR / "data"
@@ -25,6 +25,8 @@ class Experiment2:
 
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
+
+        self.rng = np.random.default_rng(seed)
 
     ##### Data selection #####
 
@@ -44,7 +46,7 @@ class Experiment2:
 
         if num_samples is not None:
             n_posts = len(test_df)
-            sample_idxs = np.random.choice(np.arange(0, n_posts), size=num_samples, replace=False)
+            sample_idxs = self.rng.choice(np.arange(0, n_posts), size=num_samples, replace=False)
             test_df = test_df.iloc[sample_idxs]
 
         return test_df
@@ -381,7 +383,7 @@ class Experiment2:
 
 if __name__ == "__main__":
     mp.set_start_method("spawn")
-    expt = Experiment2()
+    expt = Experiment2(42)
 
     # List LLMs to sample
     model_ids = {
