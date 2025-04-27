@@ -111,7 +111,10 @@ class Experiment2:
         inference_df["predicted_age"] = inference_df["predicted_age"].apply(format_age)
         inference_df["predicted_gender"] = inference_df["predicted_gender"].apply(format_gender)
 
-        return pd.concat([test_df, inference_df], axis=1)
+        return pd.concat([
+            test_df.reset_index(drop=True),
+            inference_df.reset_index(drop=True)
+        ], axis=1)
 
 
     def create_balanced_post_selection(
@@ -320,10 +323,8 @@ class Experiment2:
             output_path.mkdir()
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
-        test_df.to_parquet(output_path / "what-the-fuck-part-1.parquet")
-
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=40)
-        test_df.to_parquet(output_path / "what-the-fuck-part-2.parquet")
+        test_df.to_parquet(output_path / "what-the-fuck.parquet")
 
         # Dump metadata about demographic inference
         demographic_df = test_df[["text", "predicted_age", "predicted_gender"]]
@@ -401,7 +402,7 @@ if __name__ == "__main__":
         expt.run_experiment(
             experiment_sub_heading="expt2-relevant-subs-general-trends-all",
             which_subreddits="irrelevant",
-            demographics_max_tokens=20,
+            demographics_max_tokens=30,
             chunk_report_max_tokens=200,
             overall_report_max_tokens=2000,
             summary_model_id=model_id,
