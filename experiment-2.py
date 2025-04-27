@@ -69,7 +69,7 @@ class Experiment2:
         2. if gender isn't strictly male or female, it is None
         """
         prompts = test_df.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
-        outputs = self.summary_model_isolator.process_prompts(
+        outputs = self.model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
             cfg={
@@ -195,7 +195,7 @@ class Experiment2:
             A string containing a bullet-pointed list of trends indicated
         """
         prompts = [self.chunk_to_prompt(c) for c in chunks]
-        outputs = self.summary_model_isolator.process_prompts(
+        outputs = self.model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
             cfg={
@@ -246,7 +246,7 @@ class Experiment2:
                 batch = reports[batch_start : batch_end]
                 batch_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(batch))
 
-                new_report = self.aggregator_model_isolator.process_prompts(
+                new_report = self.model_isolator.process_prompts(
                     [query_context + batch_string],
                     batch_size=20,
                     cfg={
@@ -283,8 +283,8 @@ class Experiment2:
         demographics_max_tokens: int,
         chunk_report_max_tokens: int,
         overall_report_max_tokens: int,
-        summary_model_id: str,
-        aggregator_model_id: str,
+        model_name: str,
+        model_id: str,
         num_samples: int | None = None
     ):
         """
@@ -308,16 +308,14 @@ class Experiment2:
         - num_samples (nullable):
             the number of samples to take from the dataset
         """
-        self.summary_model_isolator = model.BatchModelIsolator(summary_model_id)
-        self.aggregator_model_isolator = model.BatchModelIsolator(aggregator_model_id)
+        self.model_isolator = model.BatchModelIsolator(model_id)
 
         subreddits = self.subreddit_selection[which_subreddits]
         age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
         gender_range = ["male", "female", "unknown"]
 
-        output_path = config.RESULTS_DIR / experiment_sub_heading
-        if not output_path.exists():
-            output_path.mkdir()
+        output_path = config.RESULTS_DIR / experiment_sub_heading / model_id
+        output_path.mkdir(parents=True, exist_ok=True)
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=40)
@@ -341,7 +339,6 @@ class Experiment2:
                 }
 
         expt.dump_report(trend_reports, output_path / "experiment-2-trend-reports.json")
-        expt.summary_model_isolator.kill_batch_worker()
 
         # Produce larger reports
         larger_reports = {}
@@ -376,7 +373,7 @@ class Experiment2:
         config.output("Done with experiment!")
 
         expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
-        expt.aggregator_model_isolator.kill_batch_worker()
+        expt.model_isolator.kill_batch_worker()
 
 
 if __name__ == "__main__":
@@ -397,8 +394,8 @@ if __name__ == "__main__":
             demographics_max_tokens=30,
             chunk_report_max_tokens=200,
             overall_report_max_tokens=2000,
-            summary_model_id=model_id,
-            aggregator_model_id=model_id,
+            model_name=name,
+            model_id=model_id,
             num_samples=100
         )
 
