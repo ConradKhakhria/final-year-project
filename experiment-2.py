@@ -318,6 +318,10 @@ class Experiment2:
         output_path.mkdir(parents=True, exist_ok=True)
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
+        test_df.to_parquet(output_path / "test-df.parquet")
+        exit()
+
+
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
 
         # Dump metadata about demographic inference
