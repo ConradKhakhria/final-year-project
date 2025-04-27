@@ -38,7 +38,7 @@ class Experiment1:
 
         # Output directories
         self.string_output = config.RESULTS_DIR / "string-output"
-        self.errors = config.RESULTS_DIR / "whoopsies"
+        self.errors = config.RESULTS_DIR / "errors"
         self.evaluation = config.RESULTS_DIR / "evaluation"
 
         self.string_output.mkdir(parents=True, exist_ok=True)
