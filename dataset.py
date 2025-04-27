@@ -1,10 +1,71 @@
 # mypy: ignore-errors
 import datasets
+import numpy as np
 import os
 import pandas as pd
 from pathlib import Path
+from typing import Tuple
 
 import config
+
+
+class DatasetLoader:
+    def __init__(self, dataset_name: str, buckets: np.ndarray, seed: int | None = None):
+        config.debug("Loading datasets")
+        self.dataset = datasets.load_dataset(dataset_name, trust_remote_code=True)
+
+        self.df_train = self.dataset["train"].to_pandas()
+        self.df_test = self.dataset["validation"].to_pandas()
+
+        self.X = {
+            "train": self.df_train["text"],
+            "test": self.df_test["text"]
+        }
+
+        self.y = {
+            "train": { "age": self.df_train["age"], "gender": self.df_train["gender"] },
+            "test":  { "age": self.df_test["age"],  "gender": self.df_test["gender"]}
+        }
+
+        self.buckets = buckets
+        self.rng = np.random.default_rng(seed)
+
+
+    def get_Xy(
+        self, split: str, label: str, subset_size: int | None = None
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Returns the X and y pair
+
+        args:
+        - split: 'train' or 'test'
+        - label: 'age' or 'gender'
+        - subset_size: the size of the random subset to use (default None: full dataset)
+
+        returns:
+        the tuple containing:
+            - X
+            - y
+        """
+        if split not in ["train", "test"]:
+            raise NameError(f"No split named '{split}'")
+
+        if label not in ["age", "gender"]:
+            raise NameError(f"No target label '{label}'")
+
+        X = self.X[split]
+        y = self.y[split][label]
+
+        if label == "age":
+            y = self.buckets[y]
+
+        if subset_size is not None:
+            idxs = self.rng.choice(np.arange(len(X)), size=subset_size, replace=False)
+
+            X = X[idxs]
+            y = y[idxs]
+
+        return X, y
 
 
 @config.debug_function
