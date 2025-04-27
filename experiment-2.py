@@ -79,9 +79,6 @@ class Experiment2:
             }
         )
 
-        for o in outputs:
-            print(f"=== output string ===\n{o}\n\n")
-
         json_output = model.extract_json(outputs, {"age": None, "gender": None})
         inference_df = pd.DataFrame.from_records(json_output).rename(
             columns={
@@ -343,6 +340,8 @@ class Experiment2:
                     "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
                 }
 
+        print(f"\n\nthere are {len(trend_reports)} trend reports\n\n")
+
         expt.dump_report(trend_reports, output_path / "experiment-2-trend-reports.json")
         expt.summary_model_isolator.kill_batch_worker()
 
@@ -390,8 +389,8 @@ if __name__ == "__main__":
 
     # List LLMs to sample
     model_ids = {
-#        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
-#        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
+        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
+        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
         "deepseek": "deepseek-ai/deepseek-llm-7b-chat"
     }
 
