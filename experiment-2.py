@@ -314,7 +314,7 @@ class Experiment2:
         age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
         gender_range = ["male", "female", "unknown"]
 
-        output_path = config.RESULTS_DIR / experiment_sub_heading / model_id
+        output_path = config.RESULTS_DIR / experiment_sub_heading / model_name
         output_path.mkdir(parents=True, exist_ok=True)
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
