@@ -308,7 +308,7 @@ class Experiment2:
         - num_samples (nullable):
             the number of samples to take from the dataset
         """
-#        self.model_isolator = model.BatchModelIsolator(model_id)
+        self.model_isolator = model.BatchModelIsolator(model_id)
 
         subreddits = self.subreddit_selection[which_subreddits]
         age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
@@ -318,10 +318,6 @@ class Experiment2:
         output_path.mkdir(parents=True, exist_ok=True)
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
-        test_df.to_parquet(output_path / "test-df.parquet")
-        exit()
-
-
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
 
         # Dump metadata about demographic inference
@@ -335,7 +331,7 @@ class Experiment2:
             post_chunks = expt.create_balanced_post_selection(test_df, s, a, g, 25)
 
             if len(post_chunks) > 0:
-                config.debug(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
+                config.output(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
                 trend_reports[(s, a, g)] = {
                     "reports": expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 4),
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
