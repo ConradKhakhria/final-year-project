@@ -340,8 +340,6 @@ class Experiment2:
                     "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
                 }
 
-        print(f"\n\nthere are {len(trend_reports)} trend reports\n\n")
-
         expt.dump_report(trend_reports, output_path / "experiment-2-trend-reports.json")
         expt.summary_model_isolator.kill_batch_worker()
 
@@ -357,8 +355,6 @@ class Experiment2:
             new_report = self.get_trends_from_reports(entry['reports'], s, a, g,
                                                       overall_report_max_tokens, 4)
             larger_reports[(s, a, g)] = new_report
-
-            config.output(f" - overall report:\n{larger_reports[(s, a, g)]}")
 
         expt.dump_report(larger_reports, output_path / "experiment-2-subreddit-overall-reports.json")
 
@@ -377,7 +373,7 @@ class Experiment2:
                                                               overall_report_max_tokens, 4)
                 demographic_segment_reports[(a, g)] = overall_report
 
-        config.debug("Done with experiment!")
+        config.output("Done with experiment!")
 
         expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
         expt.aggregator_model_isolator.kill_batch_worker()
