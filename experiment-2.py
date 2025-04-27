@@ -308,7 +308,7 @@ class Experiment2:
         - num_samples (nullable):
             the number of samples to take from the dataset
         """
-        self.model_isolator = model.BatchModelIsolator(model_id)
+#        self.model_isolator = model.BatchModelIsolator(model_id)
 
         subreddits = self.subreddit_selection[which_subreddits]
         age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
