@@ -392,7 +392,7 @@ if __name__ == "__main__":
     model_ids = {
 #        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
 #        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
-        "gemma-3": "google/gemma-3-4b-it"
+        "gemma-3": "google/gemma-3-12b-it"
     }
 
     for name, model_id in model_ids.items():
