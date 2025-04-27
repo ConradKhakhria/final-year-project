@@ -26,10 +26,6 @@ class Experiment2:
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
 
-        self.small_model_isolator = model.BatchModelIsolator("small")
-        self.large_model_isolator = model.BatchModelIsolator("large")
-
-
     ##### Data selection #####
 
 
@@ -71,7 +67,7 @@ class Experiment2:
         2. if gender isn't strictly male or female, it is None
         """
         prompts = test_df.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
-        outputs = self.small_model_isolator.process_prompts(
+        outputs = self.summary_model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
             cfg={
@@ -197,7 +193,7 @@ class Experiment2:
             A string containing a bullet-pointed list of trends indicated
         """
         prompts = [self.chunk_to_prompt(c) for c in chunks]
-        outputs = self.small_model_isolator.process_prompts(
+        outputs = self.summary_model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
             cfg={
@@ -248,7 +244,7 @@ class Experiment2:
                 batch = reports[batch_start : batch_end]
                 batch_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(batch))
 
-                new_report = self.large_model_isolator.process_prompts(
+                new_report = self.aggregator_model_isolator.process_prompts(
                     [query_context + batch_string],
                     batch_size=20,
                     cfg={
@@ -285,6 +281,8 @@ class Experiment2:
         demographics_max_tokens: int,
         chunk_report_max_tokens: int,
         overall_report_max_tokens: int,
+        summary_model_id: str,
+        aggregator_model_id: str,
         num_samples: int | None = None
     ):
         """
@@ -301,9 +299,16 @@ class Experiment2:
             the max number of tokens for generating short reports
         - overall_report_max_tokens:
             the max number of tokens for generating the larger reports
+        - summary_model_id:
+            the name of the model to be used for summarising social media posts' consumer trends
+        - aggregator_model_id:
+            the name of the mdoel to be used for aggregating existing reports
         - num_samples (nullable):
-            The number of samples to take from the dataset
+            the number of samples to take from the dataset
         """
+        self.summary_model_isolator = model.BatchModelIsolator(summary_model_id)
+        self.aggregator_model_isolator = model.BatchModelIsolator(aggregator_model_id)
+
         subreddits = self.subreddit_selection[which_subreddits]
         age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
         gender_range = ["male", "female", "unknown"]
@@ -334,7 +339,7 @@ class Experiment2:
                 }
 
         expt.dump_report(trend_reports, output_path / "experiment-2-trend-reports.json")
-        expt.small_model_isolator.kill_batch_worker()
+        expt.summary_model_isolator.kill_batch_worker()
 
         # Produce larger reports
         larger_reports = {}
@@ -371,25 +376,30 @@ class Experiment2:
         config.debug("Done with experiment!")
 
         expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
-        expt.large_model_isolator.kill_batch_worker()
+        expt.aggregator_model_isolator.kill_batch_worker()
 
 
 if __name__ == "__main__":
     mp.set_start_method("spawn")
-
     expt = Experiment2()
 
-    expt.run_experiment(
-        experiment_sub_heading="expt2-relevant-subs-general-trends-all",
-        which_subreddits="irrelevant",
-        demographics_max_tokens=20,
-        chunk_report_max_tokens=200,
-        overall_report_max_tokens=2000,
-        num_samples=100
-    )
+    # List LLMs to sample
+    model_ids = {
+        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
+        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
+        "gemma-3": "google/gemma-3-4b-it"
+    }
 
-#    expt.run_experiment(
-#        experiment_sub_heading="expt2-irrelevant-subs-general-trends-all-current-data"
-#    )
+    for name, model_id in model_ids.items():
+        expt.run_experiment(
+            experiment_sub_heading="expt2-relevant-subs-general-trends-all",
+            which_subreddits="irrelevant",
+            demographics_max_tokens=20,
+            chunk_report_max_tokens=200,
+            overall_report_max_tokens=2000,
+            summary_model_id=model_id,
+            aggregator_model_id=model_id,
+            num_samples=100
+        )
 
     exit()
