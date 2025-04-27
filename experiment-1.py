@@ -12,77 +12,24 @@ import sys
 from typing import Tuple
 
 import config
+import dataset
 import model
 
 
-NUM_SAMPLES = 5000
-
-
-# copied directly from experiment-1-shallow.py
-class DatasetLoader:
-    def __init__(self, buckets: np.ndarray, seed: int | None = None):
-        config.debug("Loading datasets")
-        self.dataset = datasets.load_dataset("blog_authorship_corpus", trust_remote_code=True)
-
-        self.df_train = self.dataset["train"].to_pandas()
-        self.df_test = self.dataset["validation"].to_pandas()
-
-        self.X = {
-            "train": self.df_train["text"],
-            "test": self.df_test["text"]
-        }
-
-        self.y = {
-            "train": { "age": self.df_train["age"], "gender": self.df_train["gender"] },
-            "test":  { "age": self.df_test["age"],  "gender": self.df_test["gender"]}
-        }
-
-        self.buckets = buckets
-        self.rng = np.random.default_rng(seed)
-
-
-    def get_Xy(
-        self, split: str, label: str, subset_size: int | None = None
-    ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Returns the X and y pair
-
-        args:
-        - split: 'train' or 'test'
-        - label: 'age' or 'gender'
-        - subset_size: the size of the random subset to use (default None: full dataset)
-
-        returns:
-        the tuple containing:
-            - X
-            - y
-        """
-        if split not in ["train", "test"]:
-            raise NameError(f"No split named '{split}'")
-
-        if label not in ["age", "gender"]:
-            raise NameError(f"No target label '{label}'")
-
-        X = self.X[split]
-        y = self.y[split][label]
-
-        if label == "age":
-            y = self.buckets[y]
-
-        if subset_size is not None:
-            idxs = self.rng.choice(np.arange(len(X)), size=subset_size, replace=False)
-
-            X = X[idxs]
-            y = y[idxs]
-
-        return X, y
+# These globals govern which phase of the experiment
+# is being executed
+NUM_SAMPLES = None
+OPTIMAL_CONFIGURATION = {
+    "model": "mistral",
+    "pre-prompt": "expt1-zero-shot.txt"
+}
 
 
 class Experiment1:
     def __init__(self, buckets: np.ndarray, num_samples: int | None = None):
         config.debug("Loading training and validation sets")
 
-        self.dataset = DatasetLoader(buckets, seed=42)
+        self.dataset = dataset.DatasetLoader("blog_authorship_corpus", buckets, seed=42)
         self.X_test, self.y_test = self._format_dataset(num_samples)
 
         self.bucket_midpoints = {}
@@ -177,8 +124,6 @@ class Experiment1:
         """
         Creates an evaluation dictionary for the results and a given label
         """
-        print(f"columns = {y_pred_df.columns}")
-
         if not {"age", "gender"}.issubset(y_pred_df.columns):
             model_short_name = model_name.split("/")[1]
             pre_prompt_short_name = pp_filename[:-4]
@@ -243,8 +188,8 @@ if __name__ == "__main__":
     ]
 
     model_names = [
-#        "mistral",
-#        "llama-2",
+        "mistral",
+        "llama-2",
         "deepseek",
     ]
 
@@ -262,6 +207,10 @@ if __name__ == "__main__":
             "batch_size": 100
         }
     }
+
+    if OPTIMAL_CONFIGURATION is not None:
+        model_names = [OPTIMAL_CONFIGURATION["model"]]
+        prompt_names = [OPTIMAL_CONFIGURATION["pre-prompt"]]
 
     # Evaluate
     age_results = []
