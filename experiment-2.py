@@ -388,6 +388,19 @@ if __name__ == "__main__":
         "deepseek": "deepseek-ai/deepseek-llm-7b-chat"
     }
 
+    for model_name, model_id in model_ids.items():
+        expt.run_experiment(
+            experiment_sub_heading=f"expt2-relevant-subs-general-trends-all",
+            which_subreddits="relevant",
+            demographics_max_tokens=30,
+            chunk_report_max_tokens=200,
+            overall_report_max_tokens=2000,
+            model_name=model_name,
+            model_id=model_id
+        )
+
+    exit()
+
     model_name = "mistral"
     model_id = model_ids[model_name]
 
