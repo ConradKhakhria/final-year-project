@@ -87,6 +87,9 @@ class Experiment2:
             }
         )
 
+        print(inference_df.columns)
+        print(inference_df)
+
         # Post-processing
         def format_age(age: Any) -> str:
             try:
