@@ -15,7 +15,7 @@ import config
 import model
 
 
-NUM_SAMPLES = None
+NUM_SAMPLES = 5000
 
 
 # copied directly from experiment-1-shallow.py
@@ -239,13 +239,13 @@ if __name__ == "__main__":
     # Parameters to test
     prompt_names = [
         "expt1-zero-shot.txt",
-#        "expt1-few-shot.txt"
+        "expt1-few-shot.txt"
     ]
 
     model_names = [
-        "mistral",
+#        "mistral",
 #        "llama-2",
-#        "gemma-3",
+        "deepseek",
     ]
 
     model_configs = {
@@ -257,9 +257,9 @@ if __name__ == "__main__":
             "full_name": "meta-llama/Llama-2-7b-chat-hf",
             "batch_size": 50
         },
-        "gemma-3": {
-            "full_name": "google/gemma-3-4b-it",
-            "batch_size": 160
+        "deepseek": {
+            "full_name": "deepseek-ai/deepseek-llm-7b-chat",
+            "batch_size": 100
         }
     }
 
