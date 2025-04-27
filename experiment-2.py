@@ -205,7 +205,8 @@ class Experiment2:
             }
         )
 
-        return outputs
+        # Remove synthetic posts
+        return [o.split("[post")[0] for o in outputs]
 
 
     @config.debug_function
