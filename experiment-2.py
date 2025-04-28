@@ -437,7 +437,10 @@ class Experiment2:
             reports: List[dict] = []
             for s in subreddits:
                 if (rs := stage_2_reports.get((s, a, g), None)) is not None:
-                    reports.extend({ 'subreddit': s, **r } for r in rs['reports'])
+                    for r in rs['reports']:
+                        if isinstance(r, str):
+                            r = {"summary": r, "evidence": [], "reasoning": ""}
+                        reports.append({ 'subreddit': s, **r })
 
             if len(reports) > 0:
                 config.debug(f"summarising {len(reports)} reports for {(a, g)}")
