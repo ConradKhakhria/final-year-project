@@ -267,7 +267,10 @@ class Experiment2:
             previous_reports_count = current_reports_count
             current_reports_count = len(reports)
 
-        final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
+        try:
+            final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
+        except:
+            final_reports = "\n".join(reports)
 
         return final_reports, failed_output_counter
 
