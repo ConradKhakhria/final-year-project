@@ -26,6 +26,7 @@ pip install sentencepiece protobuf tokenizers
 
 # Optional: If you want bitsandbytes support for quantization
 pip install bitsandbytes
+pip install --upgrade vllm
 
 # Flash attention
 pip install flash-attn --no-build-isolation
