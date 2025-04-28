@@ -70,23 +70,33 @@ class Experiment2:
         1. age is split into 5-year groupings
         2. if gender isn't strictly male or female, it is None
         """
-        prompts = test_df.reset_index(drop=True).apply(self.row_to_string, axis=1).tolist()
+        prompts_with_idx: List[Tuple[int, str]] = [
+            (i, self.row_to_string(row)) for i, row in test_df.reset_index(drop=True).iterrows()
+        ]
+        prompts_with_idx.sort(key=lambda p: len(p[1]))
+        orig_indices: List[int] = [idx for idx, _ in prompts_with_idx]
+        sorted_prompts: List[str] = [p for _, p in prompts_with_idx]
+
         outputs = self.model_isolator.process_prompts(
-            prompts,
+            sorted_prompts,
             batch_size=batch_size,
             cfg={
                 "structure_header": "{",
                 "max_new_tokens": max_new_tokens,
-                "pre_prompt_name": "expt1-zero-shot.txt"
-            }
+                "pre_prompt_name": "expt1-zero-shot.txt",
+            },
         )
 
         json_output = model.extract_json(outputs, {"age": None, "gender": None})
-        inference_df = pd.DataFrame.from_records(json_output).rename(
-            columns={
-                "age": "predicted_age",
-                "gender": "predicted_gender"
-            }
+        inference_temp = pd.DataFrame.from_records(json_output)
+        inference_temp["orig_idx"] = orig_indices  # map back to original rows
+
+        # Re-order to original ordering
+        inference_df = (
+            inference_temp.sort_values("orig_idx")
+            .drop(columns=["orig_idx"])
+            .rename(columns={"age": "predicted_age", "gender": "predicted_gender"})
+            .reset_index(drop=True)
         )
 
         # Post-processing
@@ -112,7 +122,7 @@ class Experiment2:
 
         return pd.concat([
             test_df.reset_index(drop=True),
-            inference_df.reset_index(drop=True)
+            inference_df
         ], axis=1)
 
 
