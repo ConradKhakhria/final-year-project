@@ -150,12 +150,12 @@ class Experiment2:
             if df_slice.empty:
                 continue
 
-            p = self.chunk_to_string(df_slice)
+            p = self.posts_to_string(df_slice)
             prompt_index.append((sub, age, gender))
             all_prompts.append(p)
 
         # Now use vLLM
-        outputs = []
+        outputs: List[Tuple[tuple, str]] = []
         batches = self.batch(list(zip(prompt_index, all_prompts)), prompts_per_batch)
 
         for prompts_batch in batches:
@@ -287,18 +287,22 @@ class Experiment2:
         return s + f"- post contents:\n'{row['text']}'\n"
 
 
-    def chunk_to_string(self, chunk: pd.DataFrame) -> str:
+    def posts_to_string(self, df: pd.DataFrame) -> str:
         """
         Turns a chunk of posts into a prompt string
+
+        args:
+        - df: a dataframe containing a selection of posts as well as inferred
+            demographic information
         """
-        start_date = chunk.iloc[0]["date_posted"]
-        end_date = chunk.iloc[-1]["date_posted"]
-        subreddit = chunk["subreddit"].iloc[0]
+        start_date = df.iloc[0]["date_posted"]
+        end_date = df.iloc[-1]["date_posted"]
+        subreddit = df["subreddit"].iloc[0]
 
         prompt = f"All supplied posts will be from r/{subreddit}. " \
                  f"They were posted between {start_date} and {end_date}\n"
 
-        post_prompts = chunk.reset_index(drop=True).apply(self.row_to_string, axis=1).tolist()
+        post_prompts = df.reset_index(drop=True).apply(self.row_to_string, axis=1).tolist()
 
         return prompt + "\n".join(f"[post number {i + 1}]:\n{p}" for i, p in enumerate(post_prompts))
 
