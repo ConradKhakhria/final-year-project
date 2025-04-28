@@ -1,7 +1,6 @@
 import datetime
 import itertools
 import json
-import multiprocessing as mp
 import numpy as np
 import os
 import pandas as pd
@@ -77,14 +76,12 @@ class Experiment2:
         orig_indices: List[int] = [idx for idx, _ in prompts_with_idx]
         sorted_prompts: List[str] = [p for _, p in prompts_with_idx]
 
-        outputs = self.model_isolator.process_prompts(
+
+
+        outputs = self.batch_model.process_batch(
             sorted_prompts,
-            batch_size=batch_size,
-            cfg={
-                "structure_header": "{",
-                "max_new_tokens": max_new_tokens,
-                "pre_prompt_name": "expt1-zero-shot.txt",
-            },
+            structure_header="{",
+            max_new_tokens=max_new_tokens
         )
 
         json_output = model.extract_json(outputs, {"age": None, "gender": None})
@@ -181,14 +178,10 @@ class Experiment2:
         prompts.sort(key=lambda x: len(x[1]))
         sorted_prompts = [p for _, p in prompts]
 
-        outputs = self.model_isolator.process_prompts(
+        outputs = self.batch_model.process_batch(
             sorted_prompts,
-            batch_size=batch_size,
-            cfg={
-                "structure_header": "{\n    \"trends\": [",
-                "max_new_tokens": max_new_tokens,
-                "pre_prompt_name": "expt2-stage-2.txt"
-            }
+            structure_header="{\n    \"trends\": [",
+            max_new_tokens=max_new_tokens
         )
 
         json_output = model.extract_json(outputs, {"trends": [], "format-error": True})
@@ -255,25 +248,19 @@ class Experiment2:
             new_reports = []
 
             report_strings = [self.report_to_string(r, index=i) for i, r in enumerate(reports)]
+            prompt = query_header + "\n".join(report_strings)
 
-            for batch_start in range(0, len(reports), batch_size):
-                batch = report_strings[batch_start : min(len(reports), batch_start + batch_size)]
+            new_report = self.batch_model.process_batch(
+                [prompt],
+                structure_header="{\n    \"trends\": [",
+                max_new_tokens=max_new_tokens
+            )
 
-                new_report = self.model_isolator.process_prompts(
-                    [query_header + "\n".join(batch)],
-                    batch_size=20,
-                    cfg={
-                        "structure_header": "{\n    \"trends\": [",
-                        "max_new_tokens": max_new_tokens,
-                        "pre_prompt_name": "expt2-stage-3.txt"
-                    }
-                )
+            new_report_json = model.extract_json(new_report, {"trends": [], "failed-output": True})
 
-                new_report_json = model.extract_json(new_report, {"trends": [], "failed-output": True})
-
-                for r in new_report_json:
-                    new_reports.extend(r['trends'])
-                    failed_output_counter += int(r.get("failed-output", False))
+            for r in new_report_json:
+                new_reports.extend(r['trends'])
+                failed_output_counter += int(r.get("failed-output", False))
 
             reports = new_reports
             layers += 1
@@ -384,7 +371,13 @@ class Experiment2:
         - num_samples (nullable):
             the number of samples to take from the dataset
         """
-        self.model_isolator = model.BatchModelIsolator(model_id)
+        self.batch_model = model.BatchModel(model_id)
+
+        # Get pre-prompts ready
+        pre_prompt_path = config.CODE_DIR / "pre-prompts"
+        pp_stage_1 = pre_prompt_path / "expt1-zero-shot.txt"
+        pp_stage_2 = pre_prompt_path / "expt2-stage-2.txt"
+        pp_stage_3 = pre_prompt_path / "expt2-stage-3.txt"
 
         subreddits = self.subreddit_selection[which_subreddits]
         age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
@@ -396,6 +389,7 @@ class Experiment2:
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
 
         # ===== Stage 1: generate demographic inferences ===== #
+        self.batch_model.load_pre_prompt(pp_stage_1)
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
 
         # Dump metadata about demographic inference
@@ -403,15 +397,16 @@ class Experiment2:
         demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
         # ===== Stage 2: generate mini reports ===== #
+        self.batch_model.load_pre_prompt(pp_stage_2)
         stage_2_reports = {}
 
         # Generate reports for each (subreddit, age range, gender)
         for s, a, g in itertools.product(subreddits, age_ranges, gender_range):
-            post_chunks = expt.create_balanced_post_selection(test_df, s, a, g, 25)
+            post_chunks = self.create_balanced_post_selection(test_df, s, a, g, 25)
 
             if len(post_chunks) > 0:
                 config.output(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
-                chunk_trends = expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 16)
+                chunk_trends = self.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 16)
                 
                 stage_2_reports[(s, a, g)] = {
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
@@ -421,15 +416,15 @@ class Experiment2:
                     "chunk_size": chunk_trends['chunk_size']
                 }
 
-        expt.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
+        self.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
 
         if not hierarchical_summarisation:
-            expt.model_isolator.kill_batch_worker()
             return
 
         # ===== Stage 3: hierarchical summarisation ===== #
         # In particular, this section produces a hierarchically-summarised
         # report for *each* age and gender pairing
+        self.batch_model.load_pre_prompt(pp_stage_3)
         summarised_reports: dict = {}
 
         for a, g in itertools.product(age_ranges, gender_range):
@@ -450,12 +445,11 @@ class Experiment2:
 
         config.output("Done with experiment!")
 
-        expt.dump_report(summarised_reports, output_path / "experiment-2-stage-3.json")
-        expt.model_isolator.kill_batch_worker()
+        self.dump_report(summarised_reports, output_path / "experiment-2-stage-3.json")
+        del self.batch_model
 
 
 if __name__ == "__main__":
-    mp.set_start_method("spawn")
     expt = Experiment2(42)
 
     # List LLMs to sample
