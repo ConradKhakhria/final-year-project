@@ -407,7 +407,7 @@ class Experiment2:
 
             if len(post_chunks) > 0:
                 config.output(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
-                chunk_trends = expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 4)
+                chunk_trends = expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 16)
                 
                 stage_2_reports[(s, a, g)] = {
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
