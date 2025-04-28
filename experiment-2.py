@@ -444,7 +444,7 @@ if __name__ == "__main__":
     # List LLMs to sample
     model_ids = {
 #        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
-        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
+#        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
         "deepseek": "deepseek-ai/deepseek-llm-7b-chat"
     }
 
