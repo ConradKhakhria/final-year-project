@@ -85,13 +85,16 @@ class BatchModel:
 
 
     @config.debug_function
-    def process_batch(self, batch: list[str], enforce_json=True, max_new_tokens=30) -> list[str]:
+    def process_batch(
+        self, batch: list[str], structure_header: str | None = None, max_new_tokens=30
+    ) -> list[str]:
         """
         Processes a batch of inputs with the model pre-prompt
     
         args:
         - batch: the list of inputs, as strings
-        - enforce_json: whether to enforce JSON output
+        - structure_header: used to coerce structured output (None if structured
+            output is not desired)
         - max_new_tokens: the maximum number of new tokens that will be generated
 
         returns:
@@ -101,14 +104,14 @@ class BatchModel:
             RuntimeError beginning with 'CUDA out of memory.'
         """
         config.debug(f"Processing batch of size {len(batch)}")
-
-        start = time.time()
         outputs = []
 
-        if enforce_json:
-            prompt_strings = [f"{self.pre_prompt}\n\n[input]: {i}\n[output]: {{" for i in batch]
+        if structure_header is not None:
+            fmt = lambda i : f"{self.pre_prompt}\n\n[input]: {i}\n[output]: {structure_header}"
         else:
-            prompt_strings = [f"{self.pre_prompt}\n\n[input]: {i}\n[output]: " for i in batch]
+            fmt = lambda i : f"{self.pre_prompt}\n\n[input]: {i}\n[output]: "
+
+        prompt_strings = [fmt(i) for i in batch]
 
         input_tokens = self.tokenizer(prompt_strings, return_tensors="pt", padding=True,
                                       truncation=True, max_length=5000)
@@ -176,7 +179,7 @@ class BatchModelIsolator:
         - cfg: a dict containing overrides for:
             1. max_new_tokens
             2. pre_prompt_name
-            3. enforce_json
+            3. structure_header (str | None)
         """
         cfg_modified = False
 
@@ -277,7 +280,7 @@ class BatchModelIsolator:
                     break
 
                 try:
-                    output = m.process_batch(batch, enforce_json=cfg['enforce_json'],
+                    output = m.process_batch(batch, structure_header=cfg['structure_header'],
                                              max_new_tokens=cfg['max_new_tokens'])
                     out_queue.put({ "successful": True, "output": output })
                 except RuntimeError as e:
