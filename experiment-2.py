@@ -411,7 +411,8 @@ class Experiment2:
             # accumulate all reports from all subreddits
             reports = []
             for s in subreddits:
-                reports.append({ 'subreddit': s, **stage_2_reports[(s, a, g)]['reports']})
+                if (r := stage_2_reports.get((s, a, g), None)) is not None:
+                    reports.append({ 'subreddit': s, **r['reports'] })
 
             if len(reports) > 0:
                 config.debug(f"summarising {len(reports)} reports for {(a, g)}")
