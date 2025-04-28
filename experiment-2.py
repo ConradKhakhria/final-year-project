@@ -73,7 +73,7 @@ class Experiment2:
             prompts,
             batch_size=batch_size,
             cfg={
-                "enforce_json": True,
+                "structure_header": "{",
                 "max_new_tokens": max_new_tokens,
                 "pre_prompt_name": "expt1-zero-shot.txt"
             }
@@ -199,7 +199,7 @@ class Experiment2:
             prompts,
             batch_size=batch_size,
             cfg={
-                "enforce_json": True,
+                "structure_header": "{\n    \"trends\": [",
                 "max_new_tokens": max_new_tokens,
                 "pre_prompt_name": "expt2-stage-2.txt"
             }
@@ -207,7 +207,7 @@ class Experiment2:
 
         with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
             for i, o in enumerate(outputs):
-                print(f"=== output {i} ===:\n{o}\n\n")
+                (f"=== output {i} ===:\n{o}\n\n")
 
         return model.extract_json(outputs, {
             "label": None,
@@ -258,7 +258,7 @@ class Experiment2:
                     [query_context + batch_string],
                     batch_size=20,
                     cfg={
-                        "enforce_json": False,
+                        "structure_header": None,
                         "max_new_tokens": max_new_tokens,
                         "pre_prompt_name": "expt2-stage-3.txt"
                     }
