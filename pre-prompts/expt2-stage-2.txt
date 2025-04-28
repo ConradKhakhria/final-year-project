@@ -8,7 +8,7 @@ Reply **only** with valid JSON – a list of objects.
 Each list element has the format:
 {
     "label": <= 8 words, snake_case,
-    "evidence": list of post_numbers that support the trend,
+    "evidence": list of post 'id's (alphanumeric) that support the trend,
     "summary": one sentence (max 25 words) describing the trend
 }
 If no trend is supported, return the exact string: {"trends": []}
