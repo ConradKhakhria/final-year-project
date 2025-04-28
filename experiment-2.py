@@ -205,7 +205,7 @@ class Experiment2:
             }
         )
 
-        with open(config.RESULTS_DIR / "text-output.txt", "w") as f:
+        with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
             for i, o in enumerate(outputs):
                 print(f"=== output {i} ===:\n{o}\n\n")
 
