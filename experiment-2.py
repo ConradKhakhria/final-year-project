@@ -202,7 +202,7 @@ class Experiment2:
         group: tuple,
         reports: List[dict],
         max_new_tokens: int,
-        batch_size: int
+        batch_size: int,
     ) -> Tuple[dict, int]:
         """
         Uses the large model to produce a final report summarising consumer trends
@@ -233,7 +233,7 @@ class Experiment2:
         layers = 1
         failed_output_counter = 0
 
-        while len(reports) > 1:
+        while len(reports) > batch_size:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
