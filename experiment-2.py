@@ -143,8 +143,8 @@ class Experiment2:
         prompt_texts: List[str] = []
 
         # build prompts for vLLM
+        config.debug("pre-computing truncated batches")
         for sub, age, gender in itertools.product(subreddits, age_ranges, gender_range):
-            config.debug(f"producing prompts for {(sub, age, gender)}")
             df_slice = df[
                 (df["subreddit"] == sub) &
                 (df["predicted_age"] == age) &
