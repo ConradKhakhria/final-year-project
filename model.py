@@ -360,7 +360,7 @@ def extract_json(outputs: list[str], default: dict) -> list[dict]:
                 if not stack:
                     return i + 1
 
-        return None
+        raise json.JSONDecodeError("s", "s", 0)
 
 
     json_outputs = []
