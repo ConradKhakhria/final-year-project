@@ -69,6 +69,9 @@ class Experiment2:
         2. if gender isn't strictly male or female, it is None
         """
         prompts = test_df.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
+
+        print(prompts[0])
+
         outputs = self.model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
@@ -199,14 +202,17 @@ class Experiment2:
             prompts,
             batch_size=batch_size,
             cfg={
-                "enforce_json": False,
+                "enforce_json": True,
                 "max_new_tokens": max_new_tokens,
                 "pre_prompt_name": "expt2-identify-trends-sector.txt"
             }
         )
 
-        # Remove synthetic posts
-        return [o.split("[post")[0] for o in outputs]
+        return model.extract_json(outputs, {
+            "label": None,
+            "evidence": None,
+            "summary": None
+        })
 
 
     @config.debug_function
@@ -281,6 +287,7 @@ class Experiment2:
         self,
         experiment_sub_heading: str,
         which_subreddits: Literal["relevant", "irrelevant"],
+        hierarchical_summarisation: bool,
         demographics_max_tokens: int,
         chunk_report_max_tokens: int,
         overall_report_max_tokens: int,
@@ -296,6 +303,8 @@ class Experiment2:
             the name of the parent directory to put results into
         - which_subreddits:
             whether to select the relevant or irrelevant posts
+        - hierarchical_summarisation:
+            whether to perform the hierarchical summarisation step
         - demographics_max_tokens:
             the max number of new tokens to be used when generating demographic inferences
         - chunk_report_max_tokens:
@@ -339,7 +348,11 @@ class Experiment2:
                     "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
                 }
 
-        expt.dump_report(trend_reports, output_path / "experiment-2-trend-reports.json")
+        expt.dump_report(trend_reports, output_path / "experiment-2-stage-2-reports.json")
+
+        if not hierarchical_summarisation:
+            expt.model_isolator.kill_batch_worker()
+            return
 
         # Produce larger reports
         larger_reports = {}
@@ -354,7 +367,7 @@ class Experiment2:
                                                       overall_report_max_tokens, 4)
             larger_reports[(s, a, g)] = new_report
 
-        expt.dump_report(larger_reports, output_path / "experiment-2-subreddit-overall-reports.json")
+        expt.dump_report(larger_reports, output_path / "experiment-2-stage-3a-reports.json")
 
         # Create overall reports for each demographic segment
         demographic_segment_reports = {}
@@ -373,7 +386,7 @@ class Experiment2:
 
         config.output("Done with experiment!")
 
-        expt.dump_report(demographic_segment_reports, output_path / "experiment-2-demographic-reports.json")
+        expt.dump_report(demographic_segment_reports, output_path / "experiment-2-stage-3b.json")
         expt.model_isolator.kill_batch_worker()
 
 
@@ -392,6 +405,7 @@ if __name__ == "__main__":
         expt.run_experiment(
             experiment_sub_heading=f"expt2-relevant-subs-general-trends-all",
             which_subreddits="relevant",
+            hierarchical_summarisation=False,
             demographics_max_tokens=30,
             chunk_report_max_tokens=200,
             overall_report_max_tokens=2000,
@@ -409,6 +423,7 @@ if __name__ == "__main__":
         expt.run_experiment(
             experiment_sub_heading=f"expt2-{selection}-subs-general-trends-all",
             which_subreddits=selection,
+            hierarchical_summarisation=True,
             demographics_max_tokens=30,
             chunk_report_max_tokens=200,
             overall_report_max_tokens=2000,
