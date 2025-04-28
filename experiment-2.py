@@ -201,6 +201,54 @@ class Experiment2:
         }
 
 
+    def summarise_posts(
+        self,
+        df: pd.DataFrame,
+        subreddits: List[str],
+        age_ranges: np.ndarray,
+        gender_range: list[str],
+        max_new_tokens: int
+    ) -> dict:
+        stage_2_reports = {}        
+
+        all_prompts = []
+        prompt_index = []
+
+        # Create prompts for vLLM
+        for sub, age, gender in itertools.product(subreddits, age_ranges, gender_range):
+            df_slice = df[
+                (df.subreddit == sub) &
+                (df.predicted_age == age) &
+                (df.predicted_gender == gender)
+            ].sort_values("date_posted")
+
+            if df_slice.empty:
+                continue
+
+            p = self.chunk_to_string(df_slice)
+            prompt_index.append((sub, age, gender))
+            all_prompts.append(p)
+
+        outputs = self.batch_model.process_batch(
+            all_prompts,
+            structure_header='{ "trends": [',
+            max_new_tokens=max_new_tokens
+        )
+
+        json_out = model.extract_json(outputs, {"trends": [], "format-error": True})
+
+        for (sub, age, gender), o in zip(prompt_index, json_out):
+            stage_2_reports[(sub, age, gender)] = {
+                "reports":     o.get("trends", []),
+                "errors":      int(o.get("format-error", False)),
+                "start_date":  str(df.date_posted.min()),
+                "end_date":    str(df.date_posted.max()),
+                "chunk_size":  1
+            }
+
+        return stage_2_reports
+
+
     # ===== Stage 3 ===== #
 
     @config.debug_function
@@ -398,23 +446,13 @@ class Experiment2:
 
         # ===== Stage 2: generate mini reports ===== #
         self.batch_model.load_pre_prompt(pp_stage_2)
-        stage_2_reports = {}
-
-        # Generate reports for each (subreddit, age range, gender)
-        for s, a, g in itertools.product(subreddits, age_ranges, gender_range):
-            post_chunks = self.create_balanced_post_selection(test_df, s, a, g, 25)
-
-            if len(post_chunks) > 0:
-                config.output(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
-                chunk_trends = self.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 16)
-                
-                stage_2_reports[(s, a, g)] = {
-                    "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
-                    "end_date": str(post_chunks[-1].iloc[-1]["date_posted"]),
-                    "reports": chunk_trends['trends'],
-                    "errors": chunk_trends['errors'],
-                    "chunk_size": chunk_trends['chunk_size']
-                }
+        stage_2_reports = self.summarise_posts(
+            demographic_df,
+            subreddits,
+            age_ranges,
+            gender_range,
+            chunk_report_max_tokens
+        )
 
         self.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
 
