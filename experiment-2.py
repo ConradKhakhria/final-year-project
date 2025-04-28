@@ -14,7 +14,7 @@ import dataset
 import model
 
 
-MAX_PROMPT_TOKENS = 32_000 
+MAX_PROMPT_TOKENS = 4000
 
 
 class Experiment2:
