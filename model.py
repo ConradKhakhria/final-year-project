@@ -12,35 +12,23 @@ import config
 
 class BatchModel:
     @config.debug_function
-    def __init__(self, model_id: str):
+    def __init__(self, model_id: str, max_model_len: int | None = None):
         """
         Loads the named model into vLLM
         """
         self.model_id = model_id
         self.pre_prompt = ""
 
-        hf_token_path = config.CODE_DIR / "hf-access-token.txt"
+        # Set parameters
+        llm_args = dict(model=model_id, dtype="auto", trust_remote_code=True)
 
-        if hf_token_path.exists():
-            with open(hf_token_path) as f:
-                os.environ["HUGGINGFACE_TOKEN"] = f.read().strip()
-
-        config.output(f"Loading model {model_id} via vLLM")
         if model_id == "mistral":
-            self.llm = LLM(
-                model=model_id,
-                dtype="auto",
-                trust_remote_code=True,
-                tokenizer_mode="mistral",
-                max_model_len=4096
-            )
-        else:
-            self.llm = LLM(
-                model=model_id,
-                dtype="auto",
-                trust_remote_code=True,
-                max_model_len=4096
-            )
+            llm_args["tokenizer_mode"] = "mistral"
+
+        if max_model_len is not None:
+            llm_args["max_model_len"] = max_model_len
+
+        self.llm = LLM(**llm_args)
 
         self.tokenizer = self.llm.get_tokenizer()
         self.tokenizer.padding_side = "right"
