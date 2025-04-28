@@ -240,7 +240,7 @@ class Experiment2:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
-            report_strings = [self.report_to_string(r) for r in reports]
+            report_strings = [self.report_to_string(r, index=i) for i, r in enumerate(reports)]
 
             for batch_start in range(0, len(reports), batch_size):
                 batch = report_strings[batch_start : min(len(reports), batch_start + batch_size)]
@@ -267,10 +267,9 @@ class Experiment2:
             previous_reports_count = current_reports_count
             current_reports_count = len(reports)
 
-        final_reports = reports[0]
-        final_report_string = "\n".join([self.report_to_string(r) for r in final_reports])
+        final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
 
-        return final_report_string, failed_output_counter
+        return final_reports, failed_output_counter
 
 
     # ===== Data Processing ===== #
