@@ -32,14 +32,14 @@ class BatchModel:
                 dtype="auto",
                 trust_remote_code=True,
                 tokenizer_mode="mistral",
-                max_seq_len=4096
+                max_model_len=4096
             )
         else:
             self.llm = LLM(
                 model=model_id,
                 dtype="auto",
                 trust_remote_code=True,
-                max_seq_len=4096
+                max_model_len=4096
             )
 
         self.tokenizer = self.llm.get_tokenizer()
