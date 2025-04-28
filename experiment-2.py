@@ -144,6 +144,7 @@ class Experiment2:
 
         # build prompts for vLLM
         for sub, age, gender in itertools.product(subreddits, age_ranges, gender_range):
+            config.debug(f"producing prompts for {(sub, age, gender)}")
             df_slice = df[
                 (df["subreddit"] == sub) &
                 (df["predicted_age"] == age) &
@@ -161,6 +162,7 @@ class Experiment2:
         all_outputs: List[str] = []
 
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
+            config.debug("computing batch")
             outputs = self.batch_model.process_batch(
                 batch_prompts,
                 structure_header='{ "trends": [',
