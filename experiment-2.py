@@ -270,7 +270,7 @@ class Experiment2:
         try:
             final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
         except:
-            final_reports = "\n".join(reports)
+            final_reports = "\n".join([str(r) for r in reports])
 
         return final_reports, failed_output_counter
 
@@ -443,32 +443,17 @@ if __name__ == "__main__":
 
     # List LLMs to sample
     model_ids = {
-#        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
-#        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
+        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
+        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
         "deepseek": "deepseek-ai/deepseek-llm-7b-chat"
     }
-
-    for model_name, model_id in model_ids.items():
-        expt.run_experiment(
-            experiment_sub_heading=f"expt2-relevant-subs-general-trends-all",
-            which_subreddits="relevant",
-            hierarchical_summarisation=True,
-            demographics_max_tokens=30,
-            chunk_report_max_tokens=200,
-            overall_report_max_tokens=2000,
-            model_name=model_name,
-            model_id=model_id,
-            num_samples=100
-        )
-
-    exit()
 
     model_name = "mistral"
     model_id = model_ids[model_name]
 
     for selection in "relevant", "irrelevant":
         expt.run_experiment(
-            experiment_sub_heading=f"expt2-{selection}-subs-general-trends-all",
+            experiment_sub_heading=f"expt2-{selection}-subs-general-trends-full-dataset",
             which_subreddits=selection,
             hierarchical_summarisation=True,
             demographics_max_tokens=30,
