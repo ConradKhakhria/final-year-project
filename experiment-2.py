@@ -409,10 +409,10 @@ class Experiment2:
 
         for a, g in itertools.product(age_ranges, gender_range):
             # accumulate all reports from all subreddits
-            reports = []
+            reports: List[dict] = []
             for s in subreddits:
-                if (r := stage_2_reports.get((s, a, g), None)) is not None:
-                    reports.append({ 'subreddit': s, **r['reports'] })
+                if (rs := stage_2_reports.get((s, a, g), None)) is not None:
+                    reports.extend({ 'subreddit': s, **r } for r in rs['reports'])
 
             if len(reports) > 0:
                 config.debug(f"summarising {len(reports)} reports for {(a, g)}")
