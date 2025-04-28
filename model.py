@@ -323,13 +323,16 @@ class BatchModelIsolator:
 
 
 @config.debug_function
-def extract_json(outputs: list[str], default: dict) -> list[dict]:
+def extract_json(
+    outputs: list[str], default: dict, select_up_to: str | None = None
+) -> list[dict]:
     """ 
     Attempts to extract and parse valid json from each output string
 
     args:
     - outputs: string outputs to parse
     - default: default object to use if not parseable
+    - select_up_to: only select before this string slice
 
     For each output that doesn't yield valid output, None is put in its place
     """
@@ -338,7 +341,8 @@ def extract_json(outputs: list[str], default: dict) -> list[dict]:
 
     for s in outputs:
         try:
-            potential_json = s.split("}")[0] + "}"
+            acceptable_slice = s.split(select_up_to)[0]
+            potential_json = acceptable_slice.split("}")[0] + "}"
             parsed = json.loads(potential_json)
         except json.JSONDecodeError:
             parsed = default.copy()
