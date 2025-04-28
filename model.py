@@ -91,10 +91,12 @@ class BatchModel:
         """
         Cleans up
         """
-        config.debug("Deleting the model")
-        del self.llm
-        gc.collect()
-        torch.cuda.empty_cache()
+        try:
+            del self.llm
+            gc.collect()
+            torch.cuda.empty_cache()
+        except:
+            pass
 
 
 @config.debug_function
