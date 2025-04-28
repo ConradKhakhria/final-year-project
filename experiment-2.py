@@ -203,7 +203,7 @@ class Experiment2:
         reports: List[dict],
         max_new_tokens: int,
         batch_size: int,
-    ) -> Tuple[dict, int]:
+    ) -> Tuple[str, int]:
         """
         Uses the large model to produce a final report summarising consumer trends
         identified in the reports
@@ -222,7 +222,7 @@ class Experiment2:
 
         if reports == []:
             config.debug(f"For some reason we got 0 reports for {group}")
-            return ({}, 1)
+            return ("no reports supplied as input", 1)
 
         query_header = (
             "METADATA\n"
@@ -267,7 +267,10 @@ class Experiment2:
             previous_reports_count = current_reports_count
             current_reports_count = len(reports)
 
-        return reports[0], failed_output_counter
+        final_reports = reports[0]
+        final_report_string = "\n".join([self.report_to_string(r) for r in final_reports])
+
+        return final_report_string, failed_output_counter
 
 
     # ===== Data Processing ===== #
