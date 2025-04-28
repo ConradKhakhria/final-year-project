@@ -233,7 +233,10 @@ class Experiment2:
         layers = 1
         failed_output_counter = 0
 
-        while len(reports) > batch_size:
+        current_reports_count = len(reports)
+        previous_reports_count = 2*len(reports)
+
+        while current_reports_count < previous_reports_count:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
@@ -260,6 +263,9 @@ class Experiment2:
 
             reports = new_reports
             layers += 1
+
+            previous_reports_count = current_reports_count
+            current_reports_count = len(reports)
 
         return reports[0], failed_output_counter
 
