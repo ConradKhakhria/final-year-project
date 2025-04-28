@@ -328,42 +328,53 @@ class Experiment2:
         return query
 
 
-
     def slice_to_truncated_prompts(self, df_slice: pd.DataFrame) -> List[str]:
         """
         Split one (subreddit, age, gender) slice into as many prompts as needed,
-        each strictly ≤ MAX_PROMPT_TOKENS tokens.
-
-        returns:
-            A list of complete prompts to supply to the LLM
+        each strictly ≤ MAX_PROMPT_TOKENS tokens, using O(n) tokenization.
         """
-        tokenizer = self.batch_model.tokenizer
+        tok = self.batch_model.tokenizer
 
-        header_tpl = (
-            "All supplied posts will be from r/{sub}. "
-            "They were posted between {start} and {end}\n"
-        )
-
+        # Prepare header
         start = df_slice.iloc[0]["date_posted"]
         end   = df_slice.iloc[-1]["date_posted"]
         sub   = df_slice["subreddit"].iloc[0]
-        header = header_tpl.format(sub=sub, start=start, end=end)
+        header = (
+            f"All supplied posts will be from r/{sub}. "
+            f"They were posted between {start} and {end}\n"
+        )
+        header_ids = tok(header, add_special_tokens=False)["input_ids"]
+        header_len = len(header_ids)
 
-        prompts, current_posts = [], []
+        # Pre-tokenize each post
+        post_texts = [self.row_to_string(row) for _, row in df_slice.iterrows()]
+        post_id_lens = [
+            len(tok(text, add_special_tokens=False)["input_ids"])
+            for text in post_texts
+        ]
+        sep_ids = tok("\n", add_special_tokens=False)["input_ids"]
+        sep_len = len(sep_ids)
 
-        for _, row in df_slice.iterrows():
-            draft_posts = current_posts + [self.row_to_string(row)]
-            draft_prompt = header + "\n".join(draft_posts)
+        prompts = []
+        current_texts = []
+        current_len = header_len
 
-            if len(tokenizer.encode(draft_prompt)) > MAX_PROMPT_TOKENS:
-                # close current prompt and start a new one
-                prompts.append(header + "\n".join(current_posts))
-                current_posts = [self.row_to_string(row)]
+        for text, length in zip(post_texts, post_id_lens):
+            add_len = length + (sep_len if current_texts else 0)
+            if current_len + add_len > MAX_PROMPT_TOKENS:
+                # flush
+                prompts.append(header + "\n".join(current_texts))
+                current_texts = [text]
+                current_len = header_len + length
             else:
-                current_posts = draft_posts
+                if current_texts:
+                    current_len += sep_len + length
+                else:
+                    current_len += length
+                current_texts.append(text)
 
-        if current_posts:
-            prompts.append(header + "\n".join(current_posts))
+        if current_texts:
+            prompts.append(header + "\n".join(current_texts))
 
         return prompts
 
