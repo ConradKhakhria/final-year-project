@@ -176,9 +176,13 @@ class Experiment2:
                 - errors: the number of invalid outputs
                 - chunk_size: the size of the chunk
         """
-        prompts = [self.chunk_to_string(c) for c in chunks]
+
+        prompts = [(i, self.chunk_to_string(c)) for i, c in enumerate(chunks)]
+        prompts.sort(key=lambda x: len(x[1]))
+        sorted_prompts = [p for _, p in prompts]
+
         outputs = self.model_isolator.process_prompts(
-            prompts,
+            sorted_prompts,
             batch_size=batch_size,
             cfg={
                 "structure_header": "{\n    \"trends\": [",
@@ -467,8 +471,8 @@ if __name__ == "__main__":
             which_subreddits=selection,
             hierarchical_summarisation=True,
             demographics_max_tokens=30,
-            chunk_report_max_tokens=200,
-            overall_report_max_tokens=2000,
+            chunk_report_max_tokens=100,
+            overall_report_max_tokens=500,
             model_name=model_name,
             model_id=model_id
         )
