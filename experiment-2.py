@@ -14,6 +14,9 @@ import dataset
 import model
 
 
+MAX_PROMPT_TOKENS = 32_000 
+
+
 class Experiment2:
     def __init__(self, seed: int):
         config.debug("Loading dataset")
@@ -134,52 +137,53 @@ class Experiment2:
         max_new_tokens: int,
         prompts_per_batch: int = 16
     ) -> dict:
-        stage_2_reports = {}        
+        stage_2_reports: dict = {}
 
-        all_prompts = []
-        prompt_index = []
+        prompt_meta: List[Tuple[str, str, str]] = []   # (sub, age, gender) per prompt
+        prompt_texts: List[str] = []
 
-        # Create prompts for vLLM
+        # build prompts for vLLM
         for sub, age, gender in itertools.product(subreddits, age_ranges, gender_range):
             df_slice = df[
-                (df.subreddit == sub) &
-                (df.predicted_age == age) &
-                (df.predicted_gender == gender)
+                (df["subreddit"] == sub) &
+                (df["predicted_age"] == age) &
+                (df["predicted_gender"] == gender)
             ].sort_values("date_posted")
 
             if df_slice.empty:
                 continue
 
-            p = self.posts_to_string(df_slice)
-            prompt_index.append((sub, age, gender))
-            all_prompts.append(p)
+            for prompt in self.slice_to_truncated_prompts(df_slice):
+                prompt_meta.append((sub, age, gender))
+                prompt_texts.append(prompt)
 
-        # Now use vLLM
-        outputs: List[Tuple[tuple, str]] = []
-        batches = self.batch(list(zip(prompt_index, all_prompts)), prompts_per_batch)
+        # send to vLLM in batches
+        all_outputs: List[str] = []
 
-        for prompts_batch in batches:
-            batch_indices, batch_prompts = zip(*prompts_batch)
-
-            batch_outputs = self.batch_model.process_batch(
-                list(batch_prompts),
+        for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
+            outputs = self.batch_model.process_batch(
+                batch_prompts,
                 structure_header='{ "trends": [',
-                max_new_tokens=max_new_tokens
+                max_new_tokens=max_new_tokens,
             )
+            all_outputs.extend(outputs)
 
-            outputs.extend(zip(batch_indices, batch_outputs))
+        # parse and aggregate per (sub, age, gender)
+        parsed = model.extract_json(all_outputs,
+                                    {"trends": [], "format-error": True})
 
-        # Parse output
-        json_out = model.extract_json(outputs, {"trends": [], "format-error": True})
-
-        for (sub, age, gender), o in zip(prompt_index, json_out):
-            stage_2_reports[(sub, age, gender)] = {
-                "reports":     o.get("trends", []),
-                "errors":      int(o.get("format-error", False)),
-                "start_date":  str(df.date_posted.min()),
-                "end_date":    str(df.date_posted.max()),
-                "chunk_size":  1
-            }
+        for (sub, age, gender), obj in zip(prompt_meta, parsed):
+            key = (sub, age, gender)
+            bucket = stage_2_reports.setdefault(
+                key,
+                {"reports": [], "errors": 0,
+                "start_date": str(df.date_posted.min()),
+                "end_date":   str(df.date_posted.max()),
+                "chunk_size": 0}
+            )
+            bucket["reports"].extend(obj.get("trends", []))
+            bucket["errors"] += int(obj.get("format-error", False))
+            bucket["chunk_size"] += 1
 
         return stage_2_reports
 
@@ -320,6 +324,46 @@ class Experiment2:
         query += f" - evidence: {report['evidence']}"
 
         return query
+
+
+
+    def slice_to_truncated_prompts(self, df_slice: pd.DataFrame) -> List[str]:
+        """
+        Split one (subreddit, age, gender) slice into as many prompts as needed,
+        each strictly ≤ MAX_PROMPT_TOKENS tokens.
+
+        returns:
+            A list of complete prompts to supply to the LLM
+        """
+        tokenizer = self.batch_model.tokenizer
+
+        header_tpl = (
+            "All supplied posts will be from r/{sub}. "
+            "They were posted between {start} and {end}\n"
+        )
+
+        start = df_slice.iloc[0]["date_posted"]
+        end   = df_slice.iloc[-1]["date_posted"]
+        sub   = df_slice["subreddit"].iloc[0]
+        header = header_tpl.format(sub=sub, start=start, end=end)
+
+        prompts, current_posts = [], []
+
+        for _, row in df_slice.iterrows():
+            draft_posts = current_posts + [self.row_to_string(row)]
+            draft_prompt = header + "\n".join(draft_posts)
+
+            if len(tokenizer.encode(draft_prompt)) > MAX_PROMPT_TOKENS:
+                # close current prompt and start a new one
+                prompts.append(header + "\n".join(current_posts))
+                current_posts = [self.row_to_string(row)]
+            else:
+                current_posts = draft_posts
+
+        if current_posts:
+            prompts.append(header + "\n".join(current_posts))
+
+        return prompts
 
 
     def dump_report(self, reports: dict, file_path: Path):
