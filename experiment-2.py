@@ -131,7 +131,8 @@ class Experiment2:
         subreddits: List[str],
         age_ranges: np.ndarray,
         gender_range: list[str],
-        max_new_tokens: int
+        max_new_tokens: int,
+        prompts_per_batch: int
     ) -> dict:
         stage_2_reports = {}        
 
@@ -153,12 +154,22 @@ class Experiment2:
             prompt_index.append((sub, age, gender))
             all_prompts.append(p)
 
-        outputs = self.batch_model.process_batch(
-            all_prompts,
-            structure_header='{ "trends": [',
-            max_new_tokens=max_new_tokens
-        )
+        # Now use vLLM
+        outputs = []
+        batches = self.batch(list(zip(prompt_index, all_prompts)), prompts_per_batch)
 
+        for prompts_batch in batches:
+            batch_indices, batch_prompts = zip(*prompts_batch)
+
+            batch_outputs = self.batch_model.process_batch(
+                list(batch_prompts),
+                structure_header='{ "trends": [',
+                max_new_tokens=max_new_tokens
+            )
+
+            outputs.extend(zip(batch_indices, batch_outputs))
+
+        # Parse output
         json_out = model.extract_json(outputs, {"trends": [], "format-error": True})
 
         for (sub, age, gender), o in zip(prompt_index, json_out):
@@ -249,6 +260,17 @@ class Experiment2:
 
 
     # ===== Data Processing ===== #
+
+    def batch(self, iterable, n):
+        """
+        Simple batching function
+        """
+
+        l = len(iterable)
+
+        for ndx in range(0, l, n):
+            yield iterable[ndx : min(ndx + n, l)]
+
 
     def row_to_string(self, row: pd.core.series.Series) -> str:
         """
