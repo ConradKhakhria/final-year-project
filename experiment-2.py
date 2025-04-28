@@ -201,7 +201,7 @@ class Experiment2:
             cfg={
                 "enforce_json": True,
                 "max_new_tokens": max_new_tokens,
-                "pre_prompt_name": "expt2-identify-trends-sector.txt"
+                "pre_prompt_name": "expt2-stage-2.txt"
             }
         )
 
@@ -256,7 +256,7 @@ class Experiment2:
                     cfg={
                         "enforce_json": False,
                         "max_new_tokens": max_new_tokens,
-                        "pre_prompt_name": "expt2-identify-trends-from-reports.txt"
+                        "pre_prompt_name": "expt2-stage-3.txt"
                     }
                 )
 
