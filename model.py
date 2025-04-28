@@ -26,11 +26,19 @@ class BatchModel:
                 os.environ["HUGGINGFACE_TOKEN"] = f.read().strip()
 
         config.output(f"Loading model {model_id} via vLLM")
-        self.llm = LLM(
-            model=model_id,
-            dtype="auto",
-            trust_remote_code=True,
-        )
+        if model_id == "mistral":
+            self.llm = LLM(
+                model=model_id,
+                dtype="auto",
+                trust_remote_code=True,
+                tokenizer_mode="mistral"
+            )
+        else:
+            self.llm = LLM(
+                model=model_id,
+                dtype="auto",
+                trust_remote_code=True
+            )
 
         self.tokenizer = self.llm.get_tokenizer()
         self.tokenizer.padding_side = "right"
