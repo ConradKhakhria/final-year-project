@@ -69,9 +69,6 @@ class Experiment2:
         2. if gender isn't strictly male or female, it is None
         """
         prompts = test_df.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
-
-        print(prompts[0])
-
         outputs = self.model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
