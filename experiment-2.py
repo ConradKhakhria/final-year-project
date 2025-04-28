@@ -407,55 +407,59 @@ class Experiment2:
         Runs the second experiment
 
         args:
-        - experiment_sub_heading:
-            the name of the parent directory to put results into
-        - which_subreddits:
-            whether to select the relevant or irrelevant posts
-        - hierarchical_summarisation:
-            whether to perform the hierarchical summarisation step
-        - demographics_max_tokens:
-            the max number of new tokens to be used when generating demographic inferences
-        - chunk_report_max_tokens:
-            the max number of tokens for generating short reports
-        - overall_report_max_tokens:
-            the max number of tokens for generating the larger reports
-        - summary_model_id:
-            the name of the model to be used for summarising social media posts' consumer trends
-        - aggregator_model_id:
-            the name of the mdoel to be used for aggregating existing reports
-        - num_samples (nullable):
-            the number of samples to take from the dataset
+        - experiment_sub_heading: the name of the parent directory to put results into
+        - which_subreddits: whether to select the relevant or irrelevant posts
+        - hierarchical_summarisation: whether to perform the hierarchical summarisation step
+        - demographics_max_tokens: max tokens for demographic inference
+        - chunk_report_max_tokens: max tokens for mini‐reports
+        - overall_report_max_tokens: max tokens for final reports
+        - model_name / model_id: identifier for naming output folder and loading the model
+        - num_samples: optional subsample size
         """
-        self.batch_model = model.BatchModel(model_id)
+        # Compute the largest possible prompt+generate footprint and add a small buffer
+        max_input_plus_output = max(
+            demographics_max_tokens,
+            chunk_report_max_tokens,
+            overall_report_max_tokens
+        ) + MAX_PROMPT_TOKENS
+        buffer = 512
 
-        # Get pre-prompts ready
-        pre_prompt_path = config.CODE_DIR / "pre-prompts"
-        pp_stage_1 = pre_prompt_path / "expt1-zero-shot.txt"
-        pp_stage_2 = pre_prompt_path / "expt2-stage-2.txt"
-        pp_stage_3 = pre_prompt_path / "expt2-stage-3.txt"
+        # 1) Load up vLLM with an increased max_seq_len
+        self.batch_model = model.BatchModel(
+            model_id,
+            max_seq_len=max_input_plus_output + buffer,
+        )
 
-        subreddits = self.subreddit_selection[which_subreddits]
-        age_ranges = np.array([f"{i}-{i + 5}" for i in np.arange(0, 100, 5)] + ["unknown"])
-        gender_range = ["male", "female", "unknown"]
-
+        # Prepare output directory
         output_path = config.RESULTS_DIR / experiment_sub_heading / model_name
         output_path.mkdir(parents=True, exist_ok=True)
 
+        # Pull the right slice of the data
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
 
-        # ===== Stage 1: generate demographic inferences ===== #
-        self.batch_model.load_pre_prompt(pp_stage_1)
-        demographic_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
+        # === Stage 1: demographic inference ===
+        pre1 = config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt"
+        self.batch_model.load_pre_prompt(pre1)
+
+        demographic_df = self.generate_demographic_inferences(
+            test_df,
+            max_new_tokens=demographics_max_tokens,
+            batch_size=100
+        )
+
         demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
-        # ===== Stage 2: generate mini reports ===== #
-        self.batch_model.load_pre_prompt(pp_stage_2)
+        # === Stage 2: mini reports ===
+        pre2 = config.CODE_DIR / "pre-prompts" / "expt2-stage-2.txt"
+        self.batch_model.load_pre_prompt(pre2)
+
         stage_2_reports = self.summarise_posts(
             demographic_df,
-            subreddits,
-            age_ranges,
-            gender_range,
-            chunk_report_max_tokens
+            subreddits=self.subreddit_selection[which_subreddits],
+            age_ranges=np.array([f"{i}-{i+5}" for i in range(0,100,5)] + ["unknown"]),
+            gender_range=["male","female","unknown"],
+            max_new_tokens=chunk_report_max_tokens,
+            prompts_per_batch=16
         )
 
         self.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
@@ -463,31 +467,37 @@ class Experiment2:
         if not hierarchical_summarisation:
             return
 
-        # ===== Stage 3: hierarchical summarisation ===== #
-        # In particular, this section produces a hierarchically-summarised
-        # report for *each* age and gender pairing
-        self.batch_model.load_pre_prompt(pp_stage_3)
+        # === Stage 3: hierarchical summarisation ===
+        pre3 = config.CODE_DIR / "pre-prompts" / "expt2-stage-3.txt"
+        self.batch_model.load_pre_prompt(pre3)
+
         summarised_reports: dict = {}
+        subs = self.subreddit_selection[which_subreddits]
+        ages = np.array([f"{i}-{i+5}" for i in range(0,100,5)] + ["unknown"])
+        genders = ["male","female","unknown"]
 
-        for a, g in itertools.product(age_ranges, gender_range):
-            # accumulate all reports from all subreddits
+        for age, gender in itertools.product(ages, genders):
             reports: List[dict] = []
-            for s in subreddits:
-                if (rs := stage_2_reports.get((s, a, g), None)) is not None:
-                    for r in rs['reports']:
-                        if isinstance(r, str):
-                            r = {"summary": r, "evidence": [], "reasoning": ""}
-                        reports.append({ 'subreddit': s, **r })
+            for sub in subs:
+                for r in stage_2_reports.get((sub, age, gender), {}).get("reports", []):
+                    if isinstance(r, str):
+                        r = {"summary": r, "evidence": [], "reasoning": ""}
+                    reports.append({"subreddit": sub, **r})
 
-            if len(reports) > 0:
-                config.debug(f"summarising {len(reports)} reports for {(a, g)}")
-                summarised_reports[(a, g)] = self.hierarchical_summarisation(
-                    (a, g), reports, overall_report_max_tokens, 4
-                )
+            if not reports:
+                continue
+
+            config.debug(f"Summarising {len(reports)} mini‐reports for {(age, gender)}")
+            summarised_reports[(age, gender)] = self.hierarchical_summarisation(
+                (age, gender),
+                reports,
+                max_new_tokens=overall_report_max_tokens,
+                batch_size=4,
+            )
 
         config.output("Done with experiment!")
-
         self.dump_report(summarised_reports, output_path / "experiment-2-stage-3.json")
+
         del self.batch_model
 
 
