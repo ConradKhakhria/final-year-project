@@ -143,7 +143,7 @@ class Experiment2:
         prompt_texts: List[str] = []
 
         # build prompts for vLLM
-        config.debug("pre-computing truncated batches")
+        config.debug("pre-computing truncated batchesg")
         for sub, age, gender in itertools.product(subreddits, age_ranges, gender_range):
             df_slice = df[
                 (df["subreddit"] == sub) &
@@ -161,8 +161,8 @@ class Experiment2:
         # send to vLLM in batches
         all_outputs: List[str] = []
 
+        config.debug(f"now computing {len(prompt_texts / 16)} batches")
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
-            config.debug("computing batch")
             outputs = self.batch_model.process_batch(
                 batch_prompts,
                 structure_header='{ "trends": [',
