@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # === SETUP ===
-set -e  # Exit on error
+set -e  # Exit immediately on any error
 export DEBIAN_FRONTEND=noninteractive
 
 echo "[INFO] Updating packages..."
@@ -20,26 +20,22 @@ python3 -m virtualenv venv
 source venv/bin/activate
 
 echo "[INFO] Installing Python requirements..."
+# Install PyTorch + CUDA 12.1 build
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install transformers datasets accelerate pandas scikit-learn
-pip install sentencepiece protobuf tokenizers
-
-# Optional: If you want bitsandbytes support for quantization
-pip install bitsandbytes
-pip install --upgrade vllm
-
-# Flash attention
-pip install flash-attn --no-build-isolation
+# Install vLLM and its core dependencies
+pip install transformers datasets pandas vllm flashinfer
 
 # === ENVIRONMENT VARIABLES ===
-echo "[INFO] Setting up Hugging Face Token..."
+echo "[INFO] Setting up environment variables..."
+# Replace <your-huggingface-token-here> manually or script it
 echo 'export HF_TOKEN="<your-huggingface-token-here>"' >> ~/.bashrc
+echo 'export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True' >> ~/.bashrc
+
+# Immediate export for current session
 export HF_TOKEN="<your-huggingface-token-here>"
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Create necessary directories
 mkdir -p ~/.cache/huggingface ~/.tmp ~/data ~/results
 
-# === RUN SCRIPT ===
-echo "[INFO] Running experiment..."
-python3 experiment-1.py
+echo "[INFO] Setup complete. Virtual environment created and ready."
