@@ -125,82 +125,6 @@ class Experiment2:
 
     # ===== Stage 2 ===== #
 
-    def create_balanced_post_selection(
-        self, df_test: pd.DataFrame, subreddit: str, age_range: str,
-        gender: str, n_posts: int
-    ) -> List[pd.DataFrame]:
-        """
-        Yields dataframes each containing close to n_posts
-
-        args:
-        - df_test: the dataframe to select from
-        - subreddit: the subreddit to select from
-        - age_range: the age range to select from
-        - gender: the gender to select
-        - n_posts: the number of posts for each df
-
-        All posts will be in time-order
-        """
-        chunks = []
-        condition = (df_test["subreddit"] == subreddit) \
-                  & (df_test["predicted_age"] == age_range) \
-                  & (df_test["predicted_gender"] == gender)
-
-        time_sorted = df_test[condition].sort_values(by="date_posted")
-        df_len = len(time_sorted)
-
-        for i_start in range(0, df_len, n_posts):
-            chunk = time_sorted.iloc[i_start : min(df_len, i_start + n_posts)]
-            chunks.append(chunk)
-
-        return chunks
-
-
-    def get_trends_from_chunk(
-        self, chunks: List[pd.DataFrame], max_new_tokens: int, batch_size = None
-    ) -> dict:
-        """
-        Obtain an enumeration of consumer trends indicated by a chunk of posts
-
-        args:
-        - chunks: a list of dataframes of posts from a specific subreddit and timeframe
-        - max_new_tokens: the max number of new tokens to generate
-        - batch_size: the number of chunks to process at once
-
-        returns:
-            A dict containing:
-                - trends: a list of detected consumer trends
-                - errors: the number of invalid outputs
-                - chunk_size: the size of the chunk
-        """
-
-        prompts = [(i, self.chunk_to_string(c)) for i, c in enumerate(chunks)]
-        prompts.sort(key=lambda x: len(x[1]))
-        sorted_prompts = [p for _, p in prompts]
-
-        outputs = self.batch_model.process_batch(
-            sorted_prompts,
-            structure_header="{\n    \"trends\": [",
-            max_new_tokens=max_new_tokens
-        )
-
-        json_output = model.extract_json(outputs, {"trends": [], "format-error": True})
-
-        trends: List[dict] = []
-        errors = 0
-
-        for o in json_output:
-            trends.extend(o["trends"])
-            if o.get("format-error", False):
-                errors += 1
-
-        return {
-            "trends": trends,
-            "errors": errors,
-            "chunk_size": len(chunks)
-        }
-
-
     def summarise_posts(
         self,
         df: pd.DataFrame,
@@ -438,10 +362,7 @@ class Experiment2:
 
         # ===== Stage 1: generate demographic inferences ===== #
         self.batch_model.load_pre_prompt(pp_stage_1)
-        test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
-
-        # Dump metadata about demographic inference
-        demographic_df = test_df[["text", "predicted_age", "predicted_gender"]]
+        demographic_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
         demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
         # ===== Stage 2: generate mini reports ===== #
