@@ -182,7 +182,7 @@ class Experiment2:
 
     def get_trends_from_chunk(
         self, chunks: List[pd.DataFrame], max_new_tokens: int, batch_size = None
-    ) -> List[str]:
+    ) -> dict:
         """
         Obtain an enumeration of consumer trends indicated by a chunk of posts
 
@@ -192,7 +192,10 @@ class Experiment2:
         - batch_size: the number of chunks to process at once
 
         returns:
-            A string containing a bullet-pointed list of trends indicated
+            A dict containing:
+                - trends: a list of detected consumer trends
+                - errors: the number of invalid outputs
+                - chunk_size: the size of the chunk
         """
         prompts = [self.chunk_to_prompt(c) for c in chunks]
         outputs = self.model_isolator.process_prompts(
@@ -205,17 +208,29 @@ class Experiment2:
             }
         )
 
-        print(f"\n\noutput length: {len(outputs)}\n\n")
+#        print(f"\n\noutput length: {len(outputs)}\n\n")
+#
+#        with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
+#            for i, o in enumerate(outputs):
+#                f.write(f"=== output {i} ===:\n{o}\n\n")
 
-        with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
-            for i, o in enumerate(outputs):
-                f.write(f"=== output {i} ===:\n{o}\n\n")
+        json_output = model.extract_json(outputs, {"trends": [], "format-error": True})
 
-        return model.extract_json(outputs, {
-            "label": None,
-            "evidence": None,
-            "summary": None
-        })
+        trends: List[dict] = []
+        errors = 0
+
+        for o in json_output:
+            trends.extend(o["trends"])
+            if o.get("format-error", False):
+                errors += 1
+
+        return {
+            "trends": trends,
+            "errors": errors,
+            "chunk_size": len(chunks)
+        }
+
+
 
 
     @config.debug_function
@@ -345,10 +360,14 @@ class Experiment2:
 
             if len(post_chunks) > 0:
                 config.output(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
+                chunk_trends = expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 4)
+                
                 trend_reports[(s, a, g)] = {
-                    "reports": expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 4),
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
-                    "end_date": str(post_chunks[-1].iloc[-1]["date_posted"])
+                    "end_date": str(post_chunks[-1].iloc[-1]["date_posted"]),
+                    "reports": chunk_trends['trends'],
+                    "errors": chunk_trends['errors'],
+                    "chunk_size": chunk_trends['chunk_size']
                 }
 
         expt.dump_report(trend_reports, output_path / "experiment-2-stage-2-reports.json")
