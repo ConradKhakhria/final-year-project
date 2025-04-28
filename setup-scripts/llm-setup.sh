@@ -23,7 +23,7 @@ echo "[INFO] Installing Python requirements..."
 # Install PyTorch + CUDA 12.1 build
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 # Install vLLM and its core dependencies
-pip install transformers datasets pandas vllm flashinfer
+pip install transformers datasets pandas vllm
 
 # === ENVIRONMENT VARIABLES ===
 echo "[INFO] Setting up environment variables..."
