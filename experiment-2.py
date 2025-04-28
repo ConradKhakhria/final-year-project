@@ -253,7 +253,7 @@ class Experiment2:
                 )
 
                 new_report_json = model.extract_json(new_report, {"trends": [], "failed-output": True})
-                new_reports.append(new_report_json["trends"])
+                new_reports.extend([r['trends'] for r in new_report_json])
 
                 if new_report_json.get("failed-output", False):
                     failed_output_counter += 1
