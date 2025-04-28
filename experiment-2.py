@@ -208,13 +208,15 @@ class Experiment2:
             }
         )
 
-#        print(f"\n\noutput length: {len(outputs)}\n\n")
-#
-#        with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
-#            for i, o in enumerate(outputs):
-#                f.write(f"=== output {i} ===:\n{o}\n\n")
+        print(f"\n\noutput length: {len(outputs)}\n\n")
+
+        with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
+            for i, o in enumerate(outputs):
+                f.write(f"=== output {i} ===:\n{o}\n\n")
 
         json_output = model.extract_json(outputs, {"trends": [], "format-error": True})
+
+        print(json_output)
 
         trends: List[dict] = []
         errors = 0
