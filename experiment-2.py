@@ -28,8 +28,8 @@ class Experiment2:
 
         self.rng = np.random.default_rng(seed)
 
-    ##### Data selection #####
-
+    
+    # ===== Data Selection ===== #
 
     @config.debug_function
     def select_test_df(
@@ -52,6 +52,8 @@ class Experiment2:
         return test_df
 
 
+    # ===== Stage 1 ===== #
+
     @config.debug_function
     def generate_demographic_inferences(
         self, test_df: pd.DataFrame, max_new_tokens: int, batch_size: int = 20,
@@ -68,7 +70,7 @@ class Experiment2:
         1. age is split into 5-year groupings
         2. if gender isn't strictly male or female, it is None
         """
-        prompts = test_df.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
+        prompts = test_df.reset_index(drop=True).apply(self.row_to_string, axis=1).tolist()
         outputs = self.model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
@@ -114,6 +116,8 @@ class Experiment2:
         ], axis=1)
 
 
+    # ===== Stage 2 ===== #
+
     def create_balanced_post_selection(
         self, df_test: pd.DataFrame, subreddit: str, age_range: str,
         gender: str, n_posts: int
@@ -145,41 +149,6 @@ class Experiment2:
         return chunks
 
 
-    ##### Data Preprocessing #####
-
-    def row_to_prompt(self, row: pd.core.series.Series) -> str:
-        """
-        Converts a row into a string summarising the post.
-
-        This function adds descriptions based on the data inside the row
-        """
-        s = f"- date posted: {row['date_posted'].strftime('%Y-%m-%d')}\n"
-
-        for col in row.index:
-            if col != "text":
-                s += f"- {col}: {row[col]}\n"
-
-        return s + f"- post contents:\n'{row['text']}'\n"
-
-
-    def chunk_to_prompt(self, chunk: pd.DataFrame) -> str:
-        """
-        Turns a chunk of posts into a prompt string
-        """
-        start_date = chunk.iloc[0]["date_posted"]
-        end_date = chunk.iloc[-1]["date_posted"]
-        subreddit = chunk["subreddit"].iloc[0]
-
-        prompt = f"All supplied posts will be from r/{subreddit}. " \
-                 f"They were posted between {start_date} and {end_date}\n"
-
-        post_prompts = chunk.reset_index(drop=True).apply(self.row_to_prompt, axis=1).tolist()
-
-        return prompt + "\n".join(f"[post number {i + 1}]:\n{p}" for i, p in enumerate(post_prompts))
-
-
-    ##### Trend Inference #####
-
     def get_trends_from_chunk(
         self, chunks: List[pd.DataFrame], max_new_tokens: int, batch_size = None
     ) -> dict:
@@ -197,7 +166,7 @@ class Experiment2:
                 - errors: the number of invalid outputs
                 - chunk_size: the size of the chunk
         """
-        prompts = [self.chunk_to_prompt(c) for c in chunks]
+        prompts = [self.chunk_to_string(c) for c in chunks]
         outputs = self.model_isolator.process_prompts(
             prompts,
             batch_size=batch_size,
@@ -208,15 +177,7 @@ class Experiment2:
             }
         )
 
-        print(f"\n\noutput length: {len(outputs)}\n\n")
-
-        with open(config.RESULTS_DIR / "text-output.txt", "a") as f:
-            for i, o in enumerate(outputs):
-                f.write(f"=== output {i} ===:\n{o}\n\n")
-
         json_output = model.extract_json(outputs, {"trends": [], "format-error": True})
-
-        print(json_output)
 
         trends: List[dict] = []
         errors = 0
@@ -233,62 +194,122 @@ class Experiment2:
         }
 
 
-
+    # ===== Stage 3 ===== #
 
     @config.debug_function
-    def get_trends_from_reports(
-        self, reports: List[str], subreddit: str | None, age_range: str,
-        gender: str, max_new_tokens: int, batch_size: int
-    ) -> str:
+    def hierarchical_summarisation(
+        self,
+        group: tuple,
+        reports: List[dict],
+        max_new_tokens: int,
+        batch_size: int
+    ) -> Tuple[dict, int]:
         """
         Uses the large model to produce a final report summarising consumer trends
         identified in the reports
 
         args:
+        - group: the demographic group that the trend reports are derived from
         - reports: a list of reports made by the LLM
-        - subreddit: the subreddit the report came from (nullable)
-        - age_range: the inferred age range of the people who posted
-        - gender: the inferred gender of the posters
         - max_new_tokens: the max number of new tokens the LLM can generate
         - batch_size: the number of reports to combine at each iteration
-        """
-        if reports == []:
-            config.debug(f"For some reason we got 0 reports for {(subreddit, age_range, gender)}")
-            return "<no trends for this demographic grouping>"
 
-        layers = 1
-        query_context = (
-            "metadata:\n"
-            f" - all posts are from r/{subreddit}\n" if subreddit else ""
+        returns:
+            A tuple containing the final report and the number of errors encountered
+            during summarisation
+        """
+        age_range, gender = group
+
+        if reports == []:
+            config.debug(f"For some reason we got 0 reports for {group}")
+            return ({}, 1)
+
+        query_header = (
+            "METADATA\n"
             f" - the inferred age range of the posters is {age_range}\n"
             f" - the inferred gender of the posters is {gender}"
         )
+
+        layers = 1
+        failed_output_counter = 0
 
         while len(reports) > 1:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
+            report_strings = [self.report_to_string(r) for r in reports]
+
             for batch_start in range(0, len(reports), batch_size):
-                batch_end = min(len(reports), batch_start + batch_size)
-                batch = reports[batch_start : batch_end]
-                batch_string = "\n".join(f"[report {i + 1}]:\n{r}" for i, r in enumerate(batch))
+                batch = report_strings[batch_start : min(len(reports), batch_start + batch_size)]
 
                 new_report = self.model_isolator.process_prompts(
-                    [query_context + batch_string],
+                    [query_header + "\n".join(batch)],
                     batch_size=20,
                     cfg={
-                        "structure_header": None,
+                        "structure_header": "{\n    \"trends\": [",
                         "max_new_tokens": max_new_tokens,
                         "pre_prompt_name": "expt2-stage-3.txt"
                     }
                 )
 
-                new_reports.append(new_report)
+                new_report_json = model.extract_json(new_report, {"trends": [], "failed-output": True})
+                new_reports.append(new_report_json["trends"])
+
+                if new_report_json.get("failed-output", False):
+                    failed_output_counter += 1
 
             reports = new_reports
             layers += 1
 
-        return reports[0]
+        return reports[0], failed_output_counter
+
+
+    # ===== Data Processing ===== #
+
+    def row_to_string(self, row: pd.core.series.Series) -> str:
+        """
+        Converts a row into a string summarising the post.
+
+        This function adds descriptions based on the data inside the row
+        """
+        s = f"- date posted: {row['date_posted'].strftime('%Y-%m-%d')}\n"
+
+        for col in row.index:
+            if col != "text":
+                s += f"- {col}: {row[col]}\n"
+
+        return s + f"- post contents:\n'{row['text']}'\n"
+
+
+    def chunk_to_string(self, chunk: pd.DataFrame) -> str:
+        """
+        Turns a chunk of posts into a prompt string
+        """
+        start_date = chunk.iloc[0]["date_posted"]
+        end_date = chunk.iloc[-1]["date_posted"]
+        subreddit = chunk["subreddit"].iloc[0]
+
+        prompt = f"All supplied posts will be from r/{subreddit}. " \
+                 f"They were posted between {start_date} and {end_date}\n"
+
+        post_prompts = chunk.reset_index(drop=True).apply(self.row_to_string, axis=1).tolist()
+
+        return prompt + "\n".join(f"[post number {i + 1}]:\n{p}" for i, p in enumerate(post_prompts))
+
+
+    def report_to_string(self, report: Dict[str, str], index: int | None = None) -> str:
+        """
+        Turns a report object into a string
+        """
+        query  = f"[REPORT NUMBER {index + 1}]\n" if index else ""
+        query += f" - trend summary: {report['summary']}"
+        
+        if 'reasoning' in report:
+            query += f" - reasoning: {report['reasoning']}"
+
+        query += f" - evidence: {report['evidence']}"
+
+        return query
 
 
     def dump_report(self, reports: dict, file_path: Path):
@@ -301,7 +322,7 @@ class Experiment2:
             json.dump(reports_str_keys, f)
 
 
-    ##### Overall Experiment #####
+    # ===== Overall Experiment ===== #
 
     def run_experiment(
         self,
@@ -348,13 +369,16 @@ class Experiment2:
         output_path.mkdir(parents=True, exist_ok=True)
 
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
+
+        # ===== Stage 1: generate demographic inferences ===== #
         test_df = self.generate_demographic_inferences(test_df, demographics_max_tokens, batch_size=100)
 
         # Dump metadata about demographic inference
         demographic_df = test_df[["text", "predicted_age", "predicted_gender"]]
         demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
-        trend_reports = {}
+        # ===== Stage 2: generate mini reports ===== #
+        stage_2_reports = {}
 
         # Generate reports for each (subreddit, age range, gender)
         for s, a, g in itertools.product(subreddits, age_ranges, gender_range):
@@ -364,7 +388,7 @@ class Experiment2:
                 config.output(f"Generating short reports for sub = {s}, ages = {a}, gender = {g}")
                 chunk_trends = expt.get_trends_from_chunk(post_chunks, chunk_report_max_tokens, 4)
                 
-                trend_reports[(s, a, g)] = {
+                stage_2_reports[(s, a, g)] = {
                     "start_date": str(post_chunks[0].iloc[0]["date_posted"]),
                     "end_date": str(post_chunks[-1].iloc[-1]["date_posted"]),
                     "reports": chunk_trends['trends'],
@@ -372,45 +396,32 @@ class Experiment2:
                     "chunk_size": chunk_trends['chunk_size']
                 }
 
-        expt.dump_report(trend_reports, output_path / "experiment-2-stage-2-reports.json")
+        expt.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
 
         if not hierarchical_summarisation:
             expt.model_isolator.kill_batch_worker()
             return
 
-        # Produce larger reports
-        larger_reports = {}
-
-        for (s, a, g), entry in trend_reports.items():
-            config.output(f"Reports for subreddit r/{s} with ages = {a} and gender = {g}:")
-            config.output(f" - date range: {entry['start_date']} to {entry['end_date']}")
-            config.output(f" - number of reports: {len(entry['reports'])}")
-            config.output(f" - total text: {len(' '.join(entry['reports']))}")
-
-            new_report = self.get_trends_from_reports(entry['reports'], s, a, g,
-                                                      overall_report_max_tokens, 4)
-            larger_reports[(s, a, g)] = new_report
-
-        expt.dump_report(larger_reports, output_path / "experiment-2-stage-3a-reports.json")
-
-        # Create overall reports for each demographic segment
-        demographic_segment_reports = {}
+        # ===== Stage 3: hierarchical summarisation ===== #
+        # In particular, this section produces a hierarchically-summarised
+        # report for *each* age and gender pairing
+        summarised_reports: dict = {}
 
         for a, g in itertools.product(age_ranges, gender_range):
+            # accumulate all reports from all subreddits
             reports = []
-
             for s in subreddits:
-                if (r := larger_reports.get((s, a, g), None)) is not None:
-                    reports.append(r)
+                reports.append({ 'subreddit': s, **stage_2_reports[(s, a, g)]['reports']})
 
             if len(reports) > 0:
-                overall_report = self.get_trends_from_reports(reports, None, a, g,
-                                                              overall_report_max_tokens, 4)
-                demographic_segment_reports[(a, g)] = overall_report
+                config.debug(f"summarising {len(reports)} reports for {(a, g)}")
+                summarised_reports[(a, g)] = self.hierarchical_summarisation(
+                    (a, g), reports, overall_report_max_tokens, 4
+                )
 
         config.output("Done with experiment!")
 
-        expt.dump_report(demographic_segment_reports, output_path / "experiment-2-stage-3b.json")
+        expt.dump_report(summarised_reports, output_path / "experiment-2-stage-3.json")
         expt.model_isolator.kill_batch_worker()
 
 
@@ -429,7 +440,7 @@ if __name__ == "__main__":
         expt.run_experiment(
             experiment_sub_heading=f"expt2-relevant-subs-general-trends-all",
             which_subreddits="relevant",
-            hierarchical_summarisation=False,
+            hierarchical_summarisation=True,
             demographics_max_tokens=30,
             chunk_report_max_tokens=200,
             overall_report_max_tokens=2000,
