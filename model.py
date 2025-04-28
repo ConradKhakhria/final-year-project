@@ -323,9 +323,7 @@ class BatchModelIsolator:
 
 
 @config.debug_function
-def extract_json(
-    outputs: list[str], default: dict, select_up_to: str | None = None
-) -> list[dict]:
+def extract_json(outputs: list[str], default: dict) -> list[dict]:
     """ 
     Attempts to extract and parse valid json from each output string
 
@@ -336,14 +334,41 @@ def extract_json(
 
     For each output that doesn't yield valid output, None is put in its place
     """
+    def find_end_of_json(text: str) -> int | None:
+        """
+        Attempts to find the last character of JSON
+        """
+        stack = []
+        in_string = False
+        escape = False
+
+        for i, char in enumerate(text):
+            if char == '"' and not escape:
+                in_string = not in_string
+            if in_string:
+                escape = (char == '\\' and not escape)
+                continue
+
+            if char in '{[':
+                stack.append(char)
+            elif char in '}]':
+                if not stack:
+                    raise json.JSONDecodeError("s", "s", 0)
+                opening = stack.pop()
+                if (opening, char) not in [('{' ,'}'), ('[', ']')]:
+                    raise json.JSONDecodeError("s", "s", 0)
+                if not stack:
+                    return i + 1
+
+        return None
+
 
     json_outputs = []
 
     for s in outputs:
         try:
-            acceptable_slice = s.split(select_up_to)[0]
-            potential_json = acceptable_slice.split("}")[0] + "}"
-            parsed = json.loads(potential_json)
+            json_end = find_end_of_json(s)
+            parsed = json.loads(s[:json_end])
         except json.JSONDecodeError:
             parsed = default.copy()
 
