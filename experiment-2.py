@@ -132,7 +132,7 @@ class Experiment2:
         age_ranges: np.ndarray,
         gender_range: list[str],
         max_new_tokens: int,
-        prompts_per_batch: int
+        prompts_per_batch: int = 16
     ) -> dict:
         stage_2_reports = {}        
 
