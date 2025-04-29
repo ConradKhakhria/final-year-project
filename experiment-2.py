@@ -622,7 +622,7 @@ class Experiment2:
             if not reports:
                 continue
 
-            config.debug(f"Summarising {len(reports)} mini‐reports for {(age, gender)}")
+            config.debug(f"Summarising {len(reports)} mini-reports for {(age, gender)}")
             summarised_reports[(age, gender)] = self.hierarchical_summarisation(
                 (age, gender),
                 reports,
