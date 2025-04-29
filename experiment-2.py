@@ -170,6 +170,11 @@ class Experiment2:
             )
             all_outputs.extend(outputs)
 
+        # record outputs
+        with open(config.RESULTS_DIR / "full-text-output.txt", "a") as f:
+            for i, o in outputs:
+                f.write(f"[Output {i + 1}]:\n{o}\n\n")
+
         # parse and aggregate per (sub, age, gender)
         parsed = model.extract_json(all_outputs,
                                     {"trends": [], "format-error": True})
