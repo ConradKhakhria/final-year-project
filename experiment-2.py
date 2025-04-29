@@ -22,9 +22,7 @@ class Experiment2:
         config.debug("Loading dataset")
 
         self.data_dir = config.CODE_DIR / "data"
-        self.reddit_df = pd.read_parquet(self.data_dir / "2025-combined-filtered-reddit-data.parquet")
-        self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
-
+        self.reddit_df = None
         self.model_name = ""
 
         with open(self.data_dir / "subreddit-selection.json") as f:
@@ -532,9 +530,9 @@ class Experiment2:
 
     def run_experiment(
         self,
+        reddit_df: pd.DataFrame,
         experiment_sub_heading: str,
         which_subreddits: Literal["relevant", "irrelevant"],
-        hierarchical_summarisation: bool,
         demographics_max_tokens: int,
         chunk_report_max_tokens: int,
         overall_report_max_tokens: int,
@@ -547,15 +545,15 @@ class Experiment2:
         Runs the second experiment
 
         args:
+        - reddit_df: the dataframe
         - experiment_sub_heading: the name of the parent directory to put results into
-        - which_subreddits: whether to select the relevant or irrelevant posts
-        - hierarchical_summarisation: whether to perform the hierarchical summarisation step
         - demographics_max_tokens: max tokens for demographic inference
         - chunk_report_max_tokens: max tokens for mini‐reports
         - overall_report_max_tokens: max tokens for final reports
         - model_name / model_id: identifier for naming output folder and loading the model
         - num_samples: optional subsample size
         """
+        self.reddit_df = reddit_df
         self.model_name = model_name
 
         # Compute the largest possible prompt+generate footprint and add a small buffer
@@ -603,9 +601,6 @@ class Experiment2:
         )
 
         self.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
-
-        if not hierarchical_summarisation:
-            return
 
         # === Stage 3: hierarchical summarisation ===
         pre3 = config.CODE_DIR / "pre-prompts" / "expt2-stage-3.txt"
@@ -658,18 +653,27 @@ if __name__ == "__main__":
         }
     }
 
+    datasets = {
+        "historical": "combined-filtered-reddit-data.parquet",
+        "current": "2025-combined-filtered-reddit-data.parquet"
+    }
+
     model_name = "mistral"
     model_cfg = model_configs[model_name]
 
-    for selection in ["relevant", "irrelevant"]:
-        expt.run_experiment(
-            experiment_sub_heading=f"expt2-{selection}-subs-general-trends-full-dataset-2025",
-            which_subreddits=selection,
-            hierarchical_summarisation=True,
-            demographics_max_tokens=30,
-            chunk_report_max_tokens=500,
-            overall_report_max_tokens=100,
-            model_name=model_name,
-            model_id=model_cfg['model_id'],
-            model_context_window=model_cfg['context_window']
-        )
+    for dataset_name, dataset_filename in datasets.items():
+        reddit_df = pd.read_parquet(config.CODE_DIR / "data" / dataset_filename)
+        reddit_df["date_posted"] = pd.to_datetime(reddit_df["created_utc"], unit="s")
+
+        for selection in ["relevant", "irrelevant"]:
+            expt.run_experiment(
+                reddit_df=reddit_df,
+                experiment_sub_heading=f"expt2-{selection}-subreddits-{dataset_name}-data",
+                which_subreddits=selection,
+                demographics_max_tokens=30,
+                chunk_report_max_tokens=500,
+                overall_report_max_tokens=100,
+                model_name=model_name,
+                model_id=model_cfg['model_id'],
+                model_context_window=model_cfg['context_window']
+            )
