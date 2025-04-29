@@ -17,7 +17,6 @@ class BatchModel:
         Loads the named model into vLLM
         """
         self.model_id = model_id
-        self.model_name_debug = model_id.split("/")[0]
         self.pre_prompt = ""
 
         if max_model_len is not None:
@@ -116,16 +115,23 @@ class BatchModel:
         Thin wrapper over process_batch() which:
         1. Processes the prompts
         2. Parses the output
+
+        returns:
+        A tuple containing
+            1. a list of parsed outputs
+            2. a list of strings which weren't parsed properly
         """
         output = self.process_batch(batch, structure_header, max_new_tokens)
         valid_output = [ structure_header + o for o in output]
-        json_output = extract_json(
-            valid_output,
-            default_object,
-            debug_filename=f"{self.model_name_debug}-fails.txt"
-        )
+        json_output = extract_json(valid_output, default_object)
 
-        return json_output
+        failed_to_parse = []
+
+        for output_string, parsed_output in zip(valid_output, json_output):
+            if parsed_output == default_object:
+                failed_to_parse.append(output_string)
+
+        return json_output, failed_to_parse
 
 
     def __del__(self):
@@ -141,9 +147,7 @@ class BatchModel:
 
 
 @config.debug_function
-def extract_json(
-    outputs: List[str], default: dict, debug_filename: str | None = None
-) -> List[dict]:
+def extract_json(outputs: List[str], default: dict) -> List[dict]:
     """
     Attempts to extract and parse valid JSON from each output string
     """
@@ -183,10 +187,6 @@ def extract_json(
             json_end = find_end_of_json(s)
             parsed = json.loads(s[:json_end])
         except json.JSONDecodeError:
-            if debug_filename is not None:
-                with open(config.RESULTS_DIR / debug_filename, "a") as f:
-                    f.write(f"failed to parse '{s}'\n\n")
-
             parsed = default.copy()
 
         json_outputs.append(parsed)
