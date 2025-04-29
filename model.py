@@ -39,14 +39,13 @@ class BatchModel:
 
 
         with open(config.CODE_DIR / "hf-access-token.txt") as f:
-            token=f.read().strip()
+            os.environ["HF_TOKEN"] = f.read().strip()
 
         # Set parameters
         llm_args = dict(
             model=model_id,
             dtype="auto",
-            trust_remote_code=True,
-            token=token
+            trust_remote_code=True
         )
 
         if model_id == "mistral":
