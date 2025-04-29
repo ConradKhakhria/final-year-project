@@ -303,7 +303,7 @@ class Experiment2:
     ) -> Tuple[str, int]:
         age_range, gender = group
         tok = self.batch_model.tokenizer
-        ctx_len = self.batch_model.llm.config.max_model_len
+        ctx_len = self.batch_model.tokenizer.model_max_length
         header = (
             "METADATA\n"
             f" - the inferred age range of the posters is {age_range}\n"
