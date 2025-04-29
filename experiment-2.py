@@ -521,17 +521,17 @@ if __name__ == "__main__":
     expt = Experiment2(42)
 
     model_configs = {
-        "mistral": {
-            "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
-            "context_window": 32768
-        },
-        "llama-2": {
-            "model_id": "meta-llama/Llama-2-7b-chat-hf",
-            "context_window": 4096
-        },
+#        "mistral": {
+#            "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
+#            "context_window": 32768
+#        },
+#        "llama-2": {
+#            "model_id": "meta-llama/Llama-2-7b-chat-hf",
+#            "context_window": 4096
+#        },
         "deepseek": {
             "model_id": "deepseek-ai/deepseek-llm-7b-chat",
-            "context_window": 8192
+            "context_window": 4096
         }
     }
 
