@@ -428,9 +428,7 @@ class Experiment2:
         - num_samples: optional subsample size
         """
         # Compute the largest possible prompt+generate footprint and add a small buffer
-
-
-        self.max_prompt_tokens = model_context_window - chunk_report_max_tokens - 50
+        self.max_prompt_tokens = (model_context_window - chunk_report_max_tokens) // 2
 
         if self.max_prompt_tokens <= 0:
                 raise ValueError(f"Generation buffer exceeds context window ({model_context_window})")
