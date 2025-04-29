@@ -46,6 +46,9 @@ class BatchModel:
         if max_model_len is not None:
             llm_args["max_model_len"] = max_model_len
 
+        if "awq" in model_id.lower():
+            llm_args["quantization"] = "awq"
+
         self.llm = LLM(**llm_args)
 
         self.tokenizer = self.llm.get_tokenizer()
