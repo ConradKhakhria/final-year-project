@@ -533,7 +533,7 @@ if __name__ == "__main__":
         }
     }
 
-    """
+    
     for model_name, model_cfg in model_configs.items():
         expt.run_experiment(
             experiment_sub_heading=f"expt2-relevant-subs-general-trends-subset",
@@ -549,7 +549,6 @@ if __name__ == "__main__":
         )
 
     exit()
-    """
 
 
     model_name = "mistral"
