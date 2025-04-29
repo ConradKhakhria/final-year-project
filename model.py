@@ -179,7 +179,7 @@ def extract_json(
             parsed = json.loads(s[:json_end])
         except json.JSONDecodeError:
             if debug_filename is not None:
-                with open(debug_filename, "a") as f:
+                with open(config.RESULTS_DIR / debug_filename, "a") as f:
                     f.write(f"failed to parse '{s}'\n\n")
 
             parsed = default.copy()
