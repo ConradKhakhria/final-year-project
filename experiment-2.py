@@ -361,7 +361,7 @@ class Experiment2:
 
         for text, length in zip(post_texts, post_id_lens):
             add_len = length + (sep_len if current_texts else 0)
-            if current_len + add_len > MAX_PROMPT_TOKENS:
+            if current_len + add_len > self.max_prompt_tokens:
                 # flush
                 prompts.append(header + "\n".join(current_texts))
                 current_texts = [text]
@@ -401,6 +401,7 @@ class Experiment2:
         overall_report_max_tokens: int,
         model_name: str,
         model_id: str,
+        model_context_window: int,
         num_samples: int | None = None
     ):
         """
@@ -417,17 +418,17 @@ class Experiment2:
         - num_samples: optional subsample size
         """
         # Compute the largest possible prompt+generate footprint and add a small buffer
-        max_input_plus_output = max(
-            demographics_max_tokens,
-            chunk_report_max_tokens,
-            overall_report_max_tokens
-        ) + MAX_PROMPT_TOKENS
-        buffer = 512
+
+
+        self.max_prompt_tokens = model_context_window - chunk_report_max_tokens - 50
+
+        if self.max_prompt_tokens <= 0:
+                raise ValueError(f"Generation buffer exceeds context window ({model_context_window})")
 
         # 1) Load up vLLM with an increased max_seq_len
         self.batch_model = model.BatchModel(
             model_id,
-            max_model_len=2*(max_input_plus_output + buffer),
+            max_model_len=int(1.2 * model_context_window)
         )
 
         # Prepare output directory
@@ -509,15 +510,22 @@ if __name__ == "__main__":
 
     expt = Experiment2(42)
 
-    # List LLMs to sample
-    model_ids = {
-#        "mistral": "mistralai/Mistral-7B-Instruct-v0.3",
-        "llama-2": "meta-llama/Llama-2-7b-chat-hf",
-        "deepseek": "deepseek-ai/deepseek-llm-7b-chat"
+    model_configs = {
+        "mistral": {
+            "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
+            "context_window": 32768
+        },
+        "llama-2": {
+            "model_id": "meta-llama/Llama-2-7b-chat-hf",
+            "context_window": 4096
+        },
+        "deepseek": {
+            "model_id": "deepseek-ai/deepseek-llm-7b-chat",
+            "context_window": 8192
+        }
     }
 
-
-    for model_name, model_id in model_ids.items():
+    for model_name, model_cfg in model_configs.items():
         expt.run_experiment(
             experiment_sub_heading=f"expt2-relevant-subs-general-trends-subset",
             which_subreddits="relevant",
@@ -526,7 +534,8 @@ if __name__ == "__main__":
             chunk_report_max_tokens=500,
             overall_report_max_tokens=100,
             model_name=model_name,
-            model_id=model_id,
+            model_id=model_cfg['model_id'],
+            model_context_window=model_cfg['context_window'],
             num_samples=1000
         )
 
