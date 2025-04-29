@@ -17,6 +17,7 @@ class BatchModel:
         Loads the named model into vLLM
         """
         self.model_id = model_id
+        self.model_name_debug = model_id.split("/")[0]
         self.pre_prompt = ""
 
         if max_model_len is not None:
@@ -118,7 +119,11 @@ class BatchModel:
         """
         output = self.process_batch(batch, structure_header, max_new_tokens)
         valid_output = [ structure_header + o for o in output]
-        json_output = extract_json(valid_output, default_object, debug_filename=f"{self.model_id}-fails.txt")
+        json_output = extract_json(
+            valid_output,
+            default_object,
+            debug_filename=f"{self.model_name_debug}-fails.txt"
+        )
 
         return json_output
 
