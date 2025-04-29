@@ -39,7 +39,9 @@ class BatchModel:
 
 
         with open(config.CODE_DIR / "hf-access-token.txt") as f:
-            os.environ["HF_TOKEN"] = f.read().strip()
+            token = f.read().strip()
+            os.environ["HF_TOKEN"] = token
+            os.environ["HUGGINGFACE_HUB_TOKEN"] = token
 
         # Set parameters
         llm_args = dict(
