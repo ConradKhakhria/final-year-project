@@ -519,7 +519,7 @@ if __name__ == "__main__":
     model_name = "mistral"
     model_id = model_ids[model_name]
 
-    for selection in "relevant", "irrelevant":
+    for selection in ["irrelevant"]:
         expt.run_experiment(
             experiment_sub_heading=f"expt2-{selection}-subs-general-trends-full-dataset",
             which_subreddits=selection,
