@@ -223,6 +223,7 @@ class Experiment2:
 
         layers = 1
         failed_output_counter = 0
+        layer_failure_rates: List[float] = []
 
         current_reports_count = len(reports)
         previous_reports_count = 2*len(reports)
@@ -231,15 +232,19 @@ class Experiment2:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
+            report_strings = []
+            layer_failure_rates.append(0.0)
+
             for i, r in enumerate(reports):
                 try:
-                    new_reports.append(self.report_to_string(r, index=i))
+                    report_strings.append(self.report_to_string(r, index=i))
                 except:
                     config.debug(f"This failed: {r}")
+                    layer_failure_rates[-1] += 1.0
 
-            report_strings = [self.report_to_string(r, index=i) for i, r in enumerate(reports)]
+            layer_failure_rates[-1] /= len(reports)
+
             prompt = query_header + "\n".join(report_strings)
-
             new_report_json = self.batch_model.process_structured_batch(
                 [prompt],
                 structure_header="{\n    \"trends\": [",
@@ -261,6 +266,9 @@ class Experiment2:
             final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
         except:
             final_reports = "\n".join([str(r) for r in reports])
+
+            for i, rate in enumerate(layer_failure_rates):
+                final_reports += f"layer {i + 1} failed {rate}% of the time\n"
 
         return final_reports, failed_output_counter
 
