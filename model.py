@@ -49,6 +49,7 @@ class BatchModel:
         if "awq" in model_id.lower():
             llm_args["quantization"] = "awq"
             llm_args["gpu_memory_utilization"] = 0.85
+            llm_args["enforce_eager"] = True
 
         self.llm = LLM(**llm_args)
 
