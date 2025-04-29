@@ -158,15 +158,15 @@ class Experiment2:
 
         # send to vLLM
         parsed_outputs: List[Any] = []
-        config.debug(f"now computing {(len(prompt_texts) - 1) // prompts_per_batch + 1} batches")
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
-            out = self.batch_model.process_structured_batch(
-                batch=batch_prompts,
-                structure_header="[",
-                default_object=[],
-                max_new_tokens=max_new_tokens,
+            parsed_outputs.extend(
+                self.batch_model.process_structured_batch(
+                    batch=batch_prompts,
+                    structure_header="[",
+                    default_object=[],          # parse failure → empty list
+                    max_new_tokens=max_new_tokens,
+                )
             )
-            parsed_outputs.extend(out)
 
         # aggregate
         for (sub, age, gender), obj in zip(prompt_meta, parsed_outputs):
@@ -182,10 +182,21 @@ class Experiment2:
                 },
             )
 
-            if isinstance(obj, list) and obj:
-                bucket["reports"].extend(obj)
-            else:
+            valid = (
+                isinstance(obj, list)
+                and all(
+                    isinstance(e, dict)
+                    and set(e.keys()) == {"label", "evidence", "summary"}
+                    for e in obj
+                )
+            )
+
+            if not valid or obj == []:
                 bucket["errors"] += 1
+            else:
+                # drop placeholder object when no trends
+                if not (len(obj) == 1 and obj[0]["label"] == "no_trends"):
+                    bucket["reports"].extend(obj)
 
             bucket["chunk_size"] += 1
 
