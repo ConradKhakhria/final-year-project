@@ -170,7 +170,7 @@ class Experiment2:
             parsed_batch, batch_failures = self.batch_model.process_structured_batch(
                 batch=batch_prompts,
                 structure_header="[",
-                default_object=None,
+                default_object="default object!",
                 max_new_tokens=max_new_tokens,
             )
 
