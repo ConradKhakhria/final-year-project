@@ -649,18 +649,18 @@ if __name__ == "__main__":
     expt = Experiment2(42)
 
     model_configs = {
-        "mistral": {
-            "model_id": "casperhansen/mistral-nemo-instruct-2407-awq",
-            "context_window": 32768
-        },
+#        "mistral": {
+#            "model_id": "casperhansen/mistral-nemo-instruct-2407-awq",
+#            "context_window": 32768
+#        },
         "nous-hermes": {
             "model_id": "NousResearch/Nous-Hermes-13b",
-            "context_window": 4096
+            "context_window": 2048
         },
-        "deepseek": {
-            "model_id": "deepseek-ai/deepseek-llm-7b-chat",
-            "context_window": 4096
-        }
+#        "deepseek": {
+#            "model_id": "deepseek-ai/deepseek-llm-7b-chat",
+#            "context_window": 4096
+#        }
     }
 
     
