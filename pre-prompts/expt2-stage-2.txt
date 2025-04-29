@@ -11,7 +11,7 @@ Each list element has the format:
     "evidence": list of post 'id's (alphanumeric) that support the trend,
     "summary": one sentence (max 25 words) describing the trend
 }
-If no trend is supported, return the exact string: [{ "label": no_trends, "evidence": [], "summary": "no trends detected" }]
+If no trend is supported, return the exact string: [{ "label": "no_trends", "evidence": [], "summary": "no trends detected" }]
 
 INSTRUCTIONS
 1. A trend must relate to (a) Coca-Cola’s existing drinks, (b) plausible new beverages/flavours, or (c) competitor moves.  
