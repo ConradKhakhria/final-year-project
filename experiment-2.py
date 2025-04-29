@@ -530,8 +530,8 @@ if __name__ == "__main__":
             which_subreddits=selection,
             hierarchical_summarisation=True,
             demographics_max_tokens=30,
-            chunk_report_max_tokens=100,
-            overall_report_max_tokens=500,
+            chunk_report_max_tokens=500,
+            overall_report_max_tokens=100,
             model_name=model_name,
             model_id=model_id,
             num_samples=1000
