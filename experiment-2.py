@@ -22,7 +22,7 @@ class Experiment2:
         config.debug("Loading dataset")
 
         self.data_dir = config.CODE_DIR / "data"
-        self.reddit_df = pd.read_parquet(self.data_dir / "combined-filtered-reddit-data.parquet")
+        self.reddit_df = pd.read_parquet(self.data_dir / "2025-combined-filtered-reddit-data.parquet")
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
 
         self.model_name = ""
@@ -668,7 +668,7 @@ if __name__ == "__main__":
 
     for selection in ["relevant", "irrelevant"]:
         expt.run_experiment(
-            experiment_sub_heading=f"expt2-{selection}-subs-general-trends-full-dataset",
+            experiment_sub_heading=f"expt2-{selection}-subs-general-trends-full-dataset-2025",
             which_subreddits=selection,
             hierarchical_summarisation=True,
             demographics_max_tokens=30,
