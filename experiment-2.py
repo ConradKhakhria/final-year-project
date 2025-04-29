@@ -533,7 +533,8 @@ if __name__ == "__main__":
             chunk_report_max_tokens=100,
             overall_report_max_tokens=500,
             model_name=model_name,
-            model_id=model_id
+            model_id=model_id,
+            num_samples=1000
         )
 
     exit()
