@@ -37,8 +37,17 @@ class BatchModel:
                     "(VLLM_ALLOW_LONG_MAX_MODEL_LEN=1)"
                 )
 
+
+        with open(config.CODE_DIR / "hf-access-token.txt") as f:
+            token=f.read().strip()
+
         # Set parameters
-        llm_args = dict(model=model_id, dtype="auto", trust_remote_code=True)
+        llm_args = dict(
+            model=model_id,
+            dtype="auto",
+            trust_remote_code=True,
+            token=token
+        )
 
         if model_id == "mistral":
             llm_args["tokenizer_mode"] = "mistral"
@@ -144,7 +153,7 @@ class BatchModel:
         Cleans up
         """
         try:
-            del self.llm
+            self.llm.shutdown()
             gc.collect()
             torch.cuda.empty_cache()
         except:

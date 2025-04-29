@@ -641,10 +641,10 @@ class Experiment2:
 
 
 if __name__ == "__main__":
-    hf_token_path = config.CODE_DIR / "hf-access-token.txt"
-    if hf_token_path.exists():
-        with open(hf_token_path) as f:
-            os.environ["HF_TOKEN"] = f.read().strip()
+#    hf_token_path = config.CODE_DIR / "hf-access-token.txt"
+#    if hf_token_path.exists():
+#        with open(hf_token_path) as f:
+#            os.environ["HF_TOKEN"] = f.read().strip()
 
     expt = Experiment2(42)
 
