@@ -19,6 +19,24 @@ class BatchModel:
         self.model_id = model_id
         self.pre_prompt = ""
 
+        if max_model_len is not None:
+            allow_override = os.environ.get("VLLM_ALLOW_LONG_MAX_MODEL_LEN", "") == "1"
+            if not allow_override:
+                from transformers import AutoConfig
+                hf_cfg = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+                derived = getattr(hf_cfg, "model_max_length", None) \
+                       or getattr(hf_cfg, "max_position_embeddings", None)
+                if derived is not None and max_model_len > derived:
+                    config.output(
+                        f"Clamping requested max_model_len={max_model_len} to model’s true max of {derived}"
+                    )
+                    max_model_len = derived
+            else:
+                config.output(
+                    f"Overriding model max length to {max_model_len} "
+                    "(VLLM_ALLOW_LONG_MAX_MODEL_LEN=1)"
+                )
+
         # Set parameters
         llm_args = dict(model=model_id, dtype="auto", trust_remote_code=True)
 
