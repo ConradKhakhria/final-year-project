@@ -338,48 +338,44 @@ class Experiment2:
             s += f"\n - evidence: {r['evidence']}\n"
             return s
 
-        failed_strings: List[str] = []   # keep raw text that failed JSON parse
-        failed_flag_total = 0            # model-emitted \"failed-output\" counter
+        parse_fail_strings: List[str] = []
+        parse_fail_count = 0
         current = reports[:]
 
+        # ---- iterative compression until one report left -------------------
         while len(current) > 1:
-            chunks = []
-            chunk = []
-            tok_len = header_len
-            
-            # first divide the reports into chunks
+            # chunk so prompt ≤ context window
+            chunks, chunk, tok_len = [], [], header_len
             for idx, rep in enumerate(current):
-                r_txt = rep_to_str(rep, idx)
-                r_tok = len(tok(r_txt, add_special_tokens=False)["input_ids"])
-
-                if tok_len + r_tok > max_prompt_tokens:
+                rep_txt = rep_to_str(rep, idx)
+                rep_tok = len(tok(rep_txt, add_special_tokens=False)["input_ids"])
+                if tok_len + rep_tok > max_prompt_tokens:
                     chunks.append(chunk)
                     chunk, tok_len = [], header_len
-
                 chunk.append(rep)
-                tok_len += r_tok
+                tok_len += rep_tok
             if chunk:
                 chunks.append(chunk)
 
-            # now process each chunk
             new_reports: List[Dict[str, str]] = []
             for ch in chunks:
                 prompt = header + "".join(rep_to_str(r, i) for i, r in enumerate(ch))
 
                 parsed, failures = self.batch_model.process_structured_batch(
                     batch=[prompt],
-                    structure_header="[",
-                    default_object={"trends": [], "failed-output": True},
+                    structure_header="[",     # list schema
+                    default_object=[],        # fallback is empty list
                     max_new_tokens=max_new_tokens,
                 )
-                failed_strings.extend(failures)
 
-                obj = parsed[0] if parsed else {"trends": [], "failed-output": True}
-                failed_flag_total += int(obj.get("failed-output", False))
+                parse_fail_strings.extend(failures)
+                parse_fail_count += len(failures)
 
-                # keep only valid trend dicts
-                if isinstance(obj.get("trends"), list):
-                    new_reports.extend(obj["trends"])
+                obj = parsed[0] if parsed else []
+                if isinstance(obj, list) and obj:        # success
+                    new_reports.extend(obj)
+                else:                                    # empty or malformed
+                    parse_fail_count += 1
 
             current = [
                 {"summary": t, "evidence": "", "reasoning": ""}
@@ -387,19 +383,23 @@ class Experiment2:
                 for t in new_reports
             ]
 
+            # exit if compression produced no new reports
+            if not current:
+                break
+
         # record failures
-        if failed_strings:
-            out_file = config.RESULTS_DIR / f"failed-to-parse-stage-3-{self.model_name}.txt"
-            with open(out_file, "w") as f:
-                json.dump(failed_strings, f)
+        if parse_fail_strings:
+            fail_file = config.RESULTS_DIR / f"failed-to-parse-stage-3-{self.model_name}.txt"
+            with open(fail_file, "w") as f:
+                json.dump(parse_fail_strings, f)
 
         final_report = (
             current[0]
             if current
             else {"summary": "no data", "evidence": "", "reasoning": ""}
         )
-
-        return json.dumps(final_report, ensure_ascii=False, indent=2), failed_flag_total
+        return json.dumps(final_report, ensure_ascii=False, indent=2), parse_fail_count
+        
 
 
 
