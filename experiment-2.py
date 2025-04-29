@@ -580,8 +580,7 @@ class Experiment2:
             summarised_reports[(age, gender)] = self.hierarchical_summarisation(
                 (age, gender),
                 reports,
-                max_new_tokens=overall_report_max_tokens,
-                batch_size=4,
+                max_new_tokens=overall_report_max_tokens
             )
 
         config.output("Done with experiment!")
