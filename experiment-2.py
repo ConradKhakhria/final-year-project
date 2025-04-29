@@ -649,10 +649,10 @@ if __name__ == "__main__":
     expt = Experiment2(42)
 
     model_configs = {
-#        "mistral": {
-#            "model_id": "casperhansen/mistral-nemo-instruct-2407-awq",
-#            "context_window": 32768
-#        },
+        "mistral": {
+            "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
+            "context_window": 32768
+        },
         "nous-hermes": {
             "model_id": "NousResearch/Nous-Hermes-13b",
             "context_window": 2048
