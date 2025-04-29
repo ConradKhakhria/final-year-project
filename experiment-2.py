@@ -79,15 +79,13 @@ class Experiment2:
         orig_indices: List[int] = [idx for idx, _ in prompts_with_idx]
         sorted_prompts: List[str] = [p for _, p in prompts_with_idx]
 
-
-
-        outputs = self.batch_model.process_batch(
-            sorted_prompts,
+        json_output = self.batch_model.process_structured_batch(
+            batch=sorted_prompts,
             structure_header="{",
+            default_object={"age": None, "gender": None},
             max_new_tokens=max_new_tokens
         )
 
-        json_output = model.extract_json(outputs, {"age": None, "gender": None})
         inference_temp = pd.DataFrame.from_records(json_output)
         inference_temp["orig_idx"] = orig_indices  # map back to original rows
 
@@ -159,27 +157,18 @@ class Experiment2:
                 prompt_texts.append(prompt)
 
         # send to vLLM in batches
-        all_outputs: List[str] = []
+        json_output: List[Any] = []
 
-        config.debug(f"now computing {(len(prompt_texts) // 16) + 1} batches")
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
-            outputs = self.batch_model.process_batch(
-                batch_prompts,
+            outputs = self.batch_model.process_structured_batch(
+                batch=batch_prompts,
                 structure_header='{ "trends": [',
-                max_new_tokens=max_new_tokens,
+                default_object={"trends": [], "format-error": True},
+                max_new_tokens=max_new_tokens
             )
-            all_outputs.extend(outputs)
+            json_output.extend(outputs)
 
-        # record outputs
-        with open(config.RESULTS_DIR / "full-text-output.txt", "a") as f:
-            for i, o in enumerate(outputs):
-                f.write(f"[Output {i + 1}]:\n{o}\n\n")
-
-        # parse and aggregate per (sub, age, gender)
-        parsed = model.extract_json(all_outputs,
-                                    {"trends": [], "format-error": True})
-
-        for (sub, age, gender), obj in zip(prompt_meta, parsed):
+        for (sub, age, gender), obj in zip(prompt_meta, json_output):
             key = (sub, age, gender)
             bucket = stage_2_reports.setdefault(
                 key,
@@ -244,13 +233,12 @@ class Experiment2:
             report_strings = [self.report_to_string(r, index=i) for i, r in enumerate(reports)]
             prompt = query_header + "\n".join(report_strings)
 
-            new_report = self.batch_model.process_batch(
+            new_report_json = self.batch_model.process_structured_batch(
                 [prompt],
                 structure_header="{\n    \"trends\": [",
+                default_object={"trends": [], "failed-output": True},
                 max_new_tokens=max_new_tokens
             )
-
-            new_report_json = model.extract_json(new_report, {"trends": [], "failed-output": True})
 
             for r in new_report_json:
                 new_reports.extend(r['trends'])
