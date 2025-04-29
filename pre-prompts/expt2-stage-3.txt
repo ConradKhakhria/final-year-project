@@ -14,7 +14,7 @@ Each list element has the format:
     "reasoning": if you need to think, put your reasoning here,
     "summary": a paragraph (2-5 sentences) summarising the consumer trend
 }
-If no consolidated trend exists, simply output the exact string {"trends": []}
+If no consolidated trend exists, return the exact string: [{ "label": no_trends, "evidence": [], "reasoning": "", "summary": "no trends detected" }]
 
 INSTRUCTIONS
 1. Do **not** invent detail or causal chains absent from the reports.  
