@@ -231,6 +231,12 @@ class Experiment2:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
+            for i, r in enumerate(reports):
+                try:
+                    new_reports.append(self.report_to_string(r, index=i))
+                except:
+                    config.debug(f"This failed: {r}")
+
             report_strings = [self.report_to_string(r, index=i) for i, r in enumerate(reports)]
             prompt = query_header + "\n".join(report_strings)
 
