@@ -657,29 +657,11 @@ if __name__ == "__main__":
             "model_id": "NousResearch/Nous-Hermes-13b",
             "context_window": 2048
         },
-#        "deepseek": {
-#            "model_id": "deepseek-ai/deepseek-llm-7b-chat",
-#            "context_window": 4096
-#        }
+        "deepseek": {
+            "model_id": "deepseek-ai/deepseek-llm-7b-chat",
+            "context_window": 4096
+        }
     }
-
-    
-    for model_name, model_cfg in model_configs.items():
-        expt.run_experiment(
-            experiment_sub_heading=f"expt2-relevant-subs-general-trends-subset",
-            which_subreddits="relevant",
-            hierarchical_summarisation=True,
-            demographics_max_tokens=30,
-            chunk_report_max_tokens=500,
-            overall_report_max_tokens=100,
-            model_name=model_name,
-            model_id=model_cfg['model_id'],
-            model_context_window=model_cfg['context_window'],
-            num_samples=100
-        )
-
-    exit()
-
 
     model_name = "mistral"
     model_cfg = model_configs[model_name]
