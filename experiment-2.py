@@ -516,10 +516,27 @@ if __name__ == "__main__":
         "deepseek": "deepseek-ai/deepseek-llm-7b-chat"
     }
 
+
+    for model_name, model_id in model_ids.items():
+        expt.run_experiment(
+            experiment_sub_heading=f"expt2-relevant-subs-general-trends-subset",
+            which_subreddits="relevant",
+            hierarchical_summarisation=True,
+            demographics_max_tokens=30,
+            chunk_report_max_tokens=500,
+            overall_report_max_tokens=100,
+            model_name=model_name,
+            model_id=model_id,
+            num_samples=1000
+        )
+
+    exit()
+
+
     model_name = "mistral"
     model_id = model_ids[model_name]
 
-    for selection in ["irrelevant"]:
+    for selection in ["relevant", "irrelevant"]:
         expt.run_experiment(
             experiment_sub_heading=f"expt2-{selection}-subs-general-trends-full-dataset",
             which_subreddits=selection,
@@ -531,5 +548,3 @@ if __name__ == "__main__":
             model_id=model_id,
             num_samples=1000
         )
-
-    exit()
