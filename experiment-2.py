@@ -161,7 +161,7 @@ class Experiment2:
         # send to vLLM in batches
         all_outputs: List[str] = []
 
-        config.debug(f"now computing {len(prompt_texts) / 16} batches")
+        config.debug(f"now computing {(len(prompt_texts) // 16) + 1} batches")
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
             outputs = self.batch_model.process_batch(
                 batch_prompts,
@@ -172,7 +172,7 @@ class Experiment2:
 
         # record outputs
         with open(config.RESULTS_DIR / "full-text-output.txt", "a") as f:
-            for i, o in outputs:
+            for i, o in enumerate(outputs):
                 f.write(f"[Output {i + 1}]:\n{o}\n\n")
 
         # parse and aggregate per (sub, age, gender)
