@@ -159,6 +159,7 @@ class Experiment2:
         # send to vLLM in batches
         json_output: List[Any] = []
 
+        config.debug(f"now computing {(len(prompt_texts) // prompts_per_batch) + 1} batches")
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
             outputs = self.batch_model.process_structured_batch(
                 batch=batch_prompts,
