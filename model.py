@@ -85,6 +85,26 @@ class BatchModel:
 
         return [ output.outputs[0].text.lstrip() for output in outputs ]
 
+
+    def process_structured_batch(
+        self,
+        batch: List[str],
+        structure_header: str,
+        default_object: Any,
+        max_new_tokens: int = 30
+    ) -> List[Any]:
+        """
+        Thin wrapper over process_batch() which:
+        1. Processes the prompts
+        2. Parses the output
+        """
+        output = self.process_batch(batch, structure_header, max_new_tokens)
+        valid_output = [ structure_header + o for o in output]
+        json_output = extract_json(valid_output, default_object)
+
+        return json_output
+
+
     def __del__(self):
         """
         Cleans up
