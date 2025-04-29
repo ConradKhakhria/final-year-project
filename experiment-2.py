@@ -275,6 +275,68 @@ class Experiment2:
         return final_reports, failed_output_counter
 
 
+    def hierarchical_summarisation(
+        self,
+        group: Tuple[str, str],
+        reports: List[Dict[str, str]],
+        *,
+        max_new_tokens: int,
+        safety_margin: int = 32,
+    ) -> Tuple[str, int]:
+        age_range, gender = group
+        tok = self.batch_model.tokenizer
+        ctx_len = self.batch_model.llm.config.max_model_len
+        header = (
+            "METADATA\n"
+            f" - the inferred age range of the posters is {age_range}\n"
+            f" - the inferred gender of the posters is {gender}\n"
+        )
+        header_ids = tok(header, add_special_tokens=False)["input_ids"]
+        header_len = len(header_ids)
+        max_prompt_tokens = ctx_len - max_new_tokens - safety_margin
+
+        def rep_to_str(r: Dict[str, str], idx: int) -> str:
+            s = f"[REPORT {idx+1}]\n - trend summary: {r['summary']}"
+            if r.get("reasoning"): 
+                s += f"\n - reasoning: {r['reasoning']}"
+            s += f"\n - evidence: {r['evidence']}\n"
+            return s
+
+        failed = 0
+        current = reports[:]
+
+        while len(current) > 1:
+            chunks: List[List[Dict[str, str]]] = []
+            chunk, chunk_tokens = [], header_len
+            for idx, r in enumerate(current):
+                r_txt = rep_to_str(r, idx)
+                r_tok = len(tok(r_txt, add_special_tokens=False)["input_ids"])
+                if chunk_tokens + r_tok > max_prompt_tokens:
+                    chunks.append(chunk)
+                    chunk, chunk_tokens = [], header_len
+                chunk.append(r)
+                chunk_tokens += r_tok
+            if chunk: chunks.append(chunk)
+
+            new_reports: List[Dict[str, str]] = []
+            for ch in chunks:
+                prompt = header + "".join(rep_to_str(r, i) for i, r in enumerate(ch))
+                out = self.batch_model.process_structured_batch(
+                    [prompt],
+                    structure_header="{\n    \"trends\": [",
+                    default_object={"trends": [], "failed-output": True},
+                    max_new_tokens=max_new_tokens
+                )[0]
+                failed += int(out.get("failed-output", False))
+                new_reports.extend(out["trends"])
+            current = [{"summary": t, "evidence": "", "reasoning": ""} if isinstance(t, str) else t
+                    for t in new_reports]
+
+        final_report = current[0] if current else {"summary": "no data", "evidence": "", "reasoning": ""}
+        return json.dumps(final_report, ensure_ascii=False, indent=2), failed
+
+
+
     # ===== Data Processing ===== #
 
     def batch(self, iterable, n):
