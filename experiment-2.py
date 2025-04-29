@@ -357,12 +357,12 @@ class Experiment2:
             new_reports: List[Dict[str, str]] = []
             for ch in chunks:
                 prompt = header + "".join(rep_to_str(r, i) for i, r in enumerate(ch))
-                out, _ = self.batch_model.process_structured_batch(
+                out = self.batch_model.process_structured_batch(
                     [prompt],
                     structure_header="[",
                     default_object={"trends": [], "failed-output": True},
                     max_new_tokens=max_new_tokens
-                )[0]
+                )[0][0]
                 failed += int(out.get("failed-output", False))
                 new_reports.extend(out["trends"])
             current = [{"summary": t, "evidence": "", "reasoning": ""} if isinstance(t, str) else t
