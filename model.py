@@ -118,7 +118,7 @@ class BatchModel:
         """
         output = self.process_batch(batch, structure_header, max_new_tokens)
         valid_output = [ structure_header + o for o in output]
-        json_output = extract_json(valid_output, default_object)
+        json_output = extract_json(valid_output, default_object, debug_filename=f"{self.model_id}-fails.txt")
 
         return json_output
 
@@ -136,7 +136,9 @@ class BatchModel:
 
 
 @config.debug_function
-def extract_json(outputs: List[str], default: dict) -> List[dict]:
+def extract_json(
+    outputs: List[str], default: dict, debug_filename: str | None = None
+) -> List[dict]:
     """
     Attempts to extract and parse valid JSON from each output string
     """
@@ -176,6 +178,10 @@ def extract_json(outputs: List[str], default: dict) -> List[dict]:
             json_end = find_end_of_json(s)
             parsed = json.loads(s[:json_end])
         except json.JSONDecodeError:
+            if debug_filename is not None:
+                with open(debug_filename, "a") as f:
+                    f.write(f"failed to parse '{s}'\n\n")
+
             parsed = default.copy()
 
         json_outputs.append(parsed)
