@@ -25,6 +25,8 @@ class Experiment2:
         self.reddit_df = pd.read_parquet(self.data_dir / "combined-filtered-reddit-data.parquet")
         self.reddit_df["date_posted"] = pd.to_datetime(self.reddit_df["created_utc"], unit="s")
 
+        self.model_name = ""
+
         with open(self.data_dir / "subreddit-selection.json") as f:
             self.subreddit_selection = json.load(f)
 
@@ -79,12 +81,16 @@ class Experiment2:
         orig_indices: List[int] = [idx for idx, _ in prompts_with_idx]
         sorted_prompts: List[str] = [p for _, p in prompts_with_idx]
 
-        json_output = self.batch_model.process_structured_batch(
+        json_output, failed_to_parse = self.batch_model.process_structured_batch(
             batch=sorted_prompts,
             structure_header="{",
             default_object={"age": None, "gender": None},
             max_new_tokens=max_new_tokens
         )
+
+        filename = f"failed-to-parse-stage-1-{self.model_name}.txt"
+        with open(config.RESULTS_DIR / filename, "w") as f:
+            json.dump(failed_to_parse, f)
 
         inference_temp = pd.DataFrame.from_records(json_output)
         inference_temp["orig_idx"] = orig_indices  # map back to original rows
@@ -158,15 +164,26 @@ class Experiment2:
 
         # send to vLLM
         parsed_outputs: List[Any] = []
+        failed_to_parse: List[str] = []
+
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
-            parsed_outputs.extend(
-                self.batch_model.process_structured_batch(
-                    batch=batch_prompts,
-                    structure_header="[",
-                    default_object=[],          # parse failure → empty list
-                    max_new_tokens=max_new_tokens,
-                )
+            parsed_batch, batch_failures = self.batch_model.process_structured_batch(
+                batch=batch_prompts,
+                structure_header="[",
+                default_object=None,
+                max_new_tokens=max_new_tokens,
             )
+
+            for o in parsed_batch:
+                if o:
+                    parsed_outputs.append(o)
+
+            failed_to_parse.extend(batch_failures)
+            
+        # Record failures
+        filename = f"failed-to-parse-stage-2-{self.model_name}.txt"
+        with open(config.RESULTS_DIR / filename, "w") as f:
+            json.dump(failed_to_parse, f)
 
         # aggregate
         for (sub, age, gender), obj in zip(prompt_meta, parsed_outputs):
@@ -205,92 +222,93 @@ class Experiment2:
 
     # ===== Stage 3 ===== #
 
-    @config.debug_function
-    def hierarchical_summarisation(
-        self,
-        group: tuple,
-        reports: List[dict],
-        max_new_tokens: int,
-        batch_size: int,
-    ) -> Tuple[str, int]:
-        """
-        Uses the large model to produce a final report summarising consumer trends
-        identified in the reports
 
-        args:
-        - group: the demographic group that the trend reports are derived from
-        - reports: a list of reports made by the LLM
-        - max_new_tokens: the max number of new tokens the LLM can generate
-        - batch_size: the number of reports to combine at each iteration
-
-        returns:
-            A tuple containing the final report and the number of errors encountered
-            during summarisation
-        """
-        age_range, gender = group
-
-        if reports == []:
-            config.debug(f"For some reason we got 0 reports for {group}")
-            return ("no reports supplied as input", 1)
-
-        query_header = (
-            "METADATA\n"
-            f" - the inferred age range of the posters is {age_range}\n"
-            f" - the inferred gender of the posters is {gender}"
-        )
-
-        layers = 1
-        failed_output_counter = 0
-        layer_failure_rates: List[float] = []
-
-        current_reports_count = len(reports)
-        previous_reports_count = 2*len(reports)
-
-        original_len = len(reports)
-
-        while 0 < current_reports_count < previous_reports_count:
-            config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
-            new_reports = []
-
-            report_strings = []
-            layer_failure_rates.append(0.0)
-
-            for i, r in enumerate(reports):
-                try:
-                    report_strings.append(self.report_to_string(r, index=i))
-                except:
-                    config.debug(f"This failed: {r}")
-                    layer_failure_rates[-1] += 1.0
-
-            layer_failure_rates[-1] /= original_len
-
-            prompt = query_header + "\n".join(report_strings)
-            new_report_json = self.batch_model.process_structured_batch(
-                [prompt],
-                structure_header="{\n    \"trends\": [",
-                default_object={"trends": [], "failed-output": True},
-                max_new_tokens=max_new_tokens
-            )
-
-            for r in new_report_json:
-                new_reports.extend(r['trends'])
-                failed_output_counter += int(r.get("failed-output", False))
-
-            reports = new_reports
-            layers += 1
-
-            previous_reports_count = current_reports_count
-            current_reports_count = len(reports)
-
-        try:
-            final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
-        except:
-            final_reports = "\n".join([str(r) for r in reports])
-
-            for i, rate in enumerate(layer_failure_rates):
-                final_reports += f"layer {i + 1} failed {rate}% of the time\n"
-
-        return final_reports, failed_output_counter
+#    @config.debug_function
+#    def hierarchical_summarisation(
+#        self,
+#        group: tuple,
+#        reports: List[dict],
+#        max_new_tokens: int,
+#        batch_size: int,
+#    ) -> Tuple[str, int]:
+#        """
+#        Uses the large model to produce a final report summarising consumer trends
+#        identified in the reports
+#
+#        args:
+#        - group: the demographic group that the trend reports are derived from
+#        - reports: a list of reports made by the LLM
+#        - max_new_tokens: the max number of new tokens the LLM can generate
+#        - batch_size: the number of reports to combine at each iteration
+#
+#        returns:
+#            A tuple containing the final report and the number of errors encountered
+#            during summarisation
+#        """
+#        age_range, gender = group
+#
+#        if reports == []:
+#            config.debug(f"For some reason we got 0 reports for {group}")
+#            return ("no reports supplied as input", 1)
+#
+#        query_header = (
+#            "METADATA\n"
+#            f" - the inferred age range of the posters is {age_range}\n"
+#            f" - the inferred gender of the posters is {gender}"
+#        )
+#
+#        layers = 1
+#        failed_output_counter = 0
+#        layer_failure_rates: List[float] = []
+#
+#        current_reports_count = len(reports)
+#        previous_reports_count = 2*len(reports)
+#
+#        original_len = len(reports)
+#
+#        while 0 < current_reports_count < previous_reports_count:
+#            config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
+#            new_reports = []
+#
+#            report_strings = []
+#            layer_failure_rates.append(0.0)
+#
+#            for i, r in enumerate(reports):
+#                try:
+#                    report_strings.append(self.report_to_string(r, index=i))
+#                except:
+#                    config.debug(f"This failed: {r}")
+#                    layer_failure_rates[-1] += 1.0
+#
+#            layer_failure_rates[-1] /= original_len
+#
+#            prompt = query_header + "\n".join(report_strings)
+#            new_report_json = self.batch_model.process_structured_batch(
+#                [prompt],
+#                structure_header="[",
+#                default_object={"trends": [], "failed-output": True},
+#                max_new_tokens=max_new_tokens
+#            )
+#
+#            for r in new_report_json:
+#                new_reports.extend(r['trends'])
+#                failed_output_counter += int(r.get("failed-output", False))
+#
+#            reports = new_reports
+#            layers += 1
+#
+#            previous_reports_count = current_reports_count
+#            current_reports_count = len(reports)
+#
+#        try:
+#            final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
+#        except:
+#            final_reports = "\n".join([str(r) for r in reports])
+#
+#            for i, rate in enumerate(layer_failure_rates):
+#                final_reports += f"layer {i + 1} failed {rate}% of the time\n"
+#
+#        return final_reports, failed_output_counter
 
 
     def hierarchical_summarisation(
@@ -339,9 +357,9 @@ class Experiment2:
             new_reports: List[Dict[str, str]] = []
             for ch in chunks:
                 prompt = header + "".join(rep_to_str(r, i) for i, r in enumerate(ch))
-                out = self.batch_model.process_structured_batch(
+                out, _ = self.batch_model.process_structured_batch(
                     [prompt],
-                    structure_header="{\n    \"trends\": [",
+                    structure_header="[",
                     default_object={"trends": [], "failed-output": True},
                     max_new_tokens=max_new_tokens
                 )[0]
@@ -507,6 +525,8 @@ class Experiment2:
         - model_name / model_id: identifier for naming output folder and loading the model
         - num_samples: optional subsample size
         """
+        self.model_name = model_name
+
         # Compute the largest possible prompt+generate footprint and add a small buffer
         self.max_prompt_tokens = (model_context_window - chunk_report_max_tokens) // 2
 
