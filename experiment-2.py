@@ -567,6 +567,5 @@ if __name__ == "__main__":
             overall_report_max_tokens=100,
             model_name=model_name,
             model_id=model_cfg['model_id'],
-            model_context_window=model_cfg['context_window'],
-            num_samples=1000
+            model_context_window=model_cfg['context_window']
         )
