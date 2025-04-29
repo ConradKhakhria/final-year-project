@@ -156,30 +156,37 @@ class Experiment2:
                 prompt_meta.append((sub, age, gender))
                 prompt_texts.append(prompt)
 
-        # send to vLLM in batches
-        json_output: List[Any] = []
-
-        config.debug(f"now computing {(len(prompt_texts) // prompts_per_batch) + 1} batches")
+        # send to vLLM
+        parsed_outputs: List[Any] = []
+        config.debug(f"now computing {(len(prompt_texts) - 1) // prompts_per_batch + 1} batches")
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
-            outputs = self.batch_model.process_structured_batch(
+            out = self.batch_model.process_structured_batch(
                 batch=batch_prompts,
-                structure_header='{ "trends": [',
-                default_object={"trends": [], "format-error": True},
-                max_new_tokens=max_new_tokens
+                structure_header="[",
+                default_object=[],
+                max_new_tokens=max_new_tokens,
             )
-            json_output.extend(outputs)
+            parsed_outputs.extend(out)
 
-        for (sub, age, gender), obj in zip(prompt_meta, json_output):
+        # aggregate
+        for (sub, age, gender), obj in zip(prompt_meta, parsed_outputs):
             key = (sub, age, gender)
             bucket = stage_2_reports.setdefault(
                 key,
-                {"reports": [], "errors": 0,
-                "start_date": str(df.date_posted.min()),
-                "end_date":   str(df.date_posted.max()),
-                "chunk_size": 0}
+                {
+                    "reports": [],
+                    "errors": 0,
+                    "start_date": str(df.date_posted.min()),
+                    "end_date": str(df.date_posted.max()),
+                    "chunk_size": 0,
+                },
             )
-            bucket["reports"].extend(obj.get("trends", []))
-            bucket["errors"] += int(obj.get("format-error", False))
+
+            if isinstance(obj, list) and obj:
+                bucket["reports"].extend(obj)
+            else:
+                bucket["errors"] += 1
+
             bucket["chunk_size"] += 1
 
         return stage_2_reports
