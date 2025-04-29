@@ -567,7 +567,7 @@ class Experiment2:
         # 1) Load up vLLM with an increased max_seq_len
         self.batch_model = model.BatchModel(
             model_id,
-            max_model_len=int(1.2 * model_context_window)
+            max_model_len=model_context_window
         )
 
         # Prepare output directory
