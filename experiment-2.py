@@ -228,7 +228,9 @@ class Experiment2:
         current_reports_count = len(reports)
         previous_reports_count = 2*len(reports)
 
-        while current_reports_count < previous_reports_count:
+        original_len = len(reports)
+
+        while 0 < current_reports_count < previous_reports_count:
             config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
             new_reports = []
 
@@ -242,7 +244,7 @@ class Experiment2:
                     config.debug(f"This failed: {r}")
                     layer_failure_rates[-1] += 1.0
 
-            layer_failure_rates[-1] /= len(reports)
+            layer_failure_rates[-1] /= original_len
 
             prompt = query_header + "\n".join(report_strings)
             new_report_json = self.batch_model.process_structured_batch(
