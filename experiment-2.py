@@ -521,20 +521,21 @@ if __name__ == "__main__":
     expt = Experiment2(42)
 
     model_configs = {
-#        "mistral": {
-#            "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
-#            "context_window": 32768
-#        },
-#        "llama-2": {
-#            "model_id": "meta-llama/Llama-2-7b-chat-hf",
-#            "context_window": 4096
-#        },
+        "mistral": {
+            "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
+            "context_window": 32768
+        },
+        "llama-2": {
+            "model_id": "meta-llama/Llama-2-7b-chat-hf",
+            "context_window": 4096
+        },
         "deepseek": {
             "model_id": "deepseek-ai/deepseek-llm-7b-chat",
             "context_window": 4096
         }
     }
 
+    """
     for model_name, model_cfg in model_configs.items():
         expt.run_experiment(
             experiment_sub_heading=f"expt2-relevant-subs-general-trends-subset",
@@ -550,10 +551,11 @@ if __name__ == "__main__":
         )
 
     exit()
+    """
 
 
     model_name = "mistral"
-    model_id = model_ids[model_name]
+    model_cfg = model_configs[model_name]
 
     for selection in ["relevant", "irrelevant"]:
         expt.run_experiment(
@@ -564,6 +566,7 @@ if __name__ == "__main__":
             chunk_report_max_tokens=500,
             overall_report_max_tokens=100,
             model_name=model_name,
-            model_id=model_id,
+            model_id=model_cfg['model_id'],
+            model_context_window=model_cfg['context_window'],
             num_samples=1000
         )
