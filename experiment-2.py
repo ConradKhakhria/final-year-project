@@ -667,7 +667,7 @@ if __name__ == "__main__":
         reddit_df = pd.read_parquet(config.CODE_DIR / "data" / dataset_filename)
         reddit_df["date_posted"] = pd.to_datetime(reddit_df["created_utc"], unit="s")
 
-        for selection in ["relevant", "irrelevant"]:
+        for selection in ["irrelevant"]:
             expt.run_experiment(
                 reddit_df=reddit_df,
                 experiment_sub_heading=f"expt2-{selection}-subreddits-{dataset_name}-data",
