@@ -11,13 +11,12 @@ from sklearn.metrics import *
 import sys
 from typing import Tuple
 
-import config
-import dataset
-import model
+import src.config as config
+import src.dataset as dataset
+import src.model as model
 
 
-# These globals govern which phase of the experiment
-# is being executed
+# These globals govern which phase of the experiment is being executed
 NUM_SAMPLES = None
 OPTIMAL_CONFIGURATION = {
     "model": "mistral",
@@ -45,12 +44,13 @@ class Experiment1:
         self.errors.mkdir(parents=True, exist_ok=True)
         self.evaluation.mkdir(parents=True, exist_ok=True)
 
+        self.api_key = (config.CODE_DIR / "hf-access-token.txt").read_text()
+
 
     def run_experiment(
         self, model_name: str, pre_prompt_filename: str, batch_size: int
     ) -> Tuple[dict, dict]:
-        """
-        Runs the experiment on a model and pre prompt
+        """Runs the experiment on a model and pre prompt
 
         args:
         - model_name: the name of the model to use
@@ -60,28 +60,20 @@ class Experiment1:
         returns:
         a dictionary for age prediction evaluation and gender prediction evaluation
         """
-        isolator = model.BatchModelIsolator(model_name)
+        model_client = model.ModelClientVLLM(
+            model_id=model_name,
+            api_key=self.api_key,
+        )
+        pre_prompt = (config.CODE_DIR / "pre-prompts" / pre_prompt_filename).read_text()
 
-        y_pred_strings = isolator.process_prompts(
-            prompts=self.X_test,
-            batch_size=batch_size,
-            cfg={
-                "max_new_tokens": 30,
-                "pre_prompt_name": pre_prompt_filename,
-                "structure_header": "{"
-            }
+        y_pred, _ = model_client.process_structured_batch(
+            batch=self.X_test,
+            pre_prompt=pre_prompt,
+            structure_header="{",
+            default_object={ "age": None, "gender": None },
+            max_new_tokens=30
         )
 
-        # Record the actual string outputs:
-        model_short_name = model_name.split("/")[1]
-        pre_prompt_short_name = pre_prompt_filename[:-4]
-        out_file = self.string_output / f"{model_short_name}-{pre_prompt_short_name}.txt"
-
-        with open(out_file, "w") as f:
-            for i, s in enumerate(y_pred_strings):
-                f.write(f"string {i + 1}:\n{s}\n\n")
-
-        y_pred = model.extract_json(y_pred_strings, {"age": None, "gender": None})
         y_pred_df = pd.DataFrame(y_pred)
         y_true_df = pd.DataFrame(list(self.y_test))
 
@@ -96,8 +88,7 @@ class Experiment1:
 
 
     def _format_dataset(self, num_samples: int | None = None) -> tuple:
-        """
-        Formats the dataset for use by the LLM
+        """Formats the dataset for use by the LLM
 
         This does two things:
         1. Combines age and gender into a single array of dicts
@@ -118,14 +109,17 @@ class Experiment1:
 
 
     def _create_evaluation(
-        self, y_pred_df: pd.DataFrame, y_true_df: pd.DataFrame,
-        label: str, model_name: str, pp_filename: str
+        self,
+        y_pred_df: pd.DataFrame,
+        y_true_df: pd.DataFrame,
+        label: str,
+        model_name: str,
+        pp_filename: str
     ) -> dict:
-        """
-        Creates an evaluation dictionary for the results and a given label
+        """Creates an evaluation dictionary for the results and a given label
         """
         if not {"age", "gender"}.issubset(y_pred_df.columns):
-            model_short_name = model_name.split("/")[1]
+            model_short_name = model_name.split("/")[-1]
             pre_prompt_short_name = pp_filename[:-4]
             y_pred_df.to_csv(self.errors / f"{model_short_name}_{pre_prompt_short_name}.csv")
 
@@ -219,26 +213,17 @@ if __name__ == "__main__":
     for model_name, preprompt_filename in itertools.product(model_names, prompt_names):
         full_name = model_configs[model_name]["full_name"]
         batch_size = model_configs[model_name]["batch_size"]
-        age, gender = expt1.run_experiment(full_name, preprompt_filename, batch_size)
-        age_results.append(age)
-        gender_results.append(gender)
+        age_evaluation, gender_evaluation = expt1.run_experiment(
+            full_name,
+            preprompt_filename,
+            batch_size
+        )
+        age_results.append(age_evaluation)
+        gender_results.append(gender_evaluation)
 
-    df_age = pd.DataFrame(age_results)
-    df_gender = pd.DataFrame(gender_results)
+    with open(config.RESULTS_DIR / "age-evaluation.json", "w") as f:
+        json.dump(age_evaluation, f)
 
-    # Filenames
-    if NUM_SAMPLES is not None:
-        df_age_name = f"age_evaluation_llm_{NUM_SAMPLES}_samples.csv"
-        df_gender_name = f"gender_evaluation_llm_{NUM_SAMPLES}_samples.csv"
-    else:
-        df_age_name = "age_evaluation_llm.csv"
-        df_gender_name = "gender_evaluation_llm.csv"
+    with open(config.RESULTS_DIR / "gender-evaluation.json", "w") as f:
+        json.dump(gender_evaluation, f)
 
-    df_age.to_csv(expt1.evaluation / df_age_name)
-    df_gender.to_csv(expt1.evaluation / df_gender_name)
-
-    # Print evaluation metrics to console
-    print("\n===== AGE PREDICTION RESULTS =====")
-    print(df_age)
-    print("\n===== GENDER PREDICTION RESULTS =====")
-    print(df_gender)
