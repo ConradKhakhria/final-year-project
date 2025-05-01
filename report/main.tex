@@ -3,7 +3,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{appendix}
-\usepackage{biblatex}
+\usepackage[sorting=none]{biblatex}
 \usepackage{booktabs}
 \usepackage{caption}
 \usepackage{changepage}
@@ -17,17 +17,38 @@
 \usepackage{setspace}
 \usepackage{tocbibind}
 \usepackage{todonotes}
+\usepackage{xcolor}
 \usepackage[a4paper,margin=1in]{geometry}
 
-\lstset{
-  basicstyle=\ttfamily\small,
-  breaklines=true,
-  frame=single
+% define listing styles
+\lstdefinestyle{pythonstyle}{
+backgroundcolor=\color{gray!10},
+basicstyle=\ttfamily\footnotesize,
+frame=single,
+breaklines=true,
+numbers=left,
+numberstyle=\tiny,
+keywordstyle=\color{blue}\bfseries,
+commentstyle=\color{gray},
+stringstyle=\color{orange},
+language=Python,
+}
+
+\lstdefinestyle{promptstyle}{
+backgroundcolor=\color{gray!5},
+basicstyle=\ttfamily\small,
+frame=single,
+breaklines=true,
+numbers=none,
+keywordstyle=\color{black},
+commentstyle=\color{black},
+stringstyle=\color{black},
+language=none, % no syntax highlighting
 }
 
 \captionsetup[lstlisting]{%
-  labelformat=empty,  % no “Listing X.Y” label
-  labelsep=none       % no extra colon or dash
+labelformat=empty, % no "Listing X.Y" label
+labelsep=none % no extra colon or dash
 }
 
 \addbibresource{references.bib}
@@ -54,27 +75,27 @@ The subject of this thesis naturally divides the research into two categories: t
 The thesis consists of three investigations, each original investigations into new LLM-based approaches problems in business analytics. The research strucutre will be as follows:
 
 \begin{enumerate}
-    \item \textbf{Experiment 1: Automated Demographic Segmentation}
+\item \textbf{Experiment 1: Automated Demographic Segmentation}
 
-    This study makes a hypothesis about the efficacy of an LLM-based approach to demographic segmentation. This hypothesis is evaluated by comparing the performance of this approach to other existing approaches (relative performance), as well as directly presenting the results of this approach against datasets of segmented social media post data (absolute performance).
+This study makes a hypothesis about the efficacy of an LLM-based approach to demographic segmentation. This hypothesis is evaluated by comparing the performance of this approach to other existing approaches (relative performance), as well as directly presenting the results of this approach against datasets of segmented social media post data (absolute performance).
 
-    \item \textbf{Experiment 2: Large Language Model Historical Consumer Trend Prediction}
+\item \textbf{Experiment 2: Large Language Model Historical Consumer Trend Prediction}
 
-    This study directly tests the ability of large language models to predict consumer trends using segmented social media post data. The experiment will be conducted using historical social media post data, which the large language models will use to 'predict' the historical consumer trend.
+This study directly tests the ability of large language models to predict consumer trends using segmented social media post data. The experiment will be conducted using historical social media post data, which the large language models will use to 'predict' the historical consumer trend.
 
-    \item \textbf{Experiment 3: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
+\item \textbf{Experiment 3: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
 
-    This study will apply the models used in experiments 1 \& 2 to current social media post data. This will produce a prediction of a future consumer trend.
+This study will apply the models used in experiments 1 \& 2 to current social media post data. This will produce a prediction of a future consumer trend.
 \end{enumerate}
 
 This thesis presents the following original contributions to science:
 
 \begin{itemize}
-    \item  Given how new large language models are as a technology, little research has been conducted into the ability of LLMs to conduct demographic segmentation. Experiment 1 provides empirical data on how accurately LLMs can infer demographic information on social media data, and an effective LLM-based approach will be able to generate a vast amount of labelled demographic segment data from social media posts.
+\item Given how new large language models are as a technology, little research has been conducted into the ability of LLMs to conduct demographic segmentation. Experiment 1 provides empirical data on how accurately LLMs can infer demographic information on social media data.
 
-    \item There is currently very little research into the effectiveness of machine learning-based approaches to consumer trend prediction, in particular LLM-based approaches. Experiment 2 will provide one of the earliest formal investigations into this approach.
+\item There is currently very little research into the effectiveness of LLM-based approaches to consumer trend prediction. Experiment 2 will provide an early format investigation into the effectiveness of this approach.
 
-    \item There is debate among researchers about the ability of LLMs to generate novel ideas, and in particular whether they have the ability to outpace humans in this regard. Experiment 2 directly investigates this question, and in particular with a focus on deriving both novel and useful conclusions from a specific set of unstructured text data.
+\item There is debate among researchers about the ability of LLMs to generate novel ideas, and in particular whether they have the ability to outpace humans in this regard. Experiments 2 and 3 directly investigate this question, and in particular with a focus on deriving both novel and useful conclusions from a specific set of unstructured text data.
 \end{itemize}
 \end{abstract}
 
@@ -84,87 +105,74 @@ This thesis presents the following original contributions to science:
 \chapter{Introduction}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-    \textit{This chapter presents an overview of the thesis by discussing the motivation behind the research problem, as well as its objectives, experiments, and structure. The chapter begins with information on demographic segmentation and consumer trend prediction, an appraisal of their importance for businesses who sell consumer goods, and a brief discussion of the state-of-the-art in the field with reference to machine learning. The chapter then outlines the research objectives, experiments, scientific contributions, and structure of the thesis.}
+\textit{This chapter presents an overview of the thesis by discussing the motivation behind the research problem, as well as its objectives, experiments, and structure. The chapter begins with information on demographic segmentation and consumer trend prediction, an appraisal of their importance for businesses who sell consumer goods, and a brief discussion of the state-of-the-art in the field with reference to machine learning. The chapter then outlines the research objectives, experiments, scientific contributions, and structure of the thesis.}
 \end{adjustwidth}
 
-\section{Motivation}
+\section{Aims and Objectives}
 
-\begin{itemize}
-    \item Analytics from social media are one of the most widely and effectively utilised sources of information available, with data like watch time, click-through rates, think of better examples, being some of the most valuable resources provided by social media platforms. These data are used heavily for marketing and product development, among many other things
+Analytics from social media are one of the richest and most widely-used data sources that have emerged in recent years, with data such as watch time, click-through rate, and share rate used heavily in business applications ranging from marketing to product development\cite{chaffey2019digital}. However, it is comparatively more difficult to extract insights from social media data itself, as text-based social media posts have little structure and are highly contextual. Although techniques do exist for detecting specific information from text data, such as inferred sentiment (i.e. whether the text is written in a positive, negative, or neutral tone)\cite{liu2022sentiment}, extracting broader insights accurately from text is still a difficult task. As such, social media posts are an untapped resource: with enormous numbers of peoples thoughts and opinions being publicly broadcast constantly, social media posts contain a wealth of information about consumer attitudes which could in principle be applied directly to a wide range of business decisions.
 
-    \item However, it has so far proven largely infeasible to derive more complex conclusions from social media post data itself: text data from social media has little structure, and is highly contextual, requiring a great deal of knowledge of the external world.
-    
-    \item As such, social media post data is in many ways an untapped resource: with enormous numbers of peoples thoughts and opinions being publicly broadcast constantly, social media posts contain a wealth of information about consumer trends, with the bottle-neck so far being the ability to process this information.
+Furthermore, combining analytics with granular demographic data has proven to be foundational in identifying nuanced consumer behaviors, enabling firms to tailor strategies that align with specific subgroup preferences\cite{wedel2000market}. This demographic segmentation enhances the precision of trend forecasting and improves the efficacy of targeted marketing interventions.
 
-    \item LLMs can process huge amounts of unstructured text data, drawing on their own knowledge to infer complex conclusions about text. Examples include RAG, LLM web search, and I guess stuff like code generation/debugging (cite a code debugging thing)
+Large language models (LLMs) are machine learning models which can process vast amounts of unstructured text data, drawing on large amounts of existing knowledge to make complex inferences about text\cite{NEURIPS2020_1457c0d6}. Despite being a relatively new technology, LLMs have been applied to tasks ranging from simple reading comprehension tasks to relevant document retrieval\cite{lewis2020retrieval} and code generation\cite{chen2021evaluating}. Their ability to synthesise and draw complex conclusions from text data opens the door for new kinds of automated consumer trend prediction, with inferences being produced in the form of text-based summaries rather than numerical analytics.
 
-    \item LLMs are therefore a game-changer: with their ability to instantly reason about, summarise, and answer questions about huge amounts of text data, they are so far the most promising potential approach in utilising the resource that is social media post data for gathering consumer information in real-time and at scale.
+The main objective of this research is to determine the efficacy of LLM-based consumer trend prediction, in particular in terms of the accuracy and detail as well as the novelty of the inferences generated. The study is divided across two 
 
-    \item The prediction of consumer trends is of course vital to the continued growth and development of any business: maybe we can give an example of money lost by a company that wasn't able to predict an upcoming trend. Furthermore, for very large businesses operating across multiple continents, a deep understanding of shifts across specific demographic groups is necessary.
-
-    \item LLMs may be able to assist with both of the above:
-
-    \begin{enumerate}
-        \item Obtaining accurate demographic information from social media post data is not always possible, and in many cases, the specific information that a company needs may not be directly recorded. LLMs show promise in complex reading comprehension tasks, drawing on large amounts of prior knowledge, and may be able to infer demographic information from social media posts. This will allow companies to have access to demographic information at a lower cost, and potentially allows for the inference of demographic characteristics that are otherwise not recorded.
-
-        \item LLMs can process text data at a level that is incomparable with that of humans. Combining this with their increasing ability to perform very well in reading comprehension tasks suggests that they may be able to effectively infer upcoming consumer trends from social media data. This 
-    \end{enumerate}
-\end{itemize}
 
 \section{Research Objectives}
 
 \begin{itemize}
-    \item The main objective of this research is to determine whether large language models can be used to significantly improve upon existing techniques for consumer trend prediction, providing faster and more in-depth insights into upcoming consumer trends.
+\item The main objective of this research is to determine whether large language models can be used to significantly improve upon existing techniques for consumer trend prediction, providing faster and more in-depth insights into upcoming consumer trends.
 
-    \item Whereas existing ML approaches have a strong ability to predict consumer behaviour in a classification setting, this is very narrow, limited to selecting between pre-defined options expressed in the classification/regression setting (check that this is true but it seems obvious)
+\item Whereas existing ML approaches have a strong ability to predict consumer behaviour in a classification setting, this is very narrow, limited to selecting between pre-defined options expressed in the classification/regression setting (check that this is true but it seems obvious)
 
-    \item This research therefore evaluates the ability of large language models to produce not just accurate but also novel, and open-ended, insights into future consumer trends. We will compare how they perform against traditional algorithms used in both supervised and unsupervised learning problems, as they apply to future consumer trend prediction
+\item This research therefore evaluates the ability of large language models to produce not just accurate but also novel, and open-ended, insights into future consumer trends. We will compare how they perform against traditional algorithms used in both supervised and unsupervised learning problems, as they apply to future consumer trend prediction
 
-    \item This research also attempts to use LLMs for the inference of demographic characteristics from social media posts. This would allow for the prediction of future consumer trends across an incredibly fine-grained range of different demographic groups, without the possible limitation of either data quality or range of demographic characteristics actively recorded by social media platforms.
+\item This research also attempts to use LLMs for the inference of demographic characteristics from social media posts. This would allow for the prediction of future consumer trends across an incredibly fine-grained range of different demographic groups, without the possible limitation of either data quality or range of demographic characteristics actively recorded by social media platforms.
 
-    \item This study therefore both compares LLMs to traditional methods for inference of demographic information from social media data, as well as establishing whether they can infer these data in greater detail or to a wider range of characteristics than is otherwise currently possible
-    
+\item This study therefore both compares LLMs to traditional methods for inference of demographic information from social media data, as well as establishing whether they can infer these data in greater detail or to a wider range of characteristics than is otherwise currently possible
+
 \end{itemize}
 
 \section{Experiments}
 
 \begin{enumerate}
-    \item Automated demographic segmentation.
+\item Automated demographic segmentation.
 
-    \begin{itemize}
-        \item The first experiment aims to observe whether LLMs can infer demographic characteristics, e.g. age, sex, location, about posters from their social media posts.
-    
-        \item This is original research: existing research into demographic inference with AI focuses on much more narrow settings, for example "Customer profiling, segmentation, and sales prediction using AI in direct marketing" which uses unsupervised learning for categorisation (thus unlabelled) and boosting trees for classification (thus less rich).
-    
-        \item This experiment treats demographic segmentation as a classifiaction problem, comparing LLMs to traditioanl classification algorithms. We will compare the capabilities of LLMs, handling largely un-preprocessed data, to those of the traditional algorithms such as the SVM and boosting and basic deep learning, combined with techniques from 'classical' NLP such as TF-IDF.
-    \end{itemize}
+\begin{itemize}
+\item The first experiment aims to observe whether LLMs can infer demographic characteristics, e.g. age, sex, location, about posters from their social media posts.
 
+\item This is original research: existing research into demographic inference with AI focuses on much more narrow settings, for example "Customer profiling, segmentation, and sales prediction using AI in direct marketing" which uses unsupervised learning for categorisation (thus unlabelled) and boosting trees for classification (thus less rich).
 
+\item This experiment treats demographic segmentation as a classifiaction problem, comparing LLMs to traditioanl classification algorithms. We will compare the capabilities of LLMs, handling largely un-preprocessed data, to those of the traditional algorithms such as the SVM and boosting and basic deep learning, combined with techniques from 'classical' NLP such as TF-IDF.
+\end{itemize}
 
 
 
-    \item Large language model historical consumer trend prediction.
-
-    \begin{itemize}
-        \item This study investigates whether LLMs can predict future consumer trends, across different demographics, from demographically-segmented social media post data.
-
-        \item Although there is a wide body of research in predicting consumer trends using more traditional approaches in machine learning, this is the first research I am aware of that attempts to do this with LLMs using social media data.
-
-        \item Where existing research applies ML in comparatively simpler settings, such as time series forecasting for sales, this research leverages the unique potential of LLMs to produce novel output outside of a given structure. This means that, in principle, we will be able not just to extrapolate existing trends or sales volume for existing products, but identify consumer behaviour and desires for entirely new kinds of products and services.
-    \end{itemize}
 
 
-    \item Application of LLM-segmented consumer trend prediction to current soical media data
+\item Large language model historical consumer trend prediction.
+
+\begin{itemize}
+\item This study investigates whether LLMs can predict future consumer trends, across different demographics, from demographically-segmented social media post data.
+
+\item Although there is a wide body of research in predicting consumer trends using more traditional approaches in machine learning, this is the first research I am aware of that attempts to do this with LLMs using social media data.
+
+\item Where existing research applies ML in comparatively simpler settings, such as time series forecasting for sales, this research leverages the unique potential of LLMs to produce novel output outside of a given structure. This means that, in principle, we will be able not just to extrapolate existing trends or sales volume for existing products, but identify consumer behaviour and desires for entirely new kinds of products and services.
+\end{itemize}
 
 
-    \begin{itemize}
-        \item This study combines the approaches from the previous two experiments and applies them to current social media data, attempting to predict an actual future consumer trend.
+\item Application of LLM-segmented consumer trend prediction to current soical media data
 
-        \item This experiment will produce results which, unconventionally, cannot be directly evaluated at this time. Although the methodology will have been evaluated in the previous two sections, the predictions produced from current social media data can only be assessed in the future.
 
-        \item The primary focus of this experiment is to provide a real-world example of how a consumer trend prediction by an LLM would look, outside of a contrived research setting.
-        
-    \end{itemize}
+\begin{itemize}
+\item This study combines the approaches from the previous two experiments and applies them to current social media data, attempting to predict an actual future consumer trend.
+
+\item This experiment will produce results which, unconventionally, cannot be directly evaluated at this time. Although the methodology will have been evaluated in the previous two sections, the predictions produced from current social media data can only be assessed in the future.
+
+\item The primary focus of this experiment is to provide a real-world example of how a consumer trend prediction by an LLM would look, outside of a contrived research setting.
+
+\end{itemize}
 
 \end{enumerate}
 
@@ -174,17 +182,15 @@ This work contributes to existing research across multiple fields in the followi
 
 
 \begin{enumerate}
-    \item Comparison of LLM-based approaches to traditional methods in natural langauge processing (NLP). The first part of this research applies LLMs to a classification problem, in the form of demographic segmentation, where it is directly benchmarked against more traditional approaches in ML classification and NLP. The performance of each approach will be compared directly with standard classification metrics such as accuracy, precision, recall, and f1 score. 
+\item Comparison of LLM-based approaches to traditional methods in natural langauge processing (NLP). The first part of this research applies LLMs to a classification problem, in the form of demographic segmentation, where it is directly benchmarked against more traditional approaches in ML classification and NLP. The performance of each approach will be compared directly with standard classification metrics such as accuracy, precision, recall, and f1 score.
 
-    \item Empirically evaluates LLM performance in complex reading comprehension tasks. Both the demographic segmentation and consumer trend prediction are, ultimately, complex reading comprehension tasks. This research therefore provides insight into the ability of LLMs to derive complex insights from potentially information-sparse data.
+\item Empirically evaluates LLM performance in complex reading comprehension tasks. Both the demographic segmentation and consumer trend prediction are, ultimately, complex reading comprehension tasks. This research therefore provides insight into the ability of LLMs to derive complex insights from potentially information-sparse data.
 
-    \item Establishes a new approach to consumer trend prediction. Traditional approaches to consumer trend prediction rely heavily on human insight, either in the form of direct human interpretation of written information, or carefully hand-crafted features when machine learning approaches are employed. This new approach to consumer trend prediction is therefore significantly more scalable, potentially eliminating the need for human work in general. Furthermore, this approach may combine the predictive accuracy of machine learning approaches with the unstructured open-endedness of human interpretation.
+\item Establishes a new approach to consumer trend prediction. Traditional approaches to consumer trend prediction rely heavily on human insight, either in the form of direct human interpretation of written information, or carefully hand-crafted features when machine learning approaches are employed. This new approach to consumer trend prediction is therefore significantly more scalable, potentially eliminating the need for human work in general. Furthermore, this approach may combine the predictive accuracy of machine learning approaches with the unstructured open-endedness of human interpretation.
 
-    \item Direct empirical study into the ability of LLMs to produce novel conlusions. LLMs are a relatively new technology, and there is significant academic debate about whether they are able to derive novel conclusions, across a range of different settings. The latter part of this dissertation addresses this question directly, with LLMs being tasked with deriving future consumer trends in a conceptual, rather than numerical, setting.
+\item Direct empirical study into the ability of LLMs to produce novel conlusions. LLMs are a relatively new technology, and there is significant academic debate about whether they are able to derive novel conclusions, across a range of different settings. The latter part of this dissertation addresses this question directly, with LLMs being tasked with deriving future consumer trends in a conceptual, rather than numerical, setting.
 
-    \item Advances the currently thin existing research into LLM temporal event forecasting. \todo{finish}
-
-    \item Produces an original and current prediction of a future consumer trend. The third empirical investigation in this dissertation applies the techniques evaluated in the previous two to current social media data, with the aim of producing a real prediction of a future consumer trend. \todo{as far as I can tell} There are no consumer trend predictions generated in this way in academic literature, and this will therefore provide an important result which can be evaluated in the future.
+\item Produces an original and current prediction of a future consumer trend. The third empirical investigation in this dissertation applies the techniques evaluated in the previous two to current social media data, with the aim of producing a real prediction of a future consumer trend. \todo{as far as I can tell} There are no consumer trend predictions generated in this way in academic literature, and this will therefore provide an important result which can be evaluated in the future.
 \end{enumerate}
 
 \section{Thesis Structure}
@@ -192,25 +198,25 @@ This work contributes to existing research across multiple fields in the followi
 This thesis is organised as follows:
 
 \begin{itemize}
-    \item \textbf{Chapter 2: Background and Literature Review}
+\item \textbf{Chapter 2: Background and Literature Review}
 
-    Relevant academic literature about both related research as well as the underlying technological and conceptual underpinnings of this thesis are reviewed, providing the background necessary for understanding this research. This includes an introduction to supervised and unsupervised machine learning, generative machine learning, as well as LLMs themselves. A review of literature in social media data mining is also presented. Furthermore, this section also reviews existing research into demographic segemntation and consumer trend prediction, both with 'manual' and machine learning-based approaches.
+Relevant academic literature about both related research as well as the underlying technological and conceptual underpinnings of this thesis are reviewed, providing the background necessary for understanding this research. This includes an introduction to supervised and unsupervised machine learning, generative machine learning, as well as LLMs themselves. A review of literature in social media data mining is also presented. Furthermore, this section also reviews existing research into demographic segemntation and consumer trend prediction, both with 'manual' and machine learning-based approaches.
 
-    \item \textbf{Chapter 3: Automated Demographic Segmentation}
+\item \textbf{Chapter 3: Automated Demographic Segmentation}
 
-    This chapter provides a direct evaluation of the ability of LLMs to infer demographic characteristics from social media post data. This experiment is treated as a classification problem, and the LLMs are directly benchmarked against traditional machine learning approaches to classification in NLP problems. Standard classification metrics such as accuracy, precision, recall, and f1 score are used to evaluate the performance of the LLM-based approach.
+This chapter provides a direct evaluation of the ability of LLMs to infer demographic characteristics from social media post data. This experiment is treated as a classification problem, and the LLMs are directly benchmarked against traditional machine learning approaches to classification in NLP problems. Standard classification metrics such as accuracy, precision, recall, and f1 score are used to evaluate the performance of the LLM-based approach.
 
-    \item \textbf{Chapter 4: Large Language Model Historical Consumer Trend Prediction}
+\item \textbf{Chapter 4: Large Language Model Historical Consumer Trend Prediction}
 
-    This experiment evaluates whether LLMs can predict 'future' consumer trends from social media data. A historical consumer trend is chosen, and social media data from up to the time that this trend manifests is given to an LLM as input for predicting the trend. In this study, the LLM is tasked both with predicting all future consumer trends indicated by the social media data, as well as being asked directly whether the social media data it encounters suggests that the specific consumer trend is likely to develop.
+This experiment evaluates whether LLMs can predict 'future' consumer trends from social media data. A historical consumer trend is chosen, and social media data from up to the time that this trend manifests is given to an LLM as input for predicting the trend. In this study, the LLM is tasked both with predicting all future consumer trends indicated by the social media data, as well as being asked directly whether the social media data it encounters suggests that the specific consumer trend is likely to develop.
 
-    \item \textbf{Chapter 5: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
+\item \textbf{Chapter 5: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
 
-    This study combines the approaches used in both chapters 3 and 4, applying LLMs to current, unlabelled social media post data to predict actual future consumer trends across different inferred demographic groups. The results of this study are directed towards an actual future event, and therefore cannot immediately be directly evaluated. However, this section does contain a detailed comparison of results obtained using different language models, as well as data from different social media platforms and sub-groups therein.
+This study combines the approaches used in both chapters 3 and 4, applying LLMs to current, unlabelled social media post data to predict actual future consumer trends across different inferred demographic groups. The results of this study are directed towards an actual future event, and therefore cannot immediately be directly evaluated. However, this section does contain a detailed comparison of results obtained using different language models, as well as data from different social media platforms and sub-groups therein.
 
-    \item \textbf{Chapter 6: Conclusion and Future Work}
+\item \textbf{Chapter 6: Conclusion and Future Work}
 
-    The final chapter of this thesis provides an overall conclusion of this research, summarising and interpreting the results obtained. This is followed by recommendations of future research to be undertaken following this.
+The final chapter of this thesis provides an overall conclusion of this research, summarising and interpreting the results obtained. This is followed by recommendations of future research to be undertaken following this.
 
 \end{itemize}
 
@@ -220,21 +226,43 @@ This thesis is organised as follows:
 \chapter{Background and Literature Review} \label{sec:lit-review}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-    \textit{This chapter presents background information relevant to the thesis, both in terms of the subjects of the research and the methodology that will be employed. In particular, the first part of this chapter will present the state of existing research and practice in both demographic segementation (automated and manual) as well as consumer trend prediction, and the second will give a broad overview of machine learning, in particular large language models and data mining.}
+\textit{This chapter presents background information relevant to the thesis, both in terms of the subjects of the research and the methodology that will be employed. In particular, the first part of this chapter will present the state of existing research and practice in both demographic segementation (automated and manual) as well as consumer trend prediction, and the second will give a broad overview of machine learning, in particular large language models and data mining.}
 \end{adjustwidth}
 
-This thesis consists of three experiments, with the final experiment being largely derived in methodology from the first two. Each of the experiments share a significant knowledge base (in particular, that of LLMs and social media data-mining), but there are a range of significant differences, in particular in terms of the problem setting. 
+This thesis consists of three experiments, with the final experiment being largely derived in methodology from the first two. Each of the experiments share a significant knowledge base (in particular with regards to LLMs), but there are a range of significant differences, in particular in terms of the problem setting.
 
-The first part of this chapter outlines the technologies and concepts that are fundamental both to much of the existing research that follows in this literature review as well as to this thesis' own experiments. It begins with an introduction to machine learning, in particular the distinction between supervised and unsupervised learning, continues onto LLMs, and then explains the metrics that will be used for evaluating these machine learning models. The section concludes with a detailed treatment of social media data-mining.
-
-\todo[inline]{consider whether to remove the bit about data mining considering that I'm using pre-built datasets}
-
-The second part of this chapter is the \textit{Application Domain} section, which explores the state of the art in algorithmic and data-driven demographic segmentation and consumer trend prediction.
+The first part of this chapter is the \textit{Application Domain}, which explores the state of the art in both automated demographic inference as well as data-driven consumer trend prediction. The second part is the \textit{Method Development}, which outlines the technologies and concepts that are fundamental both to much of the existing research covered in the \textit{Application Domain section}, as well as to the experiments presented in this thesis.
 
 
-\todo[inline]{give a broad and brief overview of the state of the art in both demographic segmentation and consumer trend prediction}
-\todo[inline]{talk about how each expt contains a mini lit review}
+\section{Application Domain}
 
+\subsection{Demographic Inference}
+
+\begin{itemize}
+\item Automatic inference of author demographic characteristics from textual data has become a significant area of research in natural language processing (NLP) in recent decades, with applications across domains ranging from marketing and social meida personalisation to legal investigations\cite{burger-etal-2011-discriminating}. Early research in the mid-2000s showed that text derived from personal blogs contains subtle demographic signals, which can be detected with meaningful accuracy with simple NLP algorithms\cite{blog-authorship-corpus}. Since then, the rise in social media and significant advanced in machine learning, in particular deep learning, have led to an explosion in the range of data sources and approaches to demographic inference that have been studied.
+
+\item Demographic inference from text is typically treated as a typical supervised learning problem, either in the classification setting for categorical variables (e.g. gender or ethnic background) or the regression setting for continuous variables (e.g. age). Early work in demographic inference applied existing classification and regression techniques directly, using feature engineering approaches to transform arbitrary-length text data into fixed-size vectors representing certain quantities about the text. For example in 2011, Burger et al. use multi-hot encoding over $n$-grams, for different values of $n$, and use the resulting feature-mapped vectors as input to classification models such as Support Vector Machine and Naive Bayes classifiers\cite{burger-etal-2011-discriminating}. Other studies have used similar approaches which employ different encodings, such as Bag of Words representation\cite{Chen2021ComparativeDemographicAttribute}, which counts the number of appearances of individual words, or term frequency-inverse document frequency (TF-IDF) weighting\cite{wang-etal-2016-improving}, which better captures the significance of certain words in a body of text. These approaches, which rely heavily on feature engineering, often achieve accuracy scores ranging between 50\% to over 70\% when predicting age and gender. Studies in the early 2010s found that the inclusion of user profile metadata, such as usernames and descriptions, were able to increase the accuracy of predictions significantly: in 2013, for example, Liu and Ruths found that the inclusion of usernames yielded a 20\% increase in the accuracy of gender prediction compared to a standard NLP baseline\cite{liu-2013-whats-in-a-name}.
+
+\item By the mid-2010s, researchers began to apply to deep learning models to demographic inference problems. Early deep learning-oriented research focused on convolutional neural networks (CNNs) which automatically select features based on clusters of adjacent words\cite{Ruder-2016-cnns-for-text-classification} and recurrent neural networks (RNNs) which automatically extract features by traversing through input strings directly\cite{kim-etal-2017-demographic}.
+
+\item 2017 saw the advent of transformers, which are deep learning models that model relationships between all elements in an input sequence using self-attention mechanisms\cite{vaswani-2017-attention-is-all-you-need}. By transforming recurrent deep learning optimisation from a sequential to a parallel problem, transformers allow for vastly more complicated, and more powerful, models to be trained in a reasonable amount of time. In 2019 Google introduced BERT, a pre-trained transformer model trained on an enormous body of publicly-available text, which can achieve state-of-the-art results across a range of different machine learning domains under fine-tuning\cite{devlin-etal-2019-bert}. Since then, models in the BERT family have been used to achieve significantly improved results in age and gender classification problems: in 2022, for example, Klein et al. used RoBERTa, a pre-trained model based on BERT\cite{liu2019roberta}, to achieve an exceptionally high $F_1$ score of 0.914 in classifying the exact ages of Twitter users\cite{klein2022reportage}.
+
+\item A promising emerging direction in demographic inference, and the technique which this thesis studies, is the use of LLMs for few-shot prediction, i.e. where the model is given a very small number of examples on which to base its predictions, or zero-shot prediction where the model is simply given the prediction task and the input\cite{NEURIPS2020_1457c0d6}. LLMs like GPT-3 and Llama are trained on vast amounts of text data derived from the internet, and thus they can implicitly capture associations between language use and demographics. For example, AlNuaimi et al. achieved an accuracy score of 0.76 in gender prediction with zero-shot LLM inference based on people's names alone\cite{alnuaimi2024enriching}. Given the novelty of LLMs, however, research into demographic inference using LLMs is limited, which leaves an opportunity for new approaches that leverage their generalisation abilities. This thesis aims to explore that opportunity and provide an empirical evaluation of use of few-shot and zero-shot LLM prompting to infer demographic characteristics directly from user-generated text.
+\end{itemize}
+
+\subsection{Consumer Trend Prediction}
+
+The rise of social media has provided an unparalleled source of rich, real-time data from which to derive insights relating to consumer trends. Existing approaches to consumer trend prediction extract signals in social media posts, ranging from sales volume forecasting\cite{Asur2010predicting} consumer sentiment detection\cite{liu2022sentiment}.
+
+Traditional approaches to consumer trend prediction have focused on quantitative metrics, applying statistical models to relatively small amounts of data to make predictions. An example of a popular and well-studied task is time-series forecasting, which attempt to project future values in time series data, for example the sales volume of a particular product each week, into the future. Techniques like ARIMA and exponential smoothing, which can capture periodic variation (across years, months, or weeks) as well as general trends have been used widely for decades to project future values consumer interest indicators, such as sales volume\cite{hyndman2018forecasting}. Although these models are able to capture detailed periodic patterns, they often struggle with abrupt shifts, and cannot account directly for variables like changes in consumer sentiment.
+
+Diffusion models, most notably the Bass model, have been used for decades to predict adoption trajectories of new products. The Bass diffusion model, for instance, forecasts how many customers will adopt a new product over time based on parameters for innovation and imitation\cite{bass1969new}. Such models can capture the life cycle of a trend (i.e. introduction, growth, maturity, decline) in a theoretical framework, and have been applied to estimate peak adoption of innovations. 
+
+The rise of machine learning in recent decades has provided a wide range of powerful techniques that expand on this work. Unlike the earlier statistical models, machine learning approaches can use large amounts of data to learn complex, non-linear trends, and capture detailed insights about consumers more accurately\cite{shmueli2011predictive}. In particular, natural language processing (NLP) approaches allow for rich data to be extracted from text data directly, which maeans that social media posts can be used as a source of real-time information-rich data. A pioneering example is Asur and Huberman’s Twitter-based model, which showed that a simple linear regression on the volume of Twitter mentions for a movie could predict its box office revenue more accurately than Hollywood’s own tracking polls\cite{Asur2010predicting}. The study found that the rate of tweets about a particular movie was the most significant predictor of its early success, and the sentiment scores about the movie proved most significant for long-term popularity. Subsequent studies have extended this idea to other domains: notably in the same year, machine learning models proved capable of accurately predicting short-term moves in the stock market using Twitter data\cite{bollen2011twitter}.
+
+One of the most prevalent applications of NLP to social media data is sentiment analysis, in which machine learning models automatically infer the attitude (i.e. positive, negative, or neutral) of a body of text\cite{liu2022sentiment}. Sentiment analysis has proven to be a source of invaluable insight for brand monitoring, with businesses tracking the perception of their brand based on inferred sentiment from social media data\cite{benedetto2016big}.
+
+The development of LLMs in recent years represents an enormous leap in the capabilities of NLP approaches. These models are trained to follow instructions and produce text-based output, which provides enormous flexibility in the range of tasks they can be applied to\cite{NEURIPS2020_1457c0d6}. Research has shown that LLMs are capable of very strong performance when applied tasks such as sentiment analysis\cite{zhang2023enhancing} and summarisation of news and social media\cite{zhao2024revolutionizing}. However, given the novelty of LLMs, LLM-based approaches to consumer trend forecasting have not been explored in full, and there is still limited understanding of how well these models can generalize from unstructured textual signals to actionable market-level predictions.
 
 \section{Method Development}
 
@@ -244,39 +272,41 @@ This section discusses the fundmentals of supervised and unsupervised learning, 
 
 \subsubsection{Supervised and Unsupervised Learning}
 
+
+
 \begin{itemize}
-    \item There are three types of machine learning: supervised, unsupervised, and reinforcement. Relevant to this dissertation are supervised and unsupervised learning.
+\item Machine learning can be broadly divided into three main categories: that of supervised learning, unsupervised learning, and reinforcement learning. Of these, supervised and unsupervised learning relate directly to the methodology and background research of this work.
 
-    \item Supervised learning problems are ones in which 'input' data points, or \textit{features}, are provided with corresponding 'output' data points, or \textit{labels}, and the algorithm is tasked with creating a model which can predict the label for novel data points that it has not yet encountered. These labels can either be continues values, in the \textit{regression} setting, or discrete, in the \textit{classification} setting.
+\item Supervised learning problems are ones in which 'input' data points, or \textit{features}, are provided with corresponding 'output' data points, or \textit{labels}, and the algorithm is tasked with creating a model which can predict the label for novel data points that it has not yet encountered. These labels can either be continues values, in the \textit{regression} setting, or discrete, in the \textit{classification} setting.
 
-    \item A classic supervised learning problem is with the MNIST dataset, a set of 70,000 hand-written digits commonly used as a benchmark for image recognition \cite{lecun1998gradient}.
+\item A classic supervised learning problem is with the MNIST dataset, a set of 70,000 hand-written digits commonly used as a benchmark for image recognition \cite{lecun1998gradient}.
 
-    \item This dissertation focuses primarily on classification problems, rather than regression. Linear regression will be briefly introduced, primarily to motivate logistic regression, a simple binary classification algorithm.
+\item This dissertation focuses primarily on classification problems, rather than regression. Linear regression will be briefly introduced, primarily to motivate logistic regression, a simple binary classification algorithm.
 
-    \item Unsupervised learning problems, in contrast, provide only features, and algorithms are tasked with detecting patterns within the data. Two common types of unsupervised learning algorithm are \textit{dimensionality reduction}, in which they select the most 'important' components of the data points in a dataset, or \textit{clustering}, in which they determine distinct groupings of points in a dataset, either of a specified number or not.
+\item Unsupervised learning problems, in contrast, provide only features, and algorithms are tasked with detecting patterns within the data. Two common types of unsupervised learning algorithm are \textit{dimensionality reduction}, in which they select the most 'important' components of the data points in a dataset, or \textit{clustering}, in which they determine distinct groupings of points in a dataset, either of a specified number or not.
 
-    \item Following the supervised learning algorithms presented in this section will be a number of fundamental unsupervised learning algorithms, both dimensionality reduction and clustering.
-    
+\item Following the supervised learning algorithms presented in this section will be a number of fundamental unsupervised learning algorithms, both dimensionality reduction and clustering.
+
 \end{itemize}
 
 \subsubsection{Linear Regression}
 
 \begin{itemize}
-    \item Linear regression, and in particular least-squares regression, is the most studied family of regression models in statistics and machine learning. Least-squares linear regression models attempt to find a linear function $f(x) = w \cdot x + b$ to predict labels $y$ from input features $x$ by minimising the \textit{residual sum of squares} (RSS) loss function between predicted labels $f(x_i)$ and true values $y_i$: 
-    \begin{align}
-        f^* &= \arg\min_f \sum_{i=1}^N \left( y_i - f(x_i) \right)^2. \notag \\
-        &= \arg\min_{w, b} \sum_{i=1}^N (y_i - w \cdot x_i - b)^2, \label{eq:ols-rss-error}
-    \end{align}
+\item Linear regression, and in particular least-squares regression, is the most studied family of regression models in statistics and machine learning. Least-squares linear regression models attempt to find a linear function $f(x) = w \cdot x + b$ to predict labels $y$ from input features $x$ by minimising the \textit{residual sum of squares} (RSS) loss function between predicted labels $f(x_i)$ and true values $y_i$:
+\begin{align}
+f^* &= \arg\min_f \sum_{i=1}^N \left( y_i - f(x_i) \right)^2. \notag \\
+&= \arg\min_{w, b} \sum_{i=1}^N (y_i - w \cdot x_i - b)^2, \label{eq:ols-rss-error}
+\end{align}
 
-    \item (by convention, $x_i$ is often considered to contain a constant dimension always equal to $1$, thus allowing the $b$ parameter to be included in $w$. Thus, $f(x_i) = w \cdot x_i$).
+\item (by convention, $x_i$ is often considered to contain a constant dimension always equal to $1$, thus allowing the $b$ parameter to be included in $w$. Thus, $f(x_i) = w \cdot x_i$).
 
-    \item There are multiple ways to find the optimal model $f^*$. For example, in \textit{ordinary least-squares} regression, admits the following analytical solution:
-    \begin{equation}
-        w = (\textbf{X}^\top \textbf{X})^{-1} \textbf{X}^\top y,
-    \end{equation}
-    where $\textbf{X}$ is the \textit{design matrix} whose rows are the input vectors and $y$ is the output vector whose elements are the corresponding labels.
+\item There are multiple ways to find the optimal model $f^*$. For example, in \textit{ordinary least-squares} regression, admits the following analytical solution:
+\begin{equation}
+w = (\textbf{X}^\top \textbf{X})^{-1} \textbf{X}^\top y,
+\end{equation}
+where $\textbf{X}$ is the \textit{design matrix} whose rows are the input vectors and $y$ is the output vector whose elements are the corresponding labels.
 
-    \item More common is the use of numerical methods, and in particular gradient methods, for efficiently obtaining a well-performing model $w$. A gradient method-based approach to optimising a least-squares linear model will, from some starting point $w_0$, change the parameter iteratively in the direction that causes the RSS error to decrease as quickly as possible, either for a fixed number of iterations or until the method has converged on or close to a minimum possible error.
+\item More common is the use of numerical methods, and in particular gradient methods, for efficiently obtaining a well-performing model $w$. A gradient method-based approach to optimising a least-squares linear model will, from some starting point $w_0$, change the parameter iteratively in the direction that causes the RSS error to decrease as quickly as possible, either for a fixed number of iterations or until the method has converged on or close to a minimum possible error.
 
 \end{itemize}
 
@@ -284,187 +314,295 @@ This section discusses the fundmentals of supervised and unsupervised learning, 
 \subsubsection{Logistic Regression}
 
 \begin{itemize}
-    \item Logistic Regression adapts linear regression models to the task of binary classification, i.e. classification where the labels can take on one of exactly two possible values. This is achieved by passing the output of a normal linear regression model through a \textit{logistic unit} (logit) function $\sigma$, which 'squeezes' it to be between $0$ and $1$:
-    \begin{equation}
-        f(x) = \sigma(w \cdot x)
-    \end{equation}
-    The classification is taken to be whichever of the two extremities the prediction is closest to.
+\item Logistic Regression adapts linear regression models to the task of binary classification, i.e. classification where the labels can take on one of exactly two possible values. This is achieved by passing the output of a normal linear regression model through a \textit{logistic unit} (logit) function $\sigma$, which 'squeezes' it to be between $0$ and $1$:
+\begin{equation}
+f(x) = \sigma(w \cdot x)
+\end{equation}
+The classification is taken to be whichever of the two extremities the prediction is closest to.
 
-    \item The most common logit function is the \textit{logistic sigmoid} function:
-    \begin{equation}
-        \sigma(z) = \frac{1}{1 + e^{-z}},
-    \end{equation}
-    which constrains values $z \in \mathbb{R}$ as follows:
+\item The most common logit function is the \textit{logistic sigmoid} function:
+\begin{equation}
+\sigma(z) = \frac{1}{1 + e^{-z}},
+\end{equation}
+which constrains values $z \in \mathbb{R}$ as follows:
 
-    \begin{center}
-    \begin{tikzpicture}
-        \begin{axis}[
-            axis lines = middle,
-            xlabel = {$z$},
-            ylabel = {$\sigma(z)$},
-            samples = 100,
-            domain = -6:6,
-            ymin = 0, ymax = 1.1,
-            enlargelimits=true,
-            xtick={-6,-3,0,3,6},
-            ytick={0,0.5,1},
-            grid = major
-        ]
-            \addplot [blue, thick] {1/(1 + exp(-x))};
-        \end{axis}
-    \end{tikzpicture}
-    \end{center}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+axis lines = middle,
+xlabel = {$z$},
+ylabel = {$\sigma(z)$},
+samples = 100,
+domain = -6:6,
+ymin = 0, ymax = 1.1,
+enlargelimits=true,
+xtick={-6,-3,0,3,6},
+ytick={0,0.5,1},
+grid = major
+]
+\addplot [blue, thick] {1/(1 + exp(-x))};
+\end{axis}
+\end{tikzpicture}
+\end{center}
 
-    With this function, distance from 0 can be understood as being analagous to 'certainty' that a particular value $x$ is firmly categorised as either 0 or 1. In particular, the logistic sigmoid function $\sigma(z)$ represents the \textit{probability} that $z$ is categorised as 1 rather than 0:
-    \begin{equation}
-        \sigma(w \cdot x) = P(y=1 \; | \; x).
-    \end{equation}
-    
-    \item Given that this probability is defined in terms of the linear function $w \cdot x$, we get that the line $w \cdot x = 0$ itself represents the set of points $x$ for which the probability of classification $y=1$ is exactly $\frac{1}{2}$. This is known as the \textit{decision boundary}, and the prediction made by a logistic regression model is effectively given by which side of the decision boundary a point $\sigma(w \cdot x_i)$ falls on.
+With this function, distance from 0 can be understood as being analagous to 'certainty' that a particular value $x$ is firmly categorised as either 0 or 1. In particular, the logistic sigmoid function $\sigma(z)$ represents the \textit{probability} that $z$ is categorised as 1 rather than 0:
+\begin{equation}
+\sigma(w \cdot x) = P(y=1 \; | \; x).
+\end{equation}
 
-    \item Logistic regression models are optimised differently to normal linear regression models, on account of the non-linear logit function. A common approach is via Maximum Likelihood Estimation (MLE), which by taking the log-likelihood leads to the following loss function:
-    \begin{equation}
-        \mathcal{L}(x, y \;;\; w) = -\sum_{i=1}^N [y_i \log(\sigma(w \cdot x_i)) + (1-y_i) \log(\sigma (w \cdot x_i))].
-    \end{equation}
-    Unlike OLS regression, this loss function does not admit a closed-form analytical solution. It is however convex, and thus can be optimised using gradient descent with respect to $w$.
+\item Given that this probability is defined in terms of the linear function $w \cdot x$, we get that the line $w \cdot x = 0$ itself represents the set of points $x$ for which the probability of classification $y=1$ is exactly $\frac{1}{2}$. This is known as the \textit{decision boundary}, and the prediction made by a logistic regression model is effectively given by which side of the decision boundary a point $\sigma(w \cdot x_i)$ falls on.
+
+\item Logistic regression models are optimised differently to normal linear regression models, on account of the non-linear logit function. A common approach is via Maximum Likelihood Estimation (MLE), which by taking the log-likelihood leads to the following loss function:
+\begin{equation}
+\mathcal{L}(x, y \;;\; w) = -\sum_{i=1}^N [y_i \log(\sigma(w \cdot x_i)) + (1-y_i) \log(\sigma (w \cdot x_i))].
+\end{equation}
+Unlike OLS regression, this loss function does not admit a closed-form analytical solution. It is however convex, and thus can be optimised using gradient descent with respect to $w$.
 
 \end{itemize}
 
 \subsubsection{Kernelised SVM and Decision Trees} \label{sec:lr-svm-decision-trees}
 
 \begin{itemize}
-    \item The previous examples have been of algorithms that use a linear model. In the regression setting, this means that the data is assumed to follow a linear trend, and in the binary classifications setting it assumes that the two categories of data can be separated with a linear decision boundary. The following presents two significantly different approaches to classification of non-linear data.
+\item The previous examples have been of algorithms that use a linear model. In the regression setting, this means that the data is assumed to follow a linear trend, and in the binary classifications setting it assumes that the two categories of data can be separated with a linear decision boundary. The following presents two significantly different approaches to classification of non-linear data.
 
-    \item The Support Vector Machine (SVM) is a binary classification algorithm which, similarly to logistic regression, fits a linear decision boundary $w \cdot x_i + b = 0$ between two categories of data. This algorithm is distinguished from least-squares based regression/classification approaches in terms of the loss function that it uses for fitting this line (or hyperplane, in multiple dimensions): instead of minimising the RSS loss, an SVM model is optimised by maximising the \textit{margin}, that is, the distance between the actual data points and the discriminant boundary, with the constraints that the points must correctly classified, i.e. on the right side of the distcriminant boundary.
+\item The Support Vector Machine (SVM) is a binary classification algorithm which, similarly to logistic regression, fits a linear decision boundary $w \cdot x_i + b = 0$ between two categories of data. This algorithm is distinguished from least-squares based regression/classification approaches in terms of the loss function that it uses for fitting this line (or hyperplane, in multiple dimensions): instead of minimising the RSS loss, an SVM model is optimised by maximising the \textit{margin}, that is, the distance between the actual data points and the discriminant boundary, with the constraints that the points must correctly classified, i.e. on the right side of the distcriminant boundary.
 
-    \item This maximisation problem results in this loss function:
-    \begin{equation}
-        \mathcal{L}(x, y \; ; \; w, b) = \frac{1}{2} \|w \|^2 + C \sum_{i=1}^N \xi_i,
-    \end{equation}
+\item This maximisation problem results in this loss function:
+\begin{equation}
+\mathcal{L}(x, y \; ; \; w, b) = \frac{1}{2} \|w \|^2 + C \sum_{i=1}^N \xi_i,
+\end{equation}
 
-    where $C$ controls the trade-off between maximising the margin and allowing for mis-classifications, and $\xi_i = \max(0, 1 - y_i (w \cdot x_i + b))$ is the \textit{hinge loss}, which grows with distance from the margin only if a point $x_i$ is classified on the incorrect side of the discriminant boundary:
+where $C$ controls the trade-off between maximising the margin and allowing for mis-classifications, and $\xi_i = \max(0, 1 - y_i (w \cdot x_i + b))$ is the \textit{hinge loss}, which grows with distance from the margin only if a point $x_i$ is classified on the incorrect side of the discriminant boundary:
 
-    \begin{center}
-    \begin{tikzpicture}
-        \begin{axis}[
-            axis lines = middle,
-            xlabel = {Model Output ($w \cdot x + b$)},
-            xlabel style={at={(axis description cs:0.5,-0.1)}, anchor=north}, % Moves xlabel below the axis
-            ylabel = {Hinge Loss},
-            samples = 100,
-            domain = -2:2,
-            ymin = 0, ymax = 2,
-            enlargelimits=true,
-            xtick={-2,-1,0,1,2},
-            ytick={0,0.5,1,1.5,2},
-            grid = major,
-            legend pos=north east
-        ]
-            % Hinge loss for y = 1
-            \addplot [blue, thick] {max(0, 1 - x)};
-        \end{axis}
-    \end{tikzpicture}
-    \end{center}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+axis lines = middle,
+xlabel = {Model Output ($w \cdot x + b$)},
+xlabel style={at={(axis description cs:0.5,-0.1)}, anchor=north}, % Moves xlabel below the axis
+ylabel = {Hinge Loss},
+samples = 100,
+domain = -2:2,
+ymin = 0, ymax = 2,
+enlargelimits=true,
+xtick={-2,-1,0,1,2},
+ytick={0,0.5,1,1.5,2},
+grid = major,
+legend pos=north east
+]
+% Hinge loss for y = 1
+\addplot [blue, thick] {max(0, 1 - x)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
 
-    \item The SVM can be adapted to non-linear data by expressing the algorithm with a \textit{kernel}, which is an inner product $\kappa (x_i, x_j)$ between two input points $x_i$ and $x_j$ which implicitly maps them into a new feature space to create a non-linear discriminant boundary. For example, a quadratic discriminant boundary can be obtained with the kernel
-    \begin{align}
-        \kappa(x_i, x_j) &= (x_i \cdot x_j + 1)^2 \notag \\
-        &= (x_i \cdot x_j)^2 + 2(x_i \cdot x_j) + 1.
-    \end{align}
+\item The SVM can be adapted to non-linear data by expressing the algorithm with a \textit{kernel}, which is an inner product $\kappa (x_i, x_j)$ between two input points $x_i$ and $x_j$ which implicitly maps them into a new feature space to create a non-linear discriminant boundary. For example, a quadratic discriminant boundary can be obtained with the kernel
+\begin{align}
+\kappa(x_i, x_j) &= (x_i \cdot x_j + 1)^2 \notag \\
+&= (x_i \cdot x_j)^2 + 2(x_i \cdot x_j) + 1.
+\end{align}
 
-    Common kernels include:
-    \begin{enumerate}
-        \item \textbf{Linear Kernel:} $\kappa(x_i, x_j) = x_i \cdot x_j$ (Equivalent to linear SVM)
-        \item \textbf{Polynomial Kernel:} $\kappa(x_i, x_j) = (x_i \cdot x_j + c)^d$ (which will fit to polynomials of degree $d$)
-        \item \textbf{Radial Basis Function (RBF) Kernel:} $\kappa(x_i, x_j) = \exp\left(-\gamma \|x_i - x_j\|^2\right)$
-        \item \textbf{Sigmoid Kernel:} $\kappa(x_i, x_j) = \tanh(\alpha x_i \cdot x_j + c)$
-    \end{enumerate}
+Common kernels include:
+\begin{enumerate}
+\item \textbf{Linear Kernel:} $\kappa(x_i, x_j) = x_i \cdot x_j$ (Equivalent to linear SVM)
+\item \textbf{Polynomial Kernel:} $\kappa(x_i, x_j) = (x_i \cdot x_j + c)^d$ (which will fit to polynomials of degree $d$)
+\item \textbf{Radial Basis Function (RBF) Kernel:} $\kappa(x_i, x_j) = \exp\left(-\gamma \|x_i - x_j\|^2\right)$
+\item \textbf{Sigmoid Kernel:} $\kappa(x_i, x_j) = \tanh(\alpha x_i \cdot x_j + c)$
+\end{enumerate}
 
-    The RBF kernel is of particular interest, as it is a \textit{universal approximator}, i.e. it is capable of approximating any function \cite{wang2004svm-universal-approximator}. This is because it implicitly maps data points into an infinite-dimensional feature space, meaning that the RBF-kernelised SVM can fit a discriminant boundary to any continuous function.
+The RBF kernel is of particular interest, as it is a \textit{universal approximator}, i.e. it is capable of approximating any function \cite{wang2004svm-universal-approximator}. This is because it implicitly maps data points into an infinite-dimensional feature space, meaning that the RBF-kernelised SVM can fit a discriminant boundary to any continuous function.
 
-    \todo[inline]{check if this is a correct use of 'universal approximator'}
+\todo[inline]{check if this is a correct use of 'universal approximator'}
 
-    \item Decision tree learning is a paradigm of machine learning which is distinct from linear methods like least-squares regression or the SVM. Instead of fitting a linear function to either approximate a continuous function or decide between two categories of discrete labels, decision tree learning algorithms build a tree where nodes represent discriminants between different sections of the input space and leaves contain predictions of the corresponding label values.
+\item Decision tree learning is a paradigm of machine learning which is distinct from linear methods like least-squares regression or the SVM. Instead of fitting a linear function to either approximate a continuous function or decide between two categories of discrete labels, decision tree learning algorithms build a tree where nodes represent discriminants between different sections of the input space and leaves contain predictions of the corresponding label values.
 
-    \item The most commonly used decision tree algorithm is the Classification and Regression Tree (CART), which recursively partitions the input space into sections and then assigns a prediction to each section by taking the mode of all data points $y_i$ within it. In particular, at each iteration a partition is divided into two sub-partitions, i.e. children of the partition's node in the tree, by choosing the split that minimises the \textit{Gini impurity}, a measure of how often a randomly chosen sample from within a partition would be misclassified if it were to be assigned a random label.  
+\item The most commonly used decision tree algorithm is the Classification and Regression Tree (CART), which recursively partitions the input space into sections and then assigns a prediction to each section by taking the mode of all data points $y_i$ within it. In particular, at each iteration a partition is divided into two sub-partitions, i.e. children of the partition's node in the tree, by choosing the split that minimises the \textit{Gini impurity}, a measure of how often a randomly chosen sample from within a partition would be misclassified if it were to be assigned a random label.
 
-    \item CART learning is capable of producing accurate approximations of non-linear functions in both the regression and classification setting, and is one of the most widely used machine learning techniques that doesn't use linear models.
+\item CART learning is capable of producing accurate approximations of non-linear functions in both the regression and classification setting, and is one of the most widely used machine learning techniques that doesn't use linear models.
 \end{itemize}
+
+
+\subsubsection{Ensemble Learning and Random Forests}
+
+\begin{itemize}
+\item Ensemble learning is a technique for improving the quality of machine learning models by training multiple instances of the same model, often over distinct subsets of the training data, and selecting a prediction based on the combined results. By aggregating the results of multiple learners (often called `weak learners'), ensemble methods can produce significantly better-performing models with can reduce both bias and variance \cite{dietterich-2000-ensemble}.
+
+\item There are a variety of different ways to aggregate the output of the weak learners into a single prediction. An example is 'bagging', or `bootstrap aggregating', in which a dataset of length $n$ is split into $m$ non-disjoint training sets of length $n'$, each of which is used to train the $m$ weak learners\cite{Breiman1996Bagging}. The output of this ensemble model is then taken to be the majority vote of the weak learners predictions, in the case of classification, and the average of the weak learners predictions in the case of regression.
+
+\item One particularly popular ensemble learning algorithm is the \textit{Random Forest} algorithm, in which decision trees (often CART trees) are used as weak learners in bagging\cite{Breiman2001RandomForest}. Decision trees are particularly good weak learners, as they can encode large amounts of information highly non-linearly, and although this can lead to overfitting when used individually, the corresponding variance reduction of bagging means that the ensemble models can produce models with low-bias \textit{and} low-variance.
+\end{itemize}
+
 
 \subsubsection{Multiclass Classification} \label{seec:lr-multiclass}
 
+\begin{itemize}
+\item With the exception of the decision tree-based learning models, every classification approach that has been discussed so far has specifically targeted binary classification. It is often difficult or, as in the case of most linear models, impossible to extend them directly for classification of more than two categories. To adapt these models for use in classification problems with more than two categories, therefore, there are two standard strategies: one-versus-rest (OvR) classification, and one-versus-one (OvO) classification\cite{bishop2006pattern}.
+
+In a $k$-class classification problem, one-versus-rest classification works by training one classifier, $f_i$ for each of the $k$ output classes\cite{bishop2006pattern}. For a given input $x$, each classifier predicts whether $x$ is an instance of class $i$ or not. The overall prediction is made by selecting whichever output $f_i(x)$ has the highest score, i.e.
+\[
+f(x) = \arg\max_i f_i(x).
+\]
+
+One-versus-one classification, in contrast, works by training a classifier for every pair of classes\cite{bishop2006pattern}. This involves producing subsets of the training data for each pair of classification categories $(i, j)$, and then training each classifier $f_{ij}$ to determine whether a given input $x$ is a member of class $i$ or $j$. The overall predictions are usually made via majority vote.
+
+\item Both OvR and OvO classification are widely used in practice. However, being heuristic methods rather than true statistical estimators, and the choice of one or the other largely depends on the characteristics of the dataset. OvR classification, for example, requires training only $k$ classifiers rather than $\frac{k (k + 1)}{2}$, but it often performs worse in highly overlapping datasets\cite{bishop2006pattern}\todo{find better source}.
+\end{itemize}
 
 \subsubsection{Deep Learning}
 
+\begin{itemize}
+\item Deep learning is a sub-field in machine learning concerned with `deep' neural networks. A neural network is a type of machine learning model which passes inputs through layers of smaller predictive units to produce a final output\cite{goodfellow2016deep}. The intermediate smaller predictive units are generally linear models whose outputs are then passed into non-linear `activation functions', such as the logistic sigmoid function. Because of the strucutral flexibility inherent to neural networks, they can be used in regression tasks, where the final prediction is made by having a single predictive unit in the final layer (the `output layer'), or natural $k$-class classification by having $k$ predictive units in the final layer, similar to OvR classification.
 
-\subsubsection{[Weird stuff like self-supervised and generative]}
+\item Given that a single linear estimator is expressed as:
+\[
+f(x) = w \cdot x + b,
+\]
+for $w \in \mathbb R^n$ and $b \in \mathbb R$, we can similarly write each layer of predictive units as a matrix $\mathbf W \in \mathbb R^{n \times m}$ and a bias $v \in R^n$\cite{goodfellow2016deep}. Formally, the output of a given layer $l$ is given by:
+\[
+f^{(l)}(x) = \sigma (\mathbf W^{(l)}f^{(l - 1)} + b^{(l)}),
+\]
+where $f^{(l - 1)}$ is the output from the previous layer and $\sigma$ is the non-linear activation function.
+
+\item By passing input through multiple layers of non-linear units, neural networks can approximate complex, highly non-linear functions. In particular, it has been shown that feedforward neural networks with a single hidden layer and appropriate activation functions are \textbf{universal function approximators} \cite{cybenko1989approximation}, as are SVMs with the RBF kernel. However, neural networks are typically more computationally efficient than equivalently expressive RBF SVMs, as they parameterise non-linearity through a compact set of learned weights and hierarchical representations, rather than relying on a potentially large number of support vectors to encode the function.
+
+\item Neural network optimisation does not have a closed-form analytical solution, unlike OLS linear regression. Instead, neural networks are trained using numerical optimisation methods, typically variants of gradient descent \cite{goodfellow2016deep}. The dominant approach for computing gradients in these models is the \textit{backpropagation} algorithm, which efficiently applies the chain rule of calculus to compute the derivatives of the loss function with respect to each network parameter. Gradients are computed starting at the output layer and propagated backwards through the network: the gradient at each layer is calculated in terms of the gradients from the layer ahead, allowing the full gradient of the loss with respect to all weights and biases to be obtained.
+
+\end{itemize}
 
 
+\subsubsection{Unsupervised, Self-Supervised and Generative Learning}
 
+\begin{itemize}
+\item Thus far, the machine learning approaches that have been discussed have focused on making predictions, in either the classification or regression setting, by learning directly the relationships between pairs of features (inputs) and corresponding labels (outputs). In recent years, however, much research has focused on different paradigms of machine learning, where existing methods are applied to solve totally different categories of problems.
 
+\item Unsupervised learning is a paradigm of machine learning in which models learn patterns and structure from data without being given explicit labels\cite{bishop2006pattern}. Traditionally, unsupervised methods have been in one of two categories:
+
+\begin{itemize}
+\item \textbf{Clustering}: clustering methods attempt to group a given dataset into distinct categories based on similarity, without being given examples of specific groupings. Examples of clustering algorithms include K-means, where a dataset is partitioned into the $K$ different clusters which minimise the variance inside each cluster.
+
+\item \textbf{Dimensionality Reduction}: These methods project high-dimensional data into lower-dimensional spaces while retaining the data's inherent structure. A classic example is Principal Component Analysis (PCA), which finds a set of basis vectors for a new subspace which maximises the variance of the projected dataset.
+\end{itemize}
+
+\item More recent developments in unsupervised learning include generative models, which aim not merely to describe structure in the data but to model its underlying distribution\cite{GM2020100285}. These models can generate new data samples that resemble those in the training set, enabling applications such as data synthesis and probabilistic reasoning. Examples include Variational Autoencoders (VAEs), which learn to encode data into a latent representation from which inputs can be reconstructed, and Generative Adversarial Networks (GANs), which train a generator and discriminator in opposition to produce high-fidelity synthetic data. Notably, generative models have been applied in recent years to text generation, with chat programs such as chatGPT, and image generation with programs such as DALL-E\todo{source}.
+
+\item A related but distinct paradigm is self-supervised learning, where supervisory `labels' are derived automatically from the data itself rather than provided externally\cite{Rani2023SSLReview}. To do this, the model is first given a simple, artificial task called a `pretext task'—for example, figuring out which part of an image has been hidden or whether two images are different views of the same object. Solving this task helps the model learn useful information about the data. Once it has learned these internal patterns, the model can be used for more practical problems like image classification or object detection, often requiring only a small amount of labeled data. While this approach is technically considered unsupervised, the goal isn't to copy the data's structure, but to learn features that are useful across many tasks.
+\end{itemize}
 
 
 \subsection{Natural language processing and Large Language Models}
 
 \subsubsection{Fundamentals of NLP}
 
-\subsubsection{Early NLP approaches}
+Natural Language Processing (NLP) is a sub-field of artificial intelligence concerned with computational analysis of human language\cite{jm-2025-nlp}. Its goal is to enable machines to interpret, manipulate, and produce natural language text in a way that is both syntactically valid and semantically meaningful. NLP sits at the intersection of computer science, linguistics, and machine learning, and has applications in areas such as machine translation, information retrieval, text summarisation, and conversational agents.
 
-\subsubsection{The Transformer Architecture and LLMs}
+Early NLP approaches, particularly from the 1970s to the early 2000s, relied heavily on feature engineering to transform text input into formats suitable for existing classification and regresison approaches\cite{manning1999foundations}. Features would be selected based on precise representations of the occurences of syntactic elements in text, transforming bodies of text into statistical data \textit{about} the text. In recent years, however, NLP research has been completely transformed by advances in deep learning have enabled the creation of neural network-based models which learn representations of language and long-range dependencies between elements in text implicitly, rather than with hand-engineered features\cite{jm-2025-nlp}. In particular, transformer-based architectures in particular have led to substantial performance gains across a wide range of NLP tasks, while pretraining strategies have allowed large language models to generalise across domains with minimal task-specific supervision.
 
+\subsubsection{NLP Feature Transformation}
 
+\begin{itemize}
+\item Before the advent of deep learning, most natural language processing systems relied on manually engineered feature representations combined with traditional machine learning models\cite{manning1999foundations}. The primary objective of these early approaches was to transform unstructured text into structured numerical vectors that could be processed by classifiers such as Naive Bayes, logistic regression, or support vector machines. These representations captured surface-level properties of language, such as the presence and frequency of words and phrases, rather than more complex structural information about the text.
 
+\item One of the earliest and most widely used representations is the bag-of-words (BoW) model\cite{manning1999foundations}. In this representation, each input text is transformed into a vector indexed by vocabulary terms, where each entry corresponds to the frequency of a word in the document. This approach treats word order as irrelevant, focusing instead on term presence or frequency. Despite its simplicity, BoW has effective for document classification and information retrieval tasks, particularly when combined with appropriate weighting schemes.
 
+\item The BoW model can be refined by using the term frequency-inverse document frequency (TF-IDF) transformation. TF-IDF weights each word in proportion to how frequently it appears in a particular text example, while downweighting terms that appear frequently across a larger body of texts (e.g. the entire training set)\cite{manning1999foundations}. This often leads to better performance than `pure' BoW, as it captures the relative importance of certain relevant words while down-weighting the importance of generic words, like `and' and `the' which will appear uniformly across almost all texts.
+
+\item Another refinement to NLP feature transformation is the use of n-grams, where features consist of contiguous sequences of $n$ words rather than individual words\cite{jm-2025-nlp}. N-grams capture the co-occurences of multiple words, meaning that they can make greater use of context, where BoW simply captures the presence of individual words with no context. While n-gram models have improved performance in tasks such as part-of-speech tagging and text classification, they suffer from poor generalisation to unseen sequences of words\cite{bengio2003neural}.
+\end{itemize}
+
+\subsubsection{Deep NLP, Transformers, and LLMs}
+
+\begin{itemize}
+\item The flexibility in structure of neural network models has allowed for deep learning approaches to be applied far more directly to problems in NLP. Early advances in deep NLP came from the use of recurrent neural networks (RNNs), which are neural network architectures which pass over arbitrary-length sequences of input while maintaining a hidden state by passing previous output back in as input. RNNs can, in principle, model long sequences, but in practice they struggle with long-term dependencies due to vanishing or exploding gradients\cite{hochreiter1997long}. Variants such as the Long Short-Term Memory (LSTM) network and the Gated Recurrent Unit (GRU) were introduced to mitigate these issues and became standard tools in NLP by the mid-2010s. Both LSTM and GRU models use explicit memory cells, which are controlled directly by the RNN, allowing it to selectively record relevant input data\cite{cho2014gru}.
+
+\item In parallel, convolutional neural networks (CNNs) were explored for NLP tasks, particuarly for sentence classification and sequence modelling tasks\cite{kim2014cnn}. CNNs, originally designed for image recognition tasks, apply filters to areas of adjacent input in a sequence (i.e. small `frames' around parts of an image, or groups of consecutive words in a text input), and then pass these locally-filtered groups of input features to a neural network. In the context of NLP, this allows CNNs to efficiently identify local features while maintaining computational parallelism, whereas RNNs are an inherently serial architecture. Although CNNs are effective at capturing short-range dependencies and require fewer sequential operations compared to RNNs, they are limited in modelling long-range relationships\cite{gehring2017convolutional}.
+
+\item Many of the limitations of these approaches, both in terms of computational complexity and modelling relationships between distant elements in text, were resolved with the introduction of the transformer architecture in 2017. Transformers divide text input into atomic units called `tokens', which can be words, components of words, or individual characters, and use a mechanism called self-attention to allow every token in a sequence to relate to every other token directly\cite{vaswani-2017-attention-is-all-you-need}. This design has enabled fully parallel training and more effective modeling of long-range dependencies, which has allowed for efficient training of vastly more powerful deep NLP models.
+
+\item Self-attention is the core computational mechanism that distinguishes the Transformer architecture from earlier sequence models. At the core of this mechanism, each token (e.g. words, letters, phrases) in a sequence generates `query', `key', and `value' vectors, and attention scores are computed via scaled dot products between queries and keys, and used to produce weighted combinations of value vectors\cite{vaswani-2017-attention-is-all-you-need}. This enables the model to capture both local and long-range dependencies without sequential computation, resulting in a highly-parallelisable architecture which scales incredibly efficiently.
+
+\item Transformers rapidly became the foundation for a new generation of pretrained language models. An early example is BERT, which has shown significantly better performance than other NLP approaches in tasks such as text classification under fine-tuning, which is the process of further adapting a pre-trained model to a specific task\cite{devlin-etal-2019-bert}.
+
+The most notable recent developement in transformer-based architectures are large language models (LLMs), which are pre-trained transformers that can generalise across an enormous range of tasks without any training whatsoever\cite{NEURIPS2020_1457c0d6}. LLMs are able to solve problems ranging from language comprehension, language translation, and mathematics, being supplied with nothing but the directive to solve the problem. Unlike deterministic models like BERT, which are trained to predict missing tokens in an input sequence Large Language Models (LLMs) generate output by sampling from a distribution of possible next tokens, conditioned on preceding text\cite{vaswani-2017-attention-is-all-you-need}. The nature of this distribution, and therefore the behavior of the model, is governed by a set of parameters that directly influence output diversity, determinism, and semantic quality.
+
+The temperature parameter controls the sharpness of the probability distribution over tokens, and thus the probability of choosing tokens that are `less likely' in the sequence\cite{holtzman2019curious}. Lower values (e.g., near 0.0) lead to more deterministic outputs, favoring tokens with the highest probabilities, whereas higher values introduce randomness, allowing lower-probability tokens to be sampled more frequently. This makes temperature a primary mechanism for tuning between repetitive precision and creative variation.
+
+Top-k and top-p sampling are two approaches to constraining the probability distribution from which the next token is sampled. Top-k sampling restricts the model's choice of next tokens to the k most probable candidates, removing all others from consideration\cite{fan2018hierarchical}. In contrast, top-p (nucleus sampling) limits the selection to the smallest set of tokens whose cumulative probability exceeds a threshold p\cite{holtzman2019curious}. Top-p sampling is often favored for more controlled yet flexible generation, as it adapts dynamically to the shape of the distribution.
+
+Another critical factor is the token limit, which caps the number of input and output tokens processed in a single generation\cite{radford2019language}. This limit determines the effective context window, which is number of tokens up to the end of the sequence which are used to generate the next token.
+\end{itemize}
 
 \subsection{Model Evaluation} \label{sec:lr-model-evaluation-selection}
 
-\subsubsection{Classification Evaluation Metrics}
+\subsubsection{Evaluation Metrics}
 
-\subsubsection{Evaluation Metrics for NLP and LLMs}
+The performance of machine learning models, in particular in supervised learning, is usually evaluated with a range of performance metrics derived from statistics. The choice of evaluation metric in machine learning depends on the task type, i.e. classification or regression, as well as the distributional properties of the data and the desired sensitivity to different types of prediction errors.
+
+The simplest metric of correctness in the classification setting is \textbf{accuracy}: this is simply defined as the proportion of all predictions made that were correct\cite{shaun2025principles}. Accuracy is defined as follows:
+\begin{equation}
+\text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}}
+\end{equation}
+This metric is simple to understand and directly reflective of performance, but fails to account for imbalanced classes in a dataset: for example, in a dataset where 95\% of examples fall into category A and only 5\% in category B, a model which always predicted A would achieve a 95\% accuracy score, despite actually being a very poor predictor.
+
+The \textbf{precision} metric measures the proportion of predicted positive instances (i.e. `$x$ is an instance of class $K$') that are actually correct\cite{shaun2025principles}, and is defined as:
+\begin{equation}
+\text{Precision} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Positives}}
+\end{equation}
+\textbf{Recall} measures the proportion of actual positive instances which are correctly identified\cite{shaun2025principles}, and is defined as such:
+\begin{equation}
+\text{Recall} = \frac{\text{True Positives}}{\text{True Positives} + \text{False Negatives}}
+\end{equation}
+\textbf{F1 score} is a metric which combines precision and recall to address the fundamental problem of sensitivity to class imbalance that accuracy suffers from\cite{shaun2025principles}. It is defined as the harmonic mean of the recall, where recall is the true positive rate (i.e. the proportion of instances of a given class that were correctly classified), i.e.:
+\begin{equation}
+F_1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\label{eq:f1-score},
+\end{equation}
+\textbf{Confusion matrices} are diagnostic tools used to evaluate the performance of a classification model by direclty tabulating predicted vs true class labels\cite{aggarwal2015data}. In particular, for a $k$-class classification problem, the confusion matrix will be a $k \times k$ matrix where the element at row $i$ and column $j$ denotes the number of instances of true class $i$ which were classified as class $j$. This means that the diagonal elements, where $i=j$, correspond to the correct predictions whereas the others correspond to innacurate predictions.
+
+This structure allows for a detailed examination of model behaviour beyond aggregate metrics such as accuracy or F1 score\cite{aggarwal2015data}. For example, systematic confusion between particular pairs of classes becomes immediately visible, which can inform targeted model adjustments or data preprocessing. Confusion matrices are especially valuable in imbalanced classification settings, where aggregate scores can obscure poor performance on minority classes. By explicitly showing per-class prediction counts, they support more transparent evaluation and error analysis.
+
+In the regression setting, different metrics are used which can account for the distance between predictions and true values. Several standard metrics are used to quantify prediction error, each with different sensitivities to outliers and error distribution.
+
+\textbf{Mean Absolute Error (MAE)} measures the average magnitude of errors between predicted values and true values\cite{shaun2025principles}, and is defined as:
+\begin{equation}
+\text{MAE} = \frac{1}{n} \sum_{i=1}^n | y_i - \hat{y_i} |,
+\end{equation}
+where $y_i$ is the $i$'th true value, $\hat y_i$ is the $i$'th predicted value, and $n$ is the total number of values. It is expressed in the same unit as the target variable, and thus has a straightforward interpretation.
 
 \subsubsection{Model Selection}
 
+Model selection is the process of choosing the best-performing model configuration, for example in terms of hyperparameter\todo{check if we've defined a hyperparameter} selection based on its generalisation ability—that is, its expected performance on unseen data\cite{bishop2006pattern}. Depending on the problem setting and the data and model being used, model evaluation metrics such as those discussed in the previous section will be used to directly evaluate the performance of different model configurations. Evaluating the performance of a model solely on its training set leads to overfitting, which means that the model fits so closely to the dataset that it doesn't generalise properly to unseen data. Instead, validaton sets—disjoint from the training set—are used as targets for evaluation, as they provide an unbiased estimate of the model's ability to generalise to unseen data.
 
-\subsection{Social Media Data Mining}
-
-
-\section{Application Domain}
-
-\subsection{Demographic Segmentation}
-
-\subsection{Consumer Trend Prediction}
-
-
+\textbf{Cross-validation} is a common model selection technique which uses parts of the training set as validation sets\cite{bishop2006pattern}. In particular, for $k$-fold cross-validation, the training data is partitioned into $k$ disjoint subsets (folds), with a new instance of the model each using one of the folds for validation and the remaining $k-1$ folds for training. The performance of the model is then taken to be the average performance across all $k$ folds. Cross-validation provides a less biased and lower-variance estimate of generalisation performance than single train-test splits, but it is not completely unbiased or variance-free. The stability of the estimate depends on the number of folds, the size of the dataset, and the variability of the model.
 
 
 \chapter{Automated Demographic Segmentation}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-    \textit{This study presents an empirical means of automating demographic segmentation from social media data using large language models. The study adapts existing techniques for use with the kinds of unstructured data that social media posts and profiles present, and compares the effectiveness of LLM-based approaches to existing techniques. This chapter discusses the data set used for the experiment, the setup of the experiment itself, and the results that it yielded.}
+\textit{This study presents an empirical means of automating demographic segmentation from social media data using large language models. The study adapts existing techniques for use with the kinds of unstructured data that social media posts and profiles present, and compares the effectiveness of LLM-based approaches to existing techniques. This chapter discusses the data set used for the experiment, the setup of the experiment itself, and the results that it yielded.}
 \end{adjustwidth}
 
 
 \section{Introduction}
 
 \begin{itemize}
-    \item Accurate demographic information is vital to localising consumer trend forecasts to different demographic groups. Having an accurate model for how consumer trends may change between different groups allows for
-    \begin{enumerate}
-        \item Better targeting of advertising
+\item Accurate demographic information is vital to localising consumer trend forecasts to different demographic groups. Having an accurate model for how consumer trends may change between different groups allows for
+\begin{enumerate}
+\item Better targeting of advertising
 
-        \item Development of new product categories, across different markets
+\item Development of new product categories, across different markets
 
-        \item Forecasting demand for existing product categories
-    \end{enumerate}
+\item Forecasting demand for existing product categories
+\end{enumerate}
 
-    \item Companies with a particular broad range of products and markets require a particularly rich set of demographic indicators to capture information about their consumers. Attempts to infer consumer trends from social media, for example, must therefore robustly distinguish these consumer trends as they apply to different consumer groups.
+\item Companies with a particular broad range of products and markets require a particularly rich set of demographic indicators to capture information about their consumers. Attempts to infer consumer trends from social media, for example, must therefore robustly distinguish these consumer trends as they apply to different consumer groups.
 
-    \item However, accurate or complete demographic information is hard to come by for social media posts, for a variety of reasons. For example, many social media users will not publicly display their demographic information: in particular, some social media sites such as Reddit have a stronger culture of anonymity than sites like Facebook, with usernames or bios not necessarily being linked to actual information about the users \cite{reddit-pseudoanonymous}. Furthermore, even when demographic information can be obtained directly, it may be insufficiently precise or not cover desired categories, such as income group or nationality. For these reasons, demographic inference may be preferable, as it allows for the collection of demographic information without limits on categorisation, specificity, or completeness.
+\item However, accurate or complete demographic information is hard to come by for social media posts, for a variety of reasons. For example, many social media users will not publicly display their demographic information: in particular, some social media sites such as Reddit have a stronger culture of anonymity than sites like Facebook, with usernames or bios not necessarily being linked to actual information about the users \cite{reddit-pseudoanonymous}. Furthermore, even when demographic information can be obtained directly, it may be insufficiently precise or not cover desired categories, such as income group or nationality. For these reasons, demographic inference may be preferable, as it allows for the collection of demographic information without limits on categorisation, specificity, or completeness.
 
-    \item LLMs are a potentially promising approach to inferring demographic information from social media data, given their ability both to apply vast amounts of pre-existing knowledge to data as well as to make inferences about the language. In particular, LLMs are able to solve problems, including in a classification setting, posed in natural language with little to no training data. This means that, in principle, LLMs could be used to segemnt people by any desired consumer group, regardless of category or specificity, without the need to obtain potentially unfeasibly large amounts of training data, allowing for vastly increased flexibility in segmentation for consumer trends.
+\item LLMs are a potentially promising approach to inferring demographic information from social media data, given their ability both to apply vast amounts of pre-existing knowledge to data as well as to make inferences about the language. In particular, LLMs are able to solve problems, including in a classification setting, posed in natural language with little to no training data. This means that, in principle, LLMs could be used to segemnt people by any desired consumer group, regardless of category or specificity, without the need to obtain potentially unfeasibly large amounts of training data, allowing for vastly increased flexibility in segmentation for consumer trends.
 
-    \item Much work has already been done in the use of LLMs for demographic inference, as discussed in the bibliography, \todo{Do this ofc.} using a variety of different datasets and data types. Recent advances in multimodal LLMs for example have allowed for profile pictures and other image data to be used in enhancing demographic predictions. 
+\item Much work has already been done in the use of LLMs for demographic inference, as discussed in the bibliography, \todo{Do this ofc.} using a variety of different datasets and data types. Recent advances in multimodal LLMs for example have allowed for profile pictures and other image data to be used in enhancing demographic predictions.
 
-    \item To determine whether automated LLM-based demographic segementation of social media posts is viable or represents a meaningful improvement over other common techniques, it is imperative to observe directly how LLMs compare to traditional NLP approaches. This experiment aims to produce an empirical comparison of LLM-based approaches to demographic inference to established techniques in machine learning NLP classification, evaluating the performance of each approach with standard classification evaluation metrics.
+\item To determine whether automated LLM-based demographic segementation of social media posts is viable or represents a meaningful improvement over other common techniques, it is imperative to observe directly how LLMs compare to traditional NLP approaches. This experiment aims to produce an empirical comparison of LLM-based approaches to demographic inference to established techniques in machine learning NLP classification, evaluating the performance of each approach with standard classification evaluation metrics.
 \end{itemize}
 
 \section{Data Set}
@@ -473,527 +611,724 @@ This section discusses the fundmentals of supervised and unsupervised learning, 
 
 \begin{itemize}
 
-    \item This experiment required a large body of social media text posts, annotated with demographic labels.
+\item This experiment required a large body of social media text posts, annotated with demographic labels.
 
-    \item This presents two challenges. First of all, due to increased concerns about privacy and significant regulation on data protection, there are few easily-accessible datasets of demographically-labelled social media posts. This applies in particular to social media data from after 2018, when GDPR came into effect.
+\item This presents two challenges. First of all, due to increased concerns about privacy and significant regulation on data protection, there are few easily-accessible datasets of demographically-labelled social media posts. This applies in particular to social media data from after 2018, when GDPR came into effect.
 
-    \item The second problem is perhaps more fundamental: as discussed earlier, even if people openly present demographic information about themselves, it is inherently difficult to verify whether this information is accurate. Most existing datasets of demographically-labelled social media data either use self-reported or inferred demographic labels, and thus it is difficult to know whether these labels are accurate.
+\item The second problem is perhaps more fundamental: as discussed earlier, even if people openly present demographic information about themselves, it is inherently difficult to verify whether this information is accurate. Most existing datasets of demographically-labelled social media data either use self-reported or inferred demographic labels, and thus it is difficult to know whether these labels are accurate.
 
-    \item As this first experiment is intended to benchmark the ability of LLMs to infer demographic information, a dataset would need to fit three criteria:
+\item As this first experiment is intended to benchmark the ability of LLMs to infer demographic information, a dataset would need to fit three criteria:
 
-    \item The analysis is conducted on the \textit{Blog Authorship Corpus} (BAC), a collection of 681,288 blog posts written on or before 2004\cite{blog-authorship-corpus}. The BAC is a well-established dataset which consists of text-based blog posts annotated with self-reported age and gender.
+\item The analysis is conducted on the \textit{Blog Authorship Corpus} (BAC), a collection of 681,288 blog posts written on or before 2004\cite{blog-authorship-corpus}. The BAC is a well-established dataset which consists of text-based blog posts annotated with self-reported age and gender.
 
-    \item This is the best dataset for our purposes for four reasons:
-    \begin{enumerate}
-        \item It is freely available and well-established, with much prior research in demographic inference over the past 20 years using it. This means that, in addition to the model comparison that we can derive from our experiment, we can compare our LLM-based approach directly to a broad range of cutting-edge approaches.
+\item This is the best dataset for our purposes for four reasons:
+\begin{enumerate}
+\item It is freely available and well-established, with much prior research in demographic inference over the past 20 years using it. This means that, in addition to the model comparison that we can derive from our experiment, we can compare our LLM-based approach directly to a broad range of cutting-edge approaches.
 
-        \item The demographic labels are relatively-reliable: although it is possible that some of the blog's self-reported age and gender will be erroneous, it is still more useful for benchmarking prediction than either synthetic social media data or datasets with inferred demographic labels.
+\item The demographic labels are relatively-reliable: although it is possible that some of the blog's self-reported age and gender will be erroneous, it is still more useful for benchmarking prediction than either synthetic social media data or datasets with inferred demographic labels.
 
-        \item The dataset is roughly well-balanced. In particular, each blog post is in one of roughly three age-ranges: teenagers aged 13-17, of which there are 8,240, young adults aged 23-27, of which there are 8,806 posts, and adults aged 33-47 of which there are 2,994. In each age group there are exactly the same number of men and women
+\item The dataset is roughly well-balanced. In particular, each blog post is in one of roughly three age-ranges: teenagers aged 13-17, of which there are 8,240, young adults aged 23-27, of which there are 8,806 posts, and adults aged 33-47 of which there are 2,994. In each age group there are exactly the same number of men and women
 
-        \item The dataset contains both numeric and categorical data, with age being supplied as a number and gender being either ``male" or ``female". This means the experiment will be able to evaluate the LLMs in both a classification and a regression setting. 
-    \end{enumerate}
+\item The dataset contains both numeric and categorical data, with age being supplied as a number and gender being either ``male" or ``female". This means the experiment will be able to evaluate the LLMs in both a classification and a regression setting.
+\end{enumerate}
 
-    \item The primary issue with the BAC is its age: given that it consists of blog posts from over 20 years ago, social media usage styles will have changed significantly since the time that the posts were collected. This could mean that, applied to contemporary social media data, the LLM approach could perform significantly better or worse, depending on how differently people of different demographic groups may express themselves now and how many examples of these new stylistic demographic expressions were in the LLM's training data.
+\item The primary issue with the BAC is its age: given that it consists of blog posts from over 20 years ago, social media usage styles will have changed significantly since the time that the posts were collected. This could mean that, applied to contemporary social media data, the LLM approach could perform significantly better or worse, depending on how differently people of different demographic groups may express themselves now and how many examples of these new stylistic demographic expressions were in the LLM's training data.
 
-    \item The \textit{PAN Author Profiling datasets} are collections of Twitter (now X) posts for each year starting in 2013, across different languages, with demographic labels including age and gender \cite{PAN-age-gender-2013}. These datasets address the issue with recency, but as they exclusively use Tweets, the dataset consists purely of short-form rather than longer-form content—in particular, examples in the dataset are limited to being up to 140 characters. This means that the results of this study, had we used the \textit{PAN Author Profiling datasets}, would be less representative of performance on other social media platforms like Reddit where significantly longer posts are more common.
+\item The \textit{PAN Author Profiling datasets} are collections of Twitter (now X) posts for each year starting in 2013, across different languages, with demographic labels including age and gender \cite{PAN-age-gender-2013}. These datasets address the issue with recency, but as they exclusively use Tweets, the dataset consists purely of short-form rather than longer-form content—in particular, examples in the dataset are limited to being up to 140 characters. This means that the results of this study, had we used the \textit{PAN Author Profiling datasets}, would be less representative of performance on other social media platforms like Reddit where significantly longer posts are more common.
 \end{itemize}
 
 \subsection{Data Preprocessing}
 
 \begin{itemize}
-    \item The \textit{Blog Authorship Corpus} consists of purely text-based blog posts with self-reported annotations for age, gender, employment sector, and star sign. Only the first two of these demographic categories were included, as the dataset doesn't contain fully representative and balanced examples for employment sector and because horoscopes are less useful predictors of behaviour than age and gender.
+\item The \textit{Blog Authorship Corpus} consists of purely text-based blog posts with self-reported annotations for age, gender, employment sector, and star sign. Only the first two of these demographic categories were included, as the dataset doesn't contain fully representative and balanced examples for employment sector and because horoscopes are less useful predictors of behaviour than age and gender.
 
-    \item The gender labels consist exclusively of the strings ``male" and ``female", and were thus left unmodified. 
-    
-    \item Although age is recorded as an integer, the standard approach to age classification in academic literature \todo{find a source} is to group the ages into ``buckets", and then treat these as a classification target. For this reason, numeric ages were turned into 5-year age ranges (e.g. 24 became '20-25', etc).
+\item The gender labels consist exclusively of the strings ``male" and ``female", and were thus left unmodified.
+
+\item Although age is recorded as an integer, the standard approach to age classification in academic literature \todo{find a source} is to group the ages into ``buckets", and then treat these as a classification target. For this reason, numeric ages were turned into 5-year age ranges (e.g. 24 became '20-25', etc).
 \end{itemize}
 
 \section{Experiment}
 
 \begin{itemize}
-    \item This experiment is effectively a standard classification problem for both age and gender. This means that the performance of the LLM can be compared directly against that of standard NLP classification  techniques.
+\item This experiment is effectively a standard classification problem for both age and gender. This means that the performance of the LLM can be compared directly against that of standard NLP classification techniques.
 
-    \item To provide a benchmark, this experiment uses standard shallow NLP approaches \todo{find some source for why these are standard}: in particular, we use three algorithms which broadly represent the most commonly used families of algorithms used in shallow supervised learning:
+\item To provide a benchmark, this experiment uses standard shallow NLP approaches \todo{find some source for why these are standard}: in particular, we use three algorithms which broadly represent the most commonly used families of algorithms used in shallow supervised learning:
 
-    \begin{enumerate}
-        \item \textbf{Least-Squares Linear Regression}
+\begin{enumerate}
+\item \textbf{Least-Squares Linear Regression}
 
-        Least-squares linear regression models are the most commonly used machine learning models. They are generally fast to train and provide a strong baseline for comparison.
+Least-squares linear regression models are the most commonly used machine learning models. They are generally fast to train and provide a strong baseline for comparison.
 
-        We use logistic regression, which adapts least-squares regression to the binary classification setting. This is extended to multiclass classification (for predicting different age brackets) using the one-versus-rest strategy, as discussed in section \ref{seec:lr-multiclass}.
+We use logistic regression, which adapts least-squares regression to the binary classification setting. This is extended to multiclass classification (for predicting different age brackets) using the one-versus-rest strategy, as discussed in section \ref{seec:lr-multiclass}.
 
-        \item \textbf{Support Vector Machine}
+\item \textbf{Support Vector Machine}
 
-        Support Vector Machine models are another type of linear model, as discussed previously in Section \ref{sec:lr-svm-decision-trees}, which are trained by solving a different optimisation problem to least-squares models. They are often more robust to overfitting than least-squares linear models, and the kernel allows them to fit to highly non-linear decision boundaries.
+Support Vector Machine models are another type of linear model, as discussed previously in Section \ref{sec:lr-svm-decision-trees}, which are trained by solving a different optimisation problem to least-squares models. They are often more robust to overfitting than least-squares linear models, and the kernel allows them to fit to highly non-linear decision boundaries.
 
-        In the classification setting we use one-versus-one Support Vector Classification.
+In the classification setting we use one-versus-one Support Vector Classification.
 
-        \item \textbf{Random Forest}
+\item \textbf{Random Forest}
 
-        Random forest is a non-linear ensemble method, which distinguishes it from the previous two approaches. It provides a meaningful point of comparison, as random forest models can perform significantly differently to linear models, whether they're kernelised or not.
+Random forest is a non-linear ensemble method, which distinguishes it from the previous two approaches. It provides a meaningful point of comparison, as random forest models can perform significantly differently to linear models, whether they're kernelised or not.
 
-        In particular we use CART, which can handle multi-class classification natively.
-    \end{enumerate}
+In particular we use CART, which can handle multi-class classification natively.
+\end{enumerate}
 
-    \todo{explain why we're using different multiclass strats for SVM and LR}
-    
-    \item These algorithms are adapted for use in an NLP setting with a vectoriser, which transforms arbitrary-length text data into fixed-length vector representations of the different words that appear in the text, which is a standard and well-studied (though comparatively simplistic) approach to NLP in classification and regression contexts.
+\todo{explain why we're using different multiclass strats for SVM and LR}
 
-    \item Applying LLMs to a classification task is less straightforward, and the flexibility that comes with their prior knowledge and ability to generate arbitrary-length text comes at the cost of associated complexity when generating certain kinds of outputs. Any approach must fundamentally involve taking text as input and producing categorical predictions for age and gender as output. Although many larger models can now be forced to produce output with a given output structure, many models, and in particular smaller ones, will require more elaborate prompt engineering \todo{determine whether 'prompt engineering' is something you'd actually say} instead.
+\item These algorithms are adapted for use in an NLP setting with a vectoriser, which transforms arbitrary-length text data into fixed-length vector representations of the different words that appear in the text, which is a standard and well-studied (though comparatively simplistic) approach to NLP in classification and regression contexts.
 
-    \item For this experiment, two kinds of prompt engineering were required. First of all, the model was given explicit instructions to follow a given output JSON schema, and was given precise instructions as to the kinds of output it can produce for each field. This prompting can be seen in Appendix \ref{app:llm-prompts}. The second strategy relies on the fact that LLMs, fundamentally, predict the next token in a sequence of tokens: by placing an opening curly brace immediately at the end of the model's output sequence, it is `forced' to continue producing JSON output which can later be parsed. Combining these two strategies, we were able to get \todo{find a percentage accurate JSON generation} \%X valid JSON generation with \todo{say which model}.
+\item Applying LLMs to a classification task is less straightforward, and the flexibility that comes with their prior knowledge and ability to generate arbitrary-length text comes at the cost of associated complexity when generating certain kinds of outputs. Any approach must fundamentally involve taking text as input and producing categorical predictions for age and gender as output. Although many larger models can now be forced to produce output with a given output structure, many models, and in particular smaller ones, will require more elaborate prompt engineering \todo{determine whether 'prompt engineering' is something you'd actually say} instead.
 
-    \item The experiment consists of two parts: the first uses cross-validation to select different parameters for both the shallow learning aproaches as well as for the LLMs. The second part of the experiment evaluates these selected models on the full testing set and compares them directly.
+\item For this experiment, two kinds of prompt engineering were required. First of all, the model was given explicit instructions to follow a given output JSON schema, and was given precise instructions as to the kinds of output it can produce for each field. This prompting can be seen in Appendix \ref{app:llm-prompts}. The second strategy relies on the fact that LLMs, fundamentally, predict the next token in a sequence of tokens: by placing an opening curly brace immediately at the end of the model's output sequence, it is `forced' to continue producing JSON output which can later be parsed. Combining these two strategies, we were able to get \todo{find a percentage accurate JSON generation} \%X valid JSON generation with \todo{say which model}.
+
+\item The experiment consists of two parts: the first uses cross-validation to select different parameters for both the shallow learning aproaches as well as for the LLMs. The second part of the experiment evaluates these selected models on the full testing set and compares them directly.
 \end{itemize}
 
 \subsection{Model Selection}
 
 \begin{itemize}
-    \item This part of the experiment is concerned with selecting the optimal hyperparameters and vectorisers for the shallow strategies as well as the best LLM and prompting strategy for the LLM-based inference.
+\item This part of the experiment is concerned with selecting the optimal hyperparameters and vectorisers for the shallow strategies as well as the best LLM and prompting strategy for the LLM-based inference.
 
-    \item Both the shallow models and the language models are ultimately generating predictions of the same target, i.e. inferring gender and age (in age buckets). This means that we can directly compare their performance based on standard classification metrics. 
-    
-    \item Given that gender prediction using the \textit{Blog Authorship Corpus} is a binary classification problem, we use macro-averaged F1 score for evaluation, which accounts for class imbalance while providing a clear score of the performance of each model \todo{either cite or refer to lit review}. Age prediction evaluation, however, is different: although we have transformed the data for the classification setting, age is in fact a numeric quantity and therefore some classes are more similar than others. As such, for model selection, we will use MAE (mean average error) on \textit{the midpoint of each age bucket} as it penalises models more for predicting age buckets which are further away from the truth.
+\item Both the shallow models and the language models are ultimately generating predictions of the same target, i.e. inferring gender and age (in age buckets). This means that we can directly compare their performance based on standard classification metrics.
 
-    \item To accomodate computational constrains, the model selection phase of the experiment was conducted on subset of 5,000 entries sampled from the \textit{Blog Authorship Corpus}. A random seed was used, so that the same sample was used for both the shallow and LLM model selection procedure.
+\item Given that gender prediction using the \textit{Blog Authorship Corpus} is a binary classification problem, we use macro-averaged F1 score for evaluation, which accounts for class imbalance while providing a clear score of the performance of each model \todo{either cite or refer to lit review}. Age prediction evaluation, however, is different: although we have transformed the data for the classification setting, age is in fact a numeric quantity and therefore some classes are more similar than others. As such, for model selection, we will use MAE (mean average error) on \textit{the midpoint of each age bucket} as it penalises models more for predicting age buckets which are further away from the truth.
 
-    \item As previously discussed, the shallow models use text vectorisers to transform the text input into fixed-length vectors representing how different words occur in the input. In this case, we evaluate the performance of each algorithm using the TF-IDF and Bag of Words vectorisers, as these are the two most commonly used for shallow learning \todo{source}. Furthermore, each model has its own set of hyperparameters which are unique to the algorithm itself. The hyperparameters which were evaluated for each model are included in Appendix \ref{app:tables}.
+\item To accomodate computational constrains, the model selection phase of the experiment was conducted on subset of 5,000 entries sampled from the \textit{Blog Authorship Corpus}. A random seed was used, so that the same sample was used for both the shallow and LLM model selection procedure.
 
-    \item The shallow model selection was performed with 5-fold cross-validation, an approach to model selection discussed in Section \ref{sec:lr-model-evaluation-selection}, for each combination of hyperparameters and vectorisers. The use of cross-validation ensures that metrics are sufficiently representative for the entire 5,000-sample subset, which is necessary for having a fair comparison with the zero- or few-shot LLM approach which was evaluated directly on the entire sample. The results of this evaluation can be found in Appendix \ref{app:tables}, and the optimal parameterisation for each model was:
+\item As previously discussed, the shallow models use text vectorisers to transform the text input into fixed-length vectors representing how different words occur in the input. In this case, we evaluate the performance of each algorithm using the TF-IDF and Bag of Words vectorisers, as these are the two most commonly used for shallow learning \todo{source}. Furthermore, each model has its own set of hyperparameters which are unique to the algorithm itself. The hyperparameters which were evaluated for each model are included in Appendix \ref{app:tables}.
 
-    \begin{enumerate}
-        \item \textbf{Logistic Regression}
+\item The shallow model selection was performed with 5-fold cross-validation, an approach to model selection discussed in Section \ref{sec:lr-model-evaluation-selection}, for each combination of hyperparameters and vectorisers. The use of cross-validation ensures that metrics are sufficiently representative for the entire 5,000-sample subset, which is necessary for having a fair comparison with the zero- or few-shot LLM approach which was evaluated directly on the entire sample. The results of this evaluation can be found in Appendix \ref{app:tables}, and the optimal parameterisation for each model was:
 
-        For both age and gender, setting of \texttt{C} was 1. For age prediction, TF-IDF yielded better results, whereas Bag of Words performed better for gender prediction.
+\begin{enumerate}
+\item \textbf{Logistic Regression}
 
-        \item \textbf{Support Vector Classification}
+For both age and gender, setting of \texttt{C} was 1. For age prediction, TF-IDF yielded better results, whereas Bag of Words performed better for gender prediction.
 
-        The optimal setting of \texttt{C} was 0.1 for both age and gender, and in both cases, TF-IDF performed better.
+\item \textbf{Support Vector Classification}
 
-        \item \textbf{Random Forest Classification}
+The optimal setting of \texttt{C} was 0.1 for both age and gender, and in both cases, TF-IDF performed better.
 
-        For both age and gender, the optimal setting of \texttt{n\_estimators} was 500 and \texttt{max\_depth} was 30. For age prediction, Bag of Words yielded better results, but TF-IDF performed better for gender prediction.
-    \end{enumerate}
+\item \textbf{Random Forest Classification}
 
-    \item In terms of selecting different parameters for the LLM-based approaches, the two most significant variables are the model choice and the prompting strategy. For the former, considering computational limitations, it was decided that only smaller models should be evaluated. In practice, an LLM-based approach to demographic segmentation would have to perform effectively the same task on a vast amount of social media data, making this a viable target for parallelisation. However, more parallelisation requires more GPU memory, and therefore it was decided that only smaller models—generally no more than 10 billion parameters—would be viable for this experiment. Furthermore, given that the model is being used specifically for a classification task, which requires structured output with specified output classes, it was decided that instruction-tuned models would be more likely to follow precise instructions about the kinds of output that we expected as well as the specific task at hand.
-    
-    The models selected for evaluation were:
+For both age and gender, the optimal setting of \texttt{n\_estimators} was 500 and \texttt{max\_depth} was 30. For age prediction, Bag of Words yielded better results, but TF-IDF performed better for gender prediction.
+\end{enumerate}
 
-    \begin{enumerate}
-        \item \textbf{Llama-2 7B Chat}
+\item In terms of selecting different parameters for the LLM-based approaches, the two most significant variables are the model choice and the prompting strategy. For the former, considering computational limitations, it was decided that only smaller models should be evaluated. In practice, an LLM-based approach to demographic segmentation would have to perform effectively the same task on a vast amount of social media data, making this a viable target for parallelisation. However, more parallelisation requires more GPU memory, and therefore it was decided that only smaller models—generally no more than 10 billion parameters—would be viable for this experiment. Furthermore, given that the model is being used specifically for a classification task, which requires structured output with specified output classes, it was decided that instruction-tuned models would be more likely to follow precise instructions about the kinds of output that we expected as well as the specific task at hand.
 
-        This is a 7 billion parameter model in the Llama family, which are a collection of open-source LLMs used widely in research. This particular model is fine-tuned to chat contexts, making it more likely to follow instructions.
+The models selected for evaluation were:
 
-        \item \textbf{Mistral 7B Instruct}
+\begin{enumerate}
+\item \textbf{Llama-2 7B Chat}
 
-        This is an open-source 7 billion parameter model from Mistral, which is fine-tuned for instruction following. Mistral 7B often outperforms Llama-2 7B in benchmarks \todo{find a source}, and has the added benefit of high-performance under quantisation \todo{either explain what this is or add it to the lit review} \todo{also find a source}, meaning that it could have an even greater capacity for parallelisation.
+This is a 7 billion parameter model in the Llama family, which are a collection of open-source LLMs used widely in research. This particular model is fine-tuned to chat contexts, making it more likely to follow instructions.
 
-        \item \textbf{Gemma 3 4B Instruct}
+\item \textbf{Mistral 7B Instruct}
 
-        This is a 7 billion parameter model from Google's Gemma family, a collection of smaller open-source LLMs. Although this model is smaller than the other two, it has performed competitively in benchmarks \todo{source}
-    \end{enumerate}
-    
-    \item The two primary prompting strategies suitable for this kind of classification task are `zero-shot' and `few-shot' prompting. In zero-shot prompting, the prompt simply contains a natural-language description of the task that the LLM is supposed to perform, in our case alongside detailed instructions about how output should be presented. In few-shot prompting, however, the explanation is accompanied by a small number of examples of input and correct output, either synthetic or derived from the dataset. In this experiment, zero-shot and few-shot prompts were compared directly, with the few-shot prompt containing four synthetic examples of potential blog posts from different genders and age groups alongside the correct JSON output in the format that the model should produce.
-    
-    \item Given that the LLM-based approaches don't require training, we were able to simply make predictions over the entire testing sample and evaluate them for each combination of model and prompting strategy. Similarly to the shallow learning model selection, the different approaches were evaluated in terms of their macro F1 score for gender prediction and MAE from the bucket midpoints for age prediction. The results of this model evaluation phase are included in tables \ref{tab:llm-comparison-age-prediction} and \ref{tab:llm-comparison-gender-prediction}. They indicate that, for age prediction, the few-shot approaches perform similarly well, and each perform better than their zero-shot counterparts. For gender prediction, however, zero-shot prediction performed significantly better than few-shot.
+This is an open-source 7 billion parameter model from Mistral, which is fine-tuned for instruction following. Mistral 7B often outperforms Llama-2 7B in benchmarks \todo{find a source}, and has the added benefit of high-performance under quantisation \todo{either explain what this is or add it to the lit review} \todo{also find a source}, meaning that it could have an even greater capacity for parallelisation.
 
-    \item We decided to choose a single strategy for the next stage of the experiment, based on these results. This is because, in this study, demographic inference is supposed to be a small part of a larger pipeline of consumer trend prediction conducted on large amounts of social media data, so balancing multiple different models/prompting strategies simultaneously is computationally infeasible. Based on these results, Mistral Instruct with zero-shot prompting is the best LLM classification configuration, as it has by far the best gender prediction outcomes, sufficient age prediction outcomes, and a sufficient ability to produce valid JSON output.
+\item \textbf{Gemma 3 4B Instruct}
+
+This is a 7 billion parameter model from Google's Gemma family, a collection of smaller open-source LLMs. Although this model is smaller than the other two, it has performed competitively in benchmarks \todo{source}
+\end{enumerate}
+
+\item The two primary prompting strategies suitable for this kind of classification task are `zero-shot' and `few-shot' prompting. In zero-shot prompting, the prompt simply contains a natural-language description of the task that the LLM is supposed to perform, in our case alongside detailed instructions about how output should be presented. In few-shot prompting, however, the explanation is accompanied by a small number of examples of input and correct output, either synthetic or derived from the dataset. In this experiment, zero-shot and few-shot prompts were compared directly, with the few-shot prompt containing four synthetic examples of potential blog posts from different genders and age groups alongside the correct JSON output in the format that the model should produce.
+
+\item Given that the LLM-based approaches don't require training, we were able to simply make predictions over the entire testing sample and evaluate them for each combination of model and prompting strategy. Similarly to the shallow learning model selection, the different approaches were evaluated in terms of their macro F1 score for gender prediction and MAE from the bucket midpoints for age prediction. The results of this model evaluation phase are included in tables \ref{tab:llm-comparison-age-prediction} and \ref{tab:llm-comparison-gender-prediction}. They indicate that, for age prediction, the few-shot approaches perform similarly well, and each perform better than their zero-shot counterparts. For gender prediction, however, zero-shot prediction performed significantly better than few-shot \footnote{The Gemma-3 zero-shot strategy was a significant outlier, failing to produce any correctly formatt output. This is because, for every run, it only produced a single \texttt{\{} character before halting, and so it was excluded from the analysis}.
+
+\item We decided to choose a single strategy for the next stage of the experiment, based on these results. This is because, in this study, demographic inference is supposed to be a small part of a larger pipeline of consumer trend prediction conducted on large amounts of social media data, so balancing multiple different models/prompting strategies simultaneously is computationally infeasible. Based on these results, Mistral Instruct with zero-shot prompting is the best LLM classification configuration, as it has by far the best gender prediction outcomes, sufficient age prediction outcomes, and a sufficient ability to produce valid JSON output.
 \end{itemize}
 
 \subsection{Overall Evaluation}
 
 \begin{itemize}
-    \item Given the optimal model configurations that have now been selected, we now performed a direct comparison of the LLM against three different shallow learning approaches over the entire \textit{Blog Authorship Corpus}. In particular, the shallow models were trained on the pre-defined training split of the dataset, whereas the LLM didn't require any training, and both were evaluated on the pre-defined testing set (known as the 'validation' set).
+\item Given the optimal model configurations that have now been selected, we now performed a direct comparison of the LLM against three different shallow learning approaches over the entire \textit{Blog Authorship Corpus}. In particular, the shallow models were trained on the pre-defined training split of the dataset, whereas the LLM didn't require any training, and both were evaluated on the pre-defined testing set (known as the 'validation' set).
 
-    A number of changes were made to the shallow model evaluation process to account for the significant increase in the size of the training and testing sets used. First of all, the training and testing sets were pre-vectorised, with the results being shared across all three models. Furthermore, the parameter \texttt{max\_samples} was set to 50,000, meaning that each decision tree was trained using a separate 50,000 sample subset of the overall training set, and the logistic regression model now uses the `saga' algorithm for optimisation, which is faster for large datasets \todo{cite}. These changes don't meaningfully affect the performance of the models, but merely optimise the speed of computation.
+A number of changes were made to the shallow model evaluation process to account for the significant increase in the size of the training and testing sets used. First of all, the training and testing sets were pre-vectorised, with the results being shared across all three models. Furthermore, the parameter \texttt{max\_samples} was set to 50,000, meaning that each decision tree was trained using a separate 50,000 sample subset of the overall training set, and the logistic regression model now uses the `saga' algorithm for optimisation, which is faster for large datasets \todo{cite}. These changes don't meaningfully affect the performance of the models, but merely optimise the speed of computation.
 
-    \item No changes were made to the LLM approach's configuration.
+\item No changes were made to the LLM approach's configuration.
 
-    Given that this part of the experiment was to compare the overall performance of each model, richer evaluation data was collected. In particular, we collected accuracy, macro-averaged F1 score, and bucket-midpoint MAE for age prediction (as in the previous section), as well as recording confusion matrices for each model \todo{ref what this is in the lit review} which are included in Appendix \ref{app:figures}.
+Given that this part of the experiment was to compare the overall performance of each model, richer evaluation data was collected. In particular, we collected accuracy, macro-averaged F1 score, and bucket-midpoint MAE for age prediction (as in the previous section), as well as recording confusion matrices for each model. \todo{ref what this is in the lit review}
 \end{itemize}
 
 \section{Results}
 
 \begin{itemize}
-    \item Figure \ref{fig:expt1-final-evaluation-graph} shows the results of both age and gender prediction over the BAC test set, using both the shallow models and Mistral 7B Instruct. The data indicates that 
-\end{itemize}
+\item Figure \ref{fig:expt1-final-evaluation-graph} shows the results of both age and gender prediction over the BAC test set, using both the shallow models and Mistral 7B Instruct. The data indicates that the LLM-based approach performs competitively with the shallow learning approaches, with performance slightly worse for age prediction and slightly better for gender prediction. However, none of the approaches perform as well as the best cutting-edge transformer-based approaches \todo{cite this}.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/model-evaluation-graph.png}
-    \caption{Final Evaluation of the Mistral LLM approach as well as the shallow model approaches}
-    \label{fig:expt1-final-evaluation-graph}
+\centering
+\includegraphics[width=0.75\linewidth]{Figures/model-evaluation-graph.png}
+\caption{Final Evaluation of the Mistral LLM approach as well as the shallow model approaches}
+\label{fig:expt1-final-evaluation-graph}
 \end{figure}
 
+\item Figures \ref{fig:confusion-matrix-age-prediction} and \ref{fig:confusion-matrix-gender-prediction} show the confusion matrices for all four models across both age and gender. First of all, for age prediction, every model exhibits a relatively strong `diagonal' structure in its prediction, with nearly all predictions being no more than two age buckets away from the correct value. However, Mistral 7B Instruct shows a somewhat wider spread than the other three models which concentrate predictions on the 15-20 year age bucket, in particular the random forest. Interestingly, the random forest approach actually generalises very poorly, concentrating almost all of its predictions into the 15-20 and 25-30 age buckets, and finds that this is relatively successful given the distribution of ages in the dataset.
 
-\begin{itemize}
-    \item I don't have anything to talk about yet lmao    
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{Figures/Confusion Matrices/combined-age-confusion-matrices.pdf}
+\caption{Confusion Matrices for age prediction by all four models}
+\label{fig:confusion-matrix-age-prediction}
+\end{figure}
+
+\item For gender prediction, we find that the linear models' outputs are less biased towards one gender than the other two approaches. The random forest classifier, comparatively, over-predicts male, although its predictions are still significantly more balanced than in the case of age prediction. Interestingly we find that Mistral over-predicts female with significantly more bias than the other three approaches.
+
+\todo{Find out if there's any existing research that finds similar}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{Figures/Confusion Matrices/combined-gender-confusion-matrices.pdf}
+\caption{Confusion Matrices for gender prediction by all four models}
+\label{fig:confusion-matrix-gender-prediction}
+\end{figure}
 \end{itemize}
-
-\subsection{Age Prediction}
-
-
-\subsection{Gender Prediction}
-
-
 
 \section{Discussion}
 
+\begin{itemize}
+\item The results of this experiment are instructive about the capabilites and limitations of LLM-based demographic inference, as well as the effects of different kinds of prompting. The purpose of this experiment is to determine the potential usefulness of LLMs as part of a wider consumer trend inference system, and the results allow us to produce a balanced appraisal of this approach.
+
+\item First of all, LLM-based approaches to demogrpahic inference do work. In particular, smaller models can perform just as well as standard shallow NLP classification approaches with little configuration beyond a prompt describing the desired output and format. This has significant implications: whereas the other three approaches required training over hundreds of thousands of blog posts to produce reasonable estimates of age and gender, LLM-based approaches seema ble to segment social media posts into different demographic groups `out of the box'. In principle this means that LLMs could be used to segment \todo{finish!}
+
+\item Secondly, few-shot prompting is a better way to guarantee that the LLM produces output in the correct format, but it can lead to worse performance. In some cases, it was observed that the models would simply parrot the output from the first example given in the prompt, leading to correctly formatted but incorrect predictions.
+
+\item The findings of this study have a few non-trivial limitations. First of all, due to computational constraints, it was limited to smaller models, all either 4 billion or 7 billion parameters. These models are significantly smaller than state of the art models like DeepSeek R1 with 671 billion parameters or Gemini 1.5 Pro with 1.5 trillion parameters \todo{cite}. It is very likely that using a larger model would yield better results, and using a model with structured output capabilities would remove considerations of correct output formatting.
+
+\item Secondly, the study only compared zero- and few-shot approaches, which may give worse results than other more advanced, though more computationally expensive, prompting techniques. Chain of thought prompting, where the model is directed to think step-by-step about the task it has been given, takes significantly longer as the model must produce a much larger amount of output, but many studies have found that it can lead to significantly better performance across a wide range of tasks. Adding chain-of-thought prompting, as well as a selection of different few-shot prompts (varying things like class balance and number of examples given) would provide a richer evaluation of the capabilities of LLM-based demographic segmentation.
+\end{itemize}
 
 \chapter{Large Language Model Historical Consumer Trend Prediction}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-    \textit{This study explores the effectiveness of consumer trend prediction using LLMs. The chapter discusses considerations in experiment design, the data set used for the experiment, the setup of the experiment itself, and the results that it yielded.}
+\textit{This study explores the effectiveness of consumer trend prediction using LLMs. The chapter discusses considerations in experiment design, the data set used for the experiment, the setup of the experiment itself, and the results that it yielded.}
 \end{adjustwidth}
 
 \section{Introduction}
 
 \begin{itemize}
-    \item Consumer trend prediction is an enormously broad field of study, in terms of the approaches and data that are used as well as the types of results that are produced. Much existing work in machine learning-based consumer trend prediction, in particular before the recent proliferation of language models which can synthesise and produce natural language, has focused on making numeric predictions such as sales volume, customer retention, and consumer sentiment. Although these metrics are invaluable to many businesses, they can only complement more qualitative understanding of consumer behaviour which, often, is the result of human analysis. This means that a lot of nuanced and non-quantitative information about consumer preferences therefore is likely lost, with detection being limited by the rate at which human analysts can process information qualitatively.
+\item Consumer trend prediction is an enormously broad field of study, in terms of the approaches and data that are used as well as the types of results that are produced. Much existing work in machine learning-based consumer trend prediction, in particular before the recent proliferation of language models which can synthesise and produce natural language, has focused on making numeric predictions such as sales volume, customer retention, and consumer sentiment. Although these metrics are invaluable to many businesses, they can only complement more qualitative understanding of consumer behaviour which, often, is the result of human analysis. This means that a lot of nuanced and non-quantitative information about consumer preferences therefore is likely lost, with detection being limited by the rate at which human analysts can process information qualitatively.
 
-    \item LLMs hold potential for developing machine learning-based systems which can detect and record more complex and qualitative consumer trends, given their strong performance in reading comprehension tasks, which could potentially allow for human-level consumer trend analysis at a significantly larger scale. In particular, LLMs could potentially be applied to large corpuses of social media post data, tasked with extracting consumer trends by identifying recurring themes, shifts in attitudes, and emerging product preferences. Coupled with the result from Experiment 1, indicating the ability of LLMs to discern demographic characteristics from people's social media posts, this could allow businesses to obtain detailed insights into consumer trends, segmented precisely across different demographic groups, on the scale of quantitative analytics. 
+\item LLMs hold potential for developing machine learning-based systems which can detect and record more complex and qualitative consumer trends, given their strong performance in reading comprehension tasks, which could potentially allow for human-level consumer trend analysis at a significantly larger scale. In particular, LLMs could potentially be applied to large corpuses of social media post data, tasked with extracting consumer trends by identifying recurring themes, shifts in attitudes, and emerging product preferences. Coupled with the result from Experiment 1, indicating the ability of LLMs to discern demographic characteristics from people's social media posts, this could allow businesses to obtain detailed insights into consumer trends, segmented precisely across different demographic groups, on the scale of quantitative analytics.
 
-    \item This chapter explores the potential of LLM-driven demographically-segmented consumer trend prediction, by examining whether it is able to extract a specific consumer trend from large amounts of social media data. To distinguish this research from the large amount of existing work in quantitative consumer trend forecasting, the experiment focuses on the production of text based results. 
-
-    \item In particular, this experiment observes whether an LLM can identify a known historical consumer trend from social media data which immediately predates it. The historical consumer trend we have chosen in this case is the proliferation of `hard seltzer', in particular the brand \textit{Whiteclaw}, in the middle of 2016 \todo{cite}. For this, we feed social media data from early 2016 to the LLM and ask it to determine all consumer trends that are indicated, and observe whether the actual consumer trend is included among them.
+\item This chapter explores the potential of LLM-driven demographically-segmented consumer trend prediction, by examining whether it is able to extract a specific consumer trend from large amounts of social media data. To distinguish this research from the large amount of existing work in quantitative consumer trend forecasting, the experiment focuses on the production of text based results.
 \end{itemize}
 
 \section{Data Set}
 
+As with Experiment 1, this experiment requires a large body of social media text posts. This time however, demographic annotations are not required, as we have observed the ability of LLMs to infer demographic characteristics automatically. This means that we have access to a much richer selection of datasets than in the previous experiment. Instead, the dataset must contain early references to a consumer trend, with enough instances that the model could feasibly detect it without the problem becoming trivial.
+
+The consumer trend that this experiment focuses on is the rise of health-oriented products in the mid-2010s. Demand for low-sugar drinks and snacks began to rise sharply in 2015, which was followed by a sudden increase in regulatory efforts targeting high-sugar products\cite{popkin2016sweetening}. This means that the social media posts used will be from the beginning of 2016: this point preceded the sudden spike in both consumer preferences and regulatory actions, but doesn't precede the very beginnings of the trend itself.
+
+
+\subsection{Data Set Choice}
+
+We decided to use posts and comments from Reddit, submitted between January and March of 2016 for three reasons:
+
+\begin{enumerate}
+\item Unlike other social media platforms like Twitter (now X), Reddit posts must be posted into \textit{Subreddits}, which are groups based on specific interests and topics. This means that we can much more easily filter for content that is likely to be both relevant and irrelevant.
+
+\item Reddit posts vary much more in length than Twitter posts, which in 2016 were confined to a maximum of 140 characters. This means that Reddit posts are more similar to blog posts from the \textit{Blog Authorship Corpus}, which should mean that the results from Experiment 1 should translate more accurately, and thus ensuring that demographic predictions are more likely to be accurate.
+
+\item It is possible to obtain every single Reddit post and comment, for all years and months, from Reddit's inception in 2005. Furthermore, these posts can be obtained for free, for use in academic contexts \cite{watchful1_reddit_2016-torrent-site}.
+\end{enumerate}
+
+\subsection{Data Preprocessing}
+
 \begin{itemize}
-    \item As with Experiment 1, this experiment requires a large body of social media text posts. This time however, demographic annotations are not required, as we have observed the ability of LLMs to infer demographic characteristics automatically. This means that we have access to a much richer selection of datasets than in the previous experiment. Instead, we need to ensure that the social media posts are exclusively from the period immediately before the proliferation of hard-seltzer drinks, which happened in the summer of 2016. This means that social media posts must be selected from the first few months of 2016.
+\item Given the size of the datasets used, sampling was necessary so that the experiment could be run in a reasonable amount of time. The sampling process consisted of two phases: first of all the overall dataset was reduced to 100,000 posts and 100,000 comments, using reservoir sampling \todo{either explain or refer to lit review}. This is because the datasets are distributed as archives which are untenably large when decompressed, so a sampling procedure which doesn't involve full decompression was necessary. This was followed by selecting two subsets consisting of post in subreddits which are likely to contain relevant information about consumer trends relating to the beverages industry, and in particular Coca-Cola, and one whose subreddits were likely not to be relevant. These subreddits are:
 
-    \subsection{Data Set Choice}
+The selected relevevant subreddits were:
+\begin{itemize}
+\item The subreddits r/food, r/soda, r/alcohol, and r/fastfood were selected because they directly relate to the target of the historical consumer trend
 
-    \item We decided to use posts and comments from Reddit, submitted between January and March of 2016 for three reasons:
+\item The subreddits r/news, r/politics, r/worldnews, r/technology, and r/science as they relate to current affairs and new developments in science/technology which may dictate consumer trends
 
-    \begin{enumerate}
-        \item Unlike other social media platforms like Twitter (now X), Reddit posts must be posted into \textit{Subreddits}, which are groups based on specific interests and topics. This means that we can much more easily filter for content that is likely to be both relevant and irrelevant.
+\item r/australia, r/europe, r/ireland, r/sweden, and r/unitedkingdom, to determine whether the LLM-based approach can further segment consumer trends across locations without explicit categorisation.
 
-        \item Reddit posts vary much more in length than Twitter posts, which in 2016 were confined to a maximum of 140 characters. This means that Reddit posts are more similar to blog posts from the \textit{Blog Authorship Corpus}, which should mean that the results from Experiment 1 should translate more accurately, and thus ensuring that demographic predictions are more likely to be accurate.
+\item r/fitness, r/keto, r/loseit, r/nutrition, r/running, r/vegan, and r/vegetarian, as these directly to health and diet, directly relating to the historical consumer trend
 
-        \item It is possible to obtain every single Reddit post and comment, for all years and months, from Reddit's inception in 2005. Furthermore, these posts can be obtained for free, for use in academic contexts \cite{watchful1_reddit_2016-torrent-site}.
-    \end{enumerate}
+\item r/AskReddit, r/LifeProTips, r/tifu, and r/todayilearned, which are popular Reddit forums and thus may otherwise contain discussions relating to current consumer trends
+\end{itemize}
 
-    \subsection{Data Preprocessing}
-
-    \begin{itemize}
-        \item Given the size of the datasets used, sampling was necessary so that the experiment could be run in a reasonable amount of time. The sampling process consisted of two phases: first of all the overall dataset was reduced to 100,000 posts and 100,000 comments, using reservoir sampling \todo{either explain or refer to lit review}. This is because the datasets are distributed as archives which are untenably large when decompressed, so a sampling procedure which doesn't involve full decompression was necessary. This was 
-    \end{itemize}
-    
+\item The selected irrelevant subreddits were r/leagueoflegends, r/pcmasterrace, r/StarWars, r/Android, and r/legaladvice, as they cover specific subjects with no relation whatsoever to our historical consumer trend.
 \end{itemize}
 
 \section{Experiment}
 
+Unlike Experiment 1, this experiment is not a straightforward machine learning problem which can be evaluated with existing metrics. Instead, we prompt the LLM to produce written output which must be analysed for its accuracy and quality of reasoning. Therefore, although the resulting analysis will be less numerically `robust', it will in fact be easy to directly observe the quality of the model's output.
+
+The consumer trend prediction system consists of a number of stages, each using LLMs to transform text input in various ways. These stages are:
+
+\begin{enumerate}
+    \item \textbf{Stage 1: Demographic Segmentation}
+    
+    In Experiment 1, we determined that a zero-shot LLM-based approach to demographic segmentation is viable. Here, we take the exact approach used in the previous chapter (including the prompt used), and produce predictions of age and gender for all entries in our dataset
+    
+    \item \textbf{Stage 2: Summarise trends from posts}
+    
+    In this stage, we feed the LLM blocks of social media posts of approximately equal size, including annotations for the subreddit, date posted, and username as well as the predictions of age and gender. The LLM is tasked with producing short reports, including a summary and sources (in the form of post IDs), identifying all relevant consumer trends indicated by the selection of posts.
+    
+    \item \textbf{Stage 3: Hierarchical Summarisation}
+    
+    Finally, the LLM is tasked with continually summarising blocks of these reports into single reports, repeatedly, until a single report on all consumer trends is produced for each demographic group. This is standard practice for summarising large collections of documents, such as the reports generated in the previous stage \todo{cite}.\todo{chain of thought}
+\end{enumerate}
+
+Similar to the previous Experiment, we begin by evaluating the performance of different LLMs for this task over a subset of the dataset, and then apply the best-performing model to the entire dataset.
+
+
+\subsection{Model Selection}
+
+\begin{itemize}
+\item As with the previous experiment, this experiment is limited by significant computational constraints. As well as generating predictions of demographic characteristics for each Reddit post, a large number of much longer reports is generated for each demographic grouping. This means that we are once again limited to using smaller models, and we thus evaluate the same three LLMs that featured in the previous experiment. However, given that this experiment requires significantly more complicated reasoning, slightly larger models were evaluated at the cost of performance. The models chosen for this experiment were:
+
+\begin{enumerate}
+\item \textbf{Mistral 7B Instruct}: This model was included in this experiment because of its strong ability to follow instructions and produce relatively accurate outputs as observed in the previous experiment, as well as the range of benchmarks showing that Mistral 7B often outperforms comparable models in reading comprehension tasks.\todo{cite}
+
+\item \textbf{Deepseek 7B}: This 7B model is also being included because of its strong performance in the last experiment. Along with Mistral 7B Instruct, it is one of the best-performing small models across a range of benchmarks\todo{cite}.
+
+\item \textbf{Llama-3.3 70B Versatile}: This is a much larger model than the other three, which should allow it to significantly outperform the other three models in terms of both correct output structure and quality of inference.
+\end{enumerate}
+
+\item This model evaluation phase of this experiment consisted simply of running the experiment, whose stages were defined above, on a subset of the overall Reddit post dataset for each of the three models. In particular, it was decided that the subset would need to contain no more than 1000 posts, as this would be sufficient for determining differences in the quality of each model's outputs. Furthermore, LLama-3.3 used demographic labels generated by Mistrla 7B rather than by itself, to avoid the extreme computational cost of serial summarisation with a 70 billion-parameter model. The evaluation considers the quality both of the intermediate reports made by each model, in stage 2 of the evaluation, as well as the summary reports produced at the end.
+
+\item First of all, there were significant differences in the ability of each model to produce output of the correct format. In stage 2, Llama-3.3 70B had no problems producing output of the correct structure, with 100\% of its outputs following the precise instructions given in its prompt. Deepseek was the best performer of the smaller models, with 94\% correct output formatting. Mistral, in contrast, performed by far the worst, with only 51\% of its output being formatted correctly.
+
+\item The same pattern does not apply to the accuracy of the Stage 2 intermediate reports, however. Of all the reports made by Deepseek, less than 22\% of them were accurate, and many of them were of questionable relevance to the prompt given. Most of Deepseek's responses were hallucinations\todo{define hallucinate}, involving either made-up evidence or, more frequently, totally misinterpreting the actual contents of a post. Mistral also performed poorly. Only 45\% of the responses were accurate, and they were also often of little relevance. Although Mistral was less likely to misinterpret existing sources, it was more likely to invent sources.
+
+\item LLama-3.3 70B dramatically outperformed the other two models: of the 8 consumer trends it detected, 7 of them were factually correct, and they were all directly relevant to what was asked in the prompt.
+
+\item The final stage saw even worse performance for the smaller models: in the final stage, of the 9 consumer trends that Mistral reported on 5 were based on false citations and the other 4 were irrelevant. In comparison for Deepseek, there was a single irrelevant report, and all of the others simply stated that there was nothing to report. Llama-3.3 70B, in contrast, performed very well, producing 8 consumer trend reports of which 7 were completely factually true and relevant.\footnote{The hierarchical summarisation step here produced exactly the same results as stage 2. This is because this model selection phase of the experiment uses a subset of 1,000 posts, so if only 8 distinct consumer trends are detected, they will not be further summarised.}
+
+\item Below is an example of a consumer trend detected by Llama-3.3:
+
+\begin{listing}[H]
+\centering
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[style=promptstyle]
+{
+"label": "electrolyte_importance",
+"evidence": ["d014oyg", "d0lqtt3"],
+"reasoning": "The trend is relevant to Coca-Cola as it highlights the importance of electrolytes in hydration, which could be applied to existing or new beverages.",
+"summary": "Female consumers aged 25-30 are prioritizing electrolytes for hydration, which could be an opportunity for Coca-Cola to develop or promote drinks that cater to this need. This trend is supported by posts d014oyg and d0lqtt3, indicating a growing interest in the role of electrolytes in maintaining proper hydration levels."
+}
+\end{lstlisting}
+\end{minipage}
+\caption{Example of a consumer trend report produced by Llama 70B Versatile},
+\end{listing}
+
+\todo{Maybe remove the IDs}
+
+\item This consumer trend report is based on two posts from r/keto, inferred to be made by women aged between 25 and 30, which do in fact relate to electrolytes.
+
+\item The results clearly show that the significantly larger model Llama-3.3 outperforms the smaller models enormously, and is genuinely competent at following requests to extract consumer trends from social media posts, in particular as they relate to particular sectors or businesses. Because of this, and the result from Experiment 1, we will continue to use Mistral 7B Instruct for demographic inference and Llama 70B Versatile for trend detection and summarisation.
+\end{itemize}
+
+\subsection{Overall Evaluation}
+
+Given that the model selection phase of this experiment used a subset of the data, without involving any additional transformations to it, no changes were made to the experimental setup for this section. The experiment was run separately on the subsets of the dataset for posts from relevant subreddits and irrelevant subreddits.
+
 \section{Results}
 
+Similarly to the results from the models selection phase of this experiment, Llama-3.3 70B Versatile performs well and is able to truthfull report consumer trends it has encountered in the data. In particular, the results show that the model is able to accurately comprehend, summarise, and track references to existing consumer trends and avoid hallucinations.
+
+One significant observation from the results is the difference in the reports between the set of posts from relevant subreddits and those from irrelevant subreddits. The model produces a list of 8 consumer trends from the relevant subreddits, and zero from the irrelevant subreddits. This is expected behaviour, and shows that the model is capable of distinguishing which of the consumer trends are relevant as described in the prompt.
+
+Of the 8 consumer trends detected from posts from the relevant subset of subreddits, 6 relate directly to health and weight loss, with the other two simply reporting that Coca-Cola products are considered to be popular among different demographic groups. An example of one of these, which cites two separate posts, is given below:
+\begin{listing}[H]
+\centering
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[style=promptstyle]
+{
+"label": "health_conscious",
+"evidence": ['3zzcqx', 'cyybpua'],
+"reasoning": "Consumers are becoming more health-conscious and opting for lower-calorie alternatives
+summary: Males aged 35-40 are becoming more health-conscious, driving demand for lower-calorie or sugar-free alternatives. This trend may impact Coca-Cola's sales, but also presents an opportunity for the company to introduce new products or flavors that cater to this trend. Some consumers are opting for water over Coca-Cola, highlighting the need for the company to make their products more appealing to health-conscious consumers. Coca-Cola could consider introducing sugar-free or low-calorie versions of their existing drinks to stay competitive. This trend suggests a shift in consumer preferences that Coca-Cola can capitalize on by innovating and expanding their product offerings."
+}
+\end{lstlisting}
+\end{minipage}
+\caption{Example of a consumer trend report, based on posts from r/loseit and r/nutrition, generated by Llama-3.3 70B Versatile},
+\label{lst:expt2-report-example}
+\end{listing}
+This example is reflective of the general style and quality of the other consumer trend reports: in particular, it is clear, concise, factual, and relevant to the request given in the prompt. Furthermore, the post IDs in the evidence field of the response do in fact fully justify the analysis that the model has presented.
+
+In terms of demographics, the health-related consumer trends exhibit a significant imbalance across both age and gender. In particular, of the 6 health-related consumer trends, 4 of them are for posts inferred to have been made by men and only 2 from women, and all of them fell between the ages of 35 and 55, with 2 being of unknown age.
 
 
+\section{Discussion}
+
+The results of this experiment indicate directly that LLMs are capable of accurately detecting and summarising emerging consumer trends from social media posts. The primary theme of 6 out of the 8 consumer trends detected by the model corresponds to increased public concern about the health impacts of sugary drinks and foods, in particular with respect to weight loss, which directly reflect the consumer trend that the dataset selected for.\todo{mention the demographics}
+
+One primary concern with this experiment was the risk that the LLM would rely on pre-existing knowledge to draw its inferences, rather than basing them on the contents of the social media posts it encountered. This is negated, to an extent, by the fact that the model is forced to present sources, in the form of unique post IDs, for all of the inferences that it makes. This aligns with existing research, which shows that LLMs are significantly less prone to hallucination when prompted to include sources for their inferences\cite{gao2023enabling}.
+
+One significant limitation with this experiment is the risk of bias introduced by the choice of dataset. The consumer trends relating to health and diet relate to posts made in subreddits specifically about health and diet, meaning that the trend detected by the model may not be representative of consumers as a whole. The effects of bias in the dataset are intensified by the fact that the model asserts the existence of consumer trends with evidence comprising of either one or two posts, which is likely to be too few in practice to meaningfully denote a true consumer trend.
 
 \chapter{Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-    \textit{This study applies the methodology from the previous two experiments to current social media data. This will produce predictions of future consumer trends which will be used to }
+\textit{This study applies the methodology from the previous two experiments to current social media data. This will produce predictions of future consumer trends which will be used to }
 \end{adjustwidth}
 
 \section{Introduction}
 
-\section{Background Literature}
+The previous experiment established the ability of LLMs to detect consumer trends, by applying a three-stage consumer trend summarisation pipeline to historical social media post data. The primary motivation for automated consumer trend prediction systems, however, is to extract real-time insights from current data faster and at a greater scale than human analysts can. This experiment therefore applies the same pipeline from the previous experiment to current social media data, to evaluate whether it can extract novel consumer trends.
+
+As with the previous experiment, the quality of the output produced is assessed in terms of the accuracy of the post summaries, the presence and relevance of provided evidence, and the relevance of the consumer trends to the request in the prompt. However, as this experiment focuses on predicting actual future consumer trends, the predictions cannot be assessed on the basis of their factual accuracy as real, observable consumer trends.
 
 \section{Data Set}
 
+As with Experiment 2, this experiment uses posts from Reddit because of the richness and ease of access of large amounts of Reddit post data. In this case, the Reddit posts are exclusively from March of 2025, making it extremely recent. Furthermore, the same relevant and irrelevant Subreddit selections from Experiment 2 is used, as the relevant Subreddits were shown to broadly contain posts whose trends related to the prompt and posts in the irrelevant Subreddits specifically did not.
+
 \section{Experiment}
+
+Given the success of the previous experiment, the exact same experimental setup was used in this experiment.
+
+As with the previous experiment, the model output was evaluated in terms of the accuracy of the summarisation, the relevance of the evidence provided, and the relevance of the consumer trend, given the prompt.
 
 \section{Results}
 
+Similarly to the previous experiment, the only consumer trends reported were extracted from posts into the relevant subset of subreddits: in particular, there were 5 consumer trends produced from the relevant subreddits, and 0 from the irrelevant subreddits. Of these 5, all of them were to do with health. Unlike in Experiment 2, however, where the consumer trends were derived from a range of different sources, the sources given for these consumer trends were exclusively from r/loseit, a weight-loss subreddit. Furthermore, the demographics of trend reports are different: the age range is now 25-40 and the genders are balanced, with 2 of the reports being from posts inferred to have been made by men, 2 by women, and 1 that wasn't classified into either category.
+
+Below is an example of one of these consumer trend reports:
+\begin{listing}[H]
+\centering
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[style=promptstyle]
+{
+    "label": "low_calorie_trend",
+    "evidence": ["1j69tso", "1jk0ftj"], 
+    "reasoning": "Reports indicate a trend towards low-calorie options, which could impact Coca-Cola's product offerings",
+    "summary": "Consumers are seeking low-calorie options, which may influence demand for Coca-Cola's existing low-calorie drinks. This trend could lead to increased competition from other low-calorie beverage brands, prompting Coca-Cola to consider expanding its low-calorie portfolio or reformulating existing products. The company could also focus on marketing its current low-calorie options to attract health-conscious consumers. This trend presents an opportunity for Coca-Cola to meet the growing demand for low-calorie beverages and stay competitive in the market."
+}
+\end{lstlisting}
+\end{minipage}
+\caption{Example of a consumer trend report, based on posts from r/loseit and r/nutrition, generated by Llama-3.3 70B Versatile},
+\end{listing}
+As with the example given in Listing \ref{lst:expt2-report-example}, this example shows both the stengths and weaknesses of this LLM-based consumer trend prediction approach: once again, the trend report is a truthful summary of two Reddit posts relating directly to the request in the prompt. However, the summary doesn't provide any real insight, a problem which is intensified by the fact that each detected consumer trend is based on either one or two posts, rather than a large body of evidence.
+
 \section{Discussion}
+
+The results of this experiment highlight both the potential and the limitations of LLM-based consumer trend prediction. The model processed a vast amount of social media posts from very recently, at a much greater rate than any human analyst could, and produced well-evidenced claims of current consumer trends indicated by these posts. The result is a selection of consumer trend predictions across different demographics, complete with verified sources. However, the results are limited by questions about the effects of the subreddit filtering used: it is unclear from these results alone whether the persistance of health and nutrition as the primary topics of nearly all consumer trends detected across both experiments indicate a bias in the selection of posts provided to the LLM, or simply that it is a significant and durable feature of modern consumer preference. In spite of these questions, however, this experiment indicates that real-time consumer trend detection with LLMs is possible, and demonstrates that the methodology scales to contemporary datasets producing accurate and fully-justified extrapolations from social media posts.
+
 
 \chapter{Conclusion and Future Work}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-    \textit{This chapter concludes the thesis, with a discussion of the findings and results of the two studies and how they relate more generally to the state of research and practice in both demographic segmentation and consumer trend prediction. Recommendations for future research work are provided.}
+\textit{This chapter concludes the thesis, with a discussion of the findings and results of the two studies and how they relate more generally to the state of research and practice in both demographic segmentation and consumer trend prediction. Recommendations for future research work are provided.}
 \end{adjustwidth}
 
 
 \section{Summary}
 
-\section{Further Work}
+This study presents an empirical evaluation of LLM-based demographic segmentation and consumer trend prediction from social media data. It demonstrates that LLMs perform well in both tasks, and thus a fully-automated process for consumer trend prediction over different demographic segments is feasible. In particular, the work shows that LLMs are capable of producing these results with zero- or few-shot prompting and without fine-tuning,\todo{Maybe include a bit about LLM fine-tuning in the lit review?} and thus this work serves as an effective empirical baseline for the effectiveness of applying these techniques to real-world data.
 
+More work is needed before LLM-based approaches to consumer trend prediction can be used directly by businesses: the approach needs refinement in terms of model choice, prompting strategy, and data filtering. However, this study demonstrates that the fundamental methodology is viable, and as model capabilities improve and hardware becomes more efficient, this approach has the potential to evolve into a practical and scalable solution for real-time consumer trend analysis.
+
+
+\section{Limitations and Further Work}
+
+As noted earlier, this work is limited by considerations of model choice and configuration, as well as the dataset used. The design decisions made were made in part to account for cost and computational constraints inherent to any study involving the use of LLMs to process large datasets. This work did directly compare the abilities of a range of models, including smaller models with fewer than 10 billion parameters\todo{explain what number of parameters means} as well as a significantly larger 70 billion-parameter model, and the disparity in performance is clearly reflected in the results. However, this study was forced to omit the use of larger state of the art models, such as Deepseek V3 with 685 billion parameters\cite{deepseekv3_2024} or Mixtral 8x22B with 176 billion parameters\cite{mistral_mixtral_2023}. Research has shown repeatedly that the performance of models scales with the number of parameters, and thus the findings of this work would be enhanced with a direct comparison of the performance of one of these larger models.
+
+A second limitation is in the use of the dataset. First of all, due to computational constraints, both Experiments 2 and 3 were evaluated on a subset of Reddit posts from the period, rather than the entire dataset. Further research should apply out methodology to larger subsets, to observe the effects on the quality of reported consumer trends as well as effects on the LLMs reporting of evidence. Furhtermore, as discussed in the chapter for Experiment 2, it is not obvious the extent to which the choice of subreddit influenced the consumer trends that were detected. In the pursuit of true and unbiased consumer trend prediction, the model cannot be influenced by the nature of the posts it has been given. More research is needed into the precise effects of the dataset filtering employed, as well as into strategies for mitigating the effects of implicit over-representation of particular consumer segments.
+
+Although this study involves model selection for both demographic segmentation and consumer trend prediction, it is still evaluated over a relatively small range of model configurations. Further study should investigate the precise effects on output quality, both in terms of following output structure as well as the correctness of results, of varying parameters such as temperature and sampling constraints. This could include an investigation into the effects of different kinds of prompting which were not included in this analysis, as well as the effects of using a fine-tuned model for demographic segmentation.
+
+Perhaps the most important direction for future work is based on a concern discussed in Experiments 2 and 3 about the evidence presented for each consumer trend. Although the model successfully produces evidence for the consumer trends that it detects, the evidence is never more than one or two posts. Real consumer trends are measured in thousands of people, rather than individuals, and a robust approach to consumer trend prediction must precisely consider the number of incidences of a particular consumer trend that it detects when producing an overall summary. More research therefore is needed into raising the `standard of evidence' that the LLM must present, in terms of number of posts cited rather than quality, if this approach is to detect true nascent consumer trends rather than individual preferences. 
 
 \printbibliography
 
 
 \cleardoublepage
-\chapter*{Appendices}
-\addcontentsline{toc}{chapter}{Appendices}
 
 \appendix
-\setcounter{chapter}{0}
+\chapter{Appendices}
+\label{app:appendices}
 
-\chapter{Figures}
+\section{Figures}
 \label{app:figures}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Confusion Matrices/LR-age-confusion-matrix.pdf}
-    \caption{Confusion matrix from age prediction with logisitc regression}
-    \label{fig:confusion-matrix-age-prediction-lr}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Confusion Matrices/RFC-age-confusion-matrix.pdf}
-    \caption{Confusion matrix from age prediction with random forest classifier}
-    \label{fig:confusion-matrix-age-prediction-rfc}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Confusion Matrices/SVC-age-confusion-matrix.pdf}
-    \caption{Confusion matrix from age prediction with SVC}
-    \label{fig:confusion-matrix-age-prediction-svc}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Confusion Matrices/LLM-age-confusion-matrix.pdf}
-    \caption{Confusion matrix from age prediction with Mistral 7B Instruct}
-    \label{fig:confusion-matrix-age-prediction-llm}
-\end{figure}
-
-\chapter{Supplementary Tables}
+\section{Supplementary Tables}
 \label{app:tables}
 
+\subsection{Tables for Experiment 1}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{lccc}
-        \toprule
-        Model & Parameter Name & Potential Values & Selected Value \\
-        \midrule
 
-        Support Vector Classifier & \texttt{C} & \{0.1, 1, 10\} & 0.1 \\
-        \addlinespace
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Model & Parameter Name & Potential Values & Selected Value \\
+\midrule
 
-        Logistic Regression & \texttt{C} & \{0.1, 1, 10\} & 1 \\
-        \addlinespace
+Support Vector Classifier & \texttt{C} & \{0.1, 1, 10\} & 0.1 \\
+\addlinespace
 
-        \multirow{2}{*}{Random Forest}
-            & \texttt{n\_estimators} & \{100, 200, 500\} & 500 \\
-            & \texttt{max\_depth} & \{10, 20, 30\} & 30 \\
+Logistic Regression & \texttt{C} & \{0.1, 1, 10\} & 1 \\
+\addlinespace
 
-        \bottomrule
-    \end{tabular}
-    \caption{Hyperparameter selection from cross-validation over age prediction}
-    \label{tab:lr-hyperparameter-selection-age}
+\multirow{2}{*}{Random Forest}
+& \texttt{n\_estimators} & \{100, 200, 500\} & 500 \\
+& \texttt{max\_depth} & \{10, 20, 30\} & 30 \\
+
+\bottomrule
+\end{tabular}
+\caption{Hyperparameter selection from cross-validation over age prediction}
+\label{tab:lr-hyperparameter-selection-age}
 \end{table}
 
 \vspace{5em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{lccc}
-        \toprule
-        Model & Parameter Name & Potential Values & Selected Value \\
-        \midrule
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Model & Parameter Name & Potential Values & Selected Value \\
+\midrule
 
-        Support Vector Classifier & \texttt{C} & \{0.1, 1, 10\} & 0.1 \\
-        \addlinespace
+Support Vector Classifier & \texttt{C} & \{0.1, 1, 10\} & 0.1 \\
+\addlinespace
 
-        Logistic Regression & \texttt{C} & \{0.1, 1, 10\} & 1 \\
-        \addlinespace
+Logistic Regression & \texttt{C} & \{0.1, 1, 10\} & 1 \\
+\addlinespace
 
-        \multirow{2}{*}{Random Forest}
-            & \texttt{n\_estimators} & \{100, 200, 500\} & 500 \\
-            & \texttt{max\_depth} & \{10, 20, 30\} & 30 \\
+\multirow{2}{*}{Random Forest}
+& \texttt{n\_estimators} & \{100, 200, 500\} & 500 \\
+& \texttt{max\_depth} & \{10, 20, 30\} & 30 \\
 
-        \bottomrule
-    \end{tabular}
-    \caption{Hyperparameter selection from cross-validation over gender prediction}
-    \label{tab:lr-hyperparameter-selection-gender}
+\bottomrule
+\end{tabular}
+\caption{Hyperparameter selection from cross-validation over gender prediction}
+\label{tab:lr-hyperparameter-selection-gender}
 \end{table}
 
 \vspace{5em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{llccc}
-        \toprule
-         Model & Vectoriser & Accuracy & Macro-averaged F1 Score & MAE \\
-         \midrule
-         \multirow{2}{*}{Support Vector Classifier}
-            & TF-IDF & 0.3650 & 0.154519 & \textbf{5.532} \\
-            & Bag of Words & 0.3584 & 0.1500 & 5.553 \\
-        \addlinespace
+\begin{table}[H]
+\centering
+\begin{tabular}{llccc}
+\toprule
+Model & Vectoriser & Accuracy & Macro-averaged F1 Score & MAE \\
+\midrule
+\multirow{2}{*}{Support Vector Classifier}
+& TF-IDF & 0.3650 & 0.154519 & \textbf{5.532} \\
+& Bag of Words & 0.3584 & 0.1500 & 5.553 \\
+\addlinespace
 
-        \multirow{2}{*}{Logistic Regression}
-            & TF-IDF & 0.3652 & 0.1537 & 5.497 \\
-            & Bag of Words & 0.3604 & 0.1510 & \textbf{5.486} \\
-        \addlinespace
+\multirow{2}{*}{Logistic Regression}
+& TF-IDF & 0.3652 & 0.1537 & 5.497 \\
+& Bag of Words & 0.3604 & 0.1510 & \textbf{5.486} \\
+\addlinespace
 
-        \multirow{2}{*}{Random Forest Classifier}
-            & TF-IDF & 0.3584 & 0.1330 & \textbf{5.660} \\
-            & Bag of Words & 0.3602 & 0.1333 & 5.679 \\
-         \bottomrule
-    \end{tabular}
-    \caption{Results from cross-validation of shallow models over age prediction}
-    \label{tab:cv-shallow-age-prediction}
+\multirow{2}{*}{Random Forest Classifier}
+& TF-IDF & 0.3584 & 0.1330 & \textbf{5.660} \\
+& Bag of Words & 0.3602 & 0.1333 & 5.679 \\
+\bottomrule
+\end{tabular}
+\caption{Results from cross-validation of shallow models over age prediction}
+\label{tab:cv-shallow-age-prediction}
 \end{table}
 
 \vspace{5em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{llcc}
-        \toprule
-         Model & Vectoriser & Accuracy & Macro-averaged F1 Score \\
-         \midrule
-         \multirow{2}{*}{Support Vector Classifier}
-            & TF-IDF & 0.6198 & \textbf{0.6193} \\
-            & Bag of Words & 0.6074 & 0.6069 \\
-        \addlinespace
+\begin{table}[H]
+\centering
+\begin{tabular}{llcc}
+\toprule
+Model & Vectoriser & Accuracy & Macro-averaged F1 Score \\
+\midrule
+\multirow{2}{*}{Support Vector Classifier}
+& TF-IDF & 0.6198 & \textbf{0.6193} \\
+& Bag of Words & 0.6074 & 0.6069 \\
+\addlinespace
 
-        \multirow{2}{*}{Logistic Regression}
-            & TF-IDF & 0.6180 & \textbf{0.6176} \\
-            & Bag of Words & 0.6068 & 0.6063 \\
-        \addlinespace
+\multirow{2}{*}{Logistic Regression}
+& TF-IDF & 0.6180 & \textbf{0.6176} \\
+& Bag of Words & 0.6068 & 0.6063 \\
+\addlinespace
 
-        \multirow{2}{*}{Random Forest Classifier}
-            & TF-IDF & 0.5946 & 0.5942 \\
-            & Bag of Words & 0.5996 & \textbf{0.5990} \\
-         \bottomrule
-    \end{tabular}
-    \caption{Results from cross-validation of shallow models over gender prediction}
-    \label{tab:cv-shallow-gender-prediction}
+\multirow{2}{*}{Random Forest Classifier}
+& TF-IDF & 0.5946 & 0.5942 \\
+& Bag of Words & 0.5996 & \textbf{0.5990} \\
+\bottomrule
+\end{tabular}
+\caption{Results from cross-validation of shallow models over gender prediction}
+\label{tab:cv-shallow-gender-prediction}
 \end{table}
 
 \vspace{4em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{llcccc}
-        \toprule
-         Model & Prompt Type & Percent Valid Output & Accuracy & F1 Score & MAE \\
-         \midrule
-         \multirow{2}{*}{Mistral Instruct}
-            & zero-shot & 94.1\% & 0.3058 & 0.0933 & 6.4182 \\
-            & few-shot & 99.9\% & 0.2158 & 0.0044 & \textbf{6.0420} \\
-        \addlinespace
+\begin{table}[H]
+\centering
+\begin{tabular}{llcccc}
+\toprule
+Model & Prompt Type & Percent Valid Output & Accuracy & F1 Score & MAE \\
+\midrule
+\multirow{2}{*}{Mistral Instruct}
+& zero-shot & 94.1\% & 0.3058 & 0.0933 & 6.4182 \\
+& few-shot & 99.9\% & 0.2158 & 0.0044 & \textbf{6.0420} \\
+\addlinespace
 
-        \multirow{2}{*}{Llama-2 Chat}
-            & zero-shot & 99.1\% & 0.2348 & 0.1008 & 9.1238 \\
-            & few-shot & 99.9\% & 0.2159 & 0.0444 & \textbf{6.0362} \\
-        \addlinespace
+\multirow{2}{*}{Llama-2 Chat}
+& zero-shot & 99.1\% & 0.2348 & 0.1008 & 9.1238 \\
+& few-shot & 99.9\% & 0.2159 & 0.0444 & \textbf{6.0362} \\
+\addlinespace
 
-        \multirow{2}{*}{Gemma 3 Instruct}
-            & zero-shot & 0\% & - & - & - \\
-            & few-shot & 99.9\% & 0.2157 & 0.0444 & \textbf{6.0416} \\
-         \bottomrule
-    \end{tabular}
-    \caption{Results from evaluation of LLMs over age prediction}
-    \label{tab:llm-comparison-age-prediction}
+\multirow{2}{*}{Deepseek Chat}
+& zero-shot & 98.7\% & 0.0877 & 0.0497 & 10.1023 \\
+& few-shot & 99.9\% & 0.2157 & 0.0444 & \textbf{6.0416} \\
+\bottomrule
+\end{tabular}
+\caption{Results from evaluation of LLMs over age prediction}
+\label{tab:llm-comparison-age-prediction}
 \end{table}
 
 \vspace{4em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{llccc}
-        \toprule
-         Model & Prompt Type & Percent Valid Output & Accuracy & F1 Score \\
-         \midrule
-         \multirow{2}{*}{Mistral Instruct}
-            & zero-shot & 94.3\% & 0.4920 & \textbf{0.48976} \\
-            & few-shot & 99.9\% & 0.4628 & 0.3164 \\
-        \addlinespace
+\begin{table}[H]
+\centering
+\begin{tabular}{llccc}
+\toprule
+Model & Prompt Type & Percent Valid Output & Accuracy & F1 Score \\
+\midrule
+\multirow{2}{*}{Mistral Instruct}
+& zero-shot & 94.3\% & 0.4920 & \textbf{0.48976} \\
+& few-shot & 99.9\% & 0.4628 & 0.3164 \\
+\addlinespace
 
-        \multirow{2}{*}{Llama-2 Chat}
-            & zero-shot & 99.6\% & 0.5311 & \textbf{0.3949} \\
-            & few-shot & 99.9\% & 0.4632 & 0.3169 \\
-        \addlinespace
+\multirow{2}{*}{Llama-2 Chat}
+& zero-shot & 99.6\% & 0.5311 & \textbf{0.3949} \\
+& few-shot & 99.9\% & 0.4632 & 0.3169 \\
+\addlinespace
 
-        \multirow{2}{*}{Gemma 3 Instruct}
-            & zero-shot & 0\% & - & - \\
-            & few-shot & 99.94\% & 0.4629 & \textbf{0.3164} \\
-         \bottomrule
-    \end{tabular}
-    \caption{Results from evaluation of the LLMs over age prediction}
-    \label{tab:llm-comparison-gender-prediction}
+\multirow{2}{*}{Deepseek Chat}
+& zero-shot & 98.8\% & 0.5163 & 0.4483 \\
+& few-shot & 99.94\% & 0.4629 & \textbf{0.3164} \\
+\bottomrule
+\end{tabular}
+\caption{Results from evaluation of the LLMs over age prediction}
+\label{tab:llm-comparison-gender-prediction}
 \end{table}
 
 \vspace{5em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{lcccc}
-        \toprule
-        Model & Percent Valid Format & Accuracy & Macro-averaged F1 Score & MAE \\
-        \midrule
-        Support Vector Classifier & 100\% & 0.4090 & 0.1724 & 5.2275 \\
-        Logistic Regression & 100\% & 0.4060 & 0.1861 & 5.1640 \\
-        Random Forest Classifier & 100\% & 0.4061 & 0.1328 & 5.2822 \\
-        Mistral 7B Instruct & 94.3\% & 0.3146 & 0.0783 & 6.0486 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Results from evaluating all of the models' age prediction, with the optimal configurations, across the entire \textit{Blog Authorship Corpus}}
-    \label{tab:full-shallow-age-prediction}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Model & Percent Valid Format & Accuracy & Macro-averaged F1 Score & MAE \\
+\midrule
+Support Vector Classifier & 100\% & 0.4090 & 0.1724 & 5.2275 \\
+Logistic Regression & 100\% & 0.4060 & 0.1861 & 5.1640 \\
+Random Forest Classifier & 100\% & 0.4061 & 0.1328 & 5.2822 \\
+Mistral Instruct & 94.3\% & 0.3146 & 0.0783 & 6.0486 \\
+\bottomrule
+\end{tabular}
+\caption{Results from evaluating all of the models' age prediction, with the optimal configurations, across the entire \textit{Blog Authorship Corpus}}
+\label{tab:full-shallow-age-prediction}
 \end{table}
 
 \vspace{5em}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{lccc}
-        \toprule
-        Model & Percent Valid Format & Accuracy & Macro-averaged F1 Score \\
-        \midrule
-        Support Vector Classifier & 100\% & 0.679 & 0.678 \\
-        Logistic Regression & 100\% & 0.678 & 0.677 \\
-        Random Forest Classifier & 100\% & 0.656 & 0.649 \\
-        Mistral 7B Instruct & 95.4\% & 0.7020 & 0.7000 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Results from evaluating all of the models' gender prediction, with the optimal configurations, across the entire \textit{Blog Authorship Corpus}}
-    \label{tab:full-shallow-gender-prediction}
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Model & Valid Format (\%) & Accuracy & Macro-averaged F1 Score \\
+\midrule
+Support Vector Classifier & 100\% & 0.679 & 0.678 \\
+Logistic Regression & 100\% & 0.678 & 0.677 \\
+Random Forest Classifier & 100\% & 0.656 & 0.649 \\
+Mistral Instruct & 95.4\% & 0.7020 & 0.7000 \\
+\bottomrule
+\end{tabular}
+\caption{Results from evaluating all of the models' gender prediction, with the optimal configurations, across the entire \textit{Blog Authorship Corpus}}
+\label{tab:full-shallow-gender-prediction}
 \end{table}
 
 
-\chapter{LLM Prompts}
+\subsection{Tables for Experiment 2}
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\multirow{2}{*}{\textbf{Model}} &
+\textbf{Stage 2 Valid Format (\%)} &
+\multicolumn{2}{c}{\textbf{Accurate Output (\%)}} \\
+& & \textbf{Stage 2\hspace{4pt}} & \textbf{Stage 3\hspace{4pt}} \\
+\midrule
+Mistral Instruct & 51.11 & 45.45 & 0 \\
+Deepseek Chat & 93.94 & & 0 \\
+Llama-3.3 70B Versatile & 100 & 87.5 & \\
+\bottomrule
+\end{tabular}
+\caption{Valid output format (Stage 2) and accuracy rates by model in stages 2 and 3.}
+\label{tab:accuracy-format-eval}
+\end{table}
+
+
+
+
+
+\clearpage
+
+\section{LLM Prompts}
 \label{app:llm-prompts}
 
 Each prompt here is followed immediately by whichever data the LLM is supposed to produce a result from.
 
 \lstset{float=false}
 
+\begin{listing}[H]
+\centering
+\begin{minipage}{\linewidth}
 \lstinputlisting[
-    firstline=2,
-    lastline=13,
-    caption={Experiment 1 zero-shot prompt},
-    label={lst:expt1-zero-shot-prompt}
+firstline=2,
+lastline=13,
+label={lst:expt1-zero-shot-prompt},
+style=promptstyle
 ]{prompts.txt}
+\end{minipage}
+\caption{Experiment 1 zero-shot prompt},
+\end{listing}
+
+
 
 \clearpage
 
 \lstinputlisting[
-    firstline=16,
-    lastline=65,
-    caption={Experiment 1 few-shot prompt},
-    label={lst:expt1-few-shot-prompt}
+firstline=16,
+lastline=65,
+caption={Experiment 1 few-shot prompt},
+label={lst:expt1-few-shot-prompt},
+style=promptstyle
 ]{prompts.txt}
 
 \lstinputlisting[
-    firstline=69,
-    lastline=85,
-    caption={Experiment 2 Trend Identification Prompt},
-    label={lst:expt2-identify-trend-prompt}
+firstline=69,
+lastline=85,
+caption={Experiment 2 Trend Identification Prompt},
+label={lst:expt2-identify-trend-prompt},
+style=promptstyle
 ]{prompts.txt}
 
 \lstinputlisting[
-    firstline=88,
-    lastline=99,
-    caption={Experiment 2 Report Summarisation Prompt},
-    label={lst:expt2-summarise-report-prompt}
+firstline=88,
+lastline=99,
+caption={Experiment 2 Report Summarisation Prompt},
+label={lst:expt2-summarise-report-prompt},
+style=promptstyle
 ]{prompts.txt}
+
+\section{Code}
+
+This section contains the code used for each experiment (Experiment 3 is omitted, as it uses exactly the same code with a different dataset). The
+
+\lstinputlisting[
+style=pythonstyle,
+caption={Experiment 1 code},
+label={lst:experiment-1}
+]{Code/experiment-1.py}
 
 \end{document}
