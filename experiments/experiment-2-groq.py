@@ -120,7 +120,9 @@ class Experiment2:
             if buckets:
                 results[(sub, age, gender)] = buckets
             else:
-                results[(sub, age, gender)] = [{"summary":"no trends detected","evidence":[],"reasoning":""}]
+                results[(sub, age, gender)] = [
+                    { "summary": "no trends detected", "evidence": [], "reasoning": ""}
+                ]
 
         return results
 
