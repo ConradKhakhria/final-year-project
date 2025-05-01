@@ -3,6 +3,19 @@ import os
 from pathlib import Path
 
 
+RELEVANT_SUBREDDITS = [
+    "food", "soda", "alcohol", "fastfood", "australia", "europe", "ireland",
+    "news", "politics", "sweden", "unitedkingdom", "worldnews", "keto",
+    "loseit", "nutrition", "running", "vegan", "vegetarian", "AskReddit",
+    "LifeProTips", "technology", "tifu", "todayilearned", "science"
+]
+
+# control
+IRRELEVANT_SUBREDDITS = [
+    "leagueoflegends", "pcmasterrace", "StarWars", "Android", "legaladvice"
+]
+
+
 DEBUG = True
 SMALL_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
 #LARGE_MODEL = "mistralai/Mistral-Nemo-Instruct-2407"
