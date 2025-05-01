@@ -289,7 +289,6 @@ class ModelClientGroq(BaseModelClient):
         *,
         batch: List[str],
         pre_prompt: str,
-        _structure_header: str,
         default_object: Any,
         max_new_tokens: int = 30
     ) -> Tuple[List[Any], List[str]]:
