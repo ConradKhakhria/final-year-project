@@ -1,0 +1,7559 @@
+{
+  "('worldnews', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "skepticism_towards_coca_cola",
+      "evidence": [
+        "d0upw64"
+      ],
+      "summary": "Doubt towards Coca-Cola funded studies"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '20-25', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '60-65', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', 'unknown', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', 'unknown', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '50-55', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '10-15', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '55-60', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '55-60', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('worldnews', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "easter_candy",
+      "evidence": [
+        "19228",
+        "2175"
+      ],
+      "summary": "Easter candy usage"
+    },
+    {
+      "label": "chocolate_orange",
+      "evidence": [
+        "17182"
+      ],
+      "summary": "Terry's Chocolate Orange"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "sushi_trend",
+      "evidence": [
+        "4ams04"
+      ],
+      "summary": "Sushi is appetizing"
+    },
+    {
+      "label": "funfetti_trend",
+      "evidence": [
+        "d138b1z"
+      ],
+      "summary": "Funfetti for breakfast"
+    },
+    {
+      "label": "bibimbap_trend",
+      "evidence": [
+        "d1hqnxw"
+      ],
+      "summary": "Bibimbap is loved"
+    }
+  ],
+  "('food', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', '15-20', 'male')": [
+    {
+      "label": "taco_bell_popular",
+      "evidence": [
+        "d1dmvr8"
+      ],
+      "summary": "Taco Bell is well liked"
+    }
+  ],
+  "('food', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('food', 'unknown', 'unknown')": [
+    {
+      "label": "valentines_day",
+      "evidence": [
+        "44f8ju"
+      ],
+      "summary": "Valentine's Day breakfast ideas"
+    }
+  ],
+  "('food', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "beer_mode",
+      "evidence": [
+        "cyk9fjy"
+      ],
+      "summary": "Beer mode at 5pm"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "cream_soda_trend",
+      "evidence": [
+        "d02v7gt"
+      ],
+      "summary": "Cream soda used in cocktail"
+    },
+    {
+      "label": "coke_consumption",
+      "evidence": [
+        "d02x37f"
+      ],
+      "summary": "Child misunderstands drinking and driving"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "pepsi_mention",
+      "evidence": [
+        "d0800qw"
+      ],
+      "summary": "Pepsi mentioned"
+    },
+    {
+      "label": "gin_vodka_mention",
+      "evidence": [
+        "d082c8s"
+      ],
+      "summary": "Gin and vodka mentioned"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "orange_crush_popularity",
+      "evidence": [
+        "d0ec0la"
+      ],
+      "summary": "Orange Crush mentioned as favorite"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '25-30', 'female')": [
+    {
+      "label": "cream_soda_trend",
+      "evidence": [
+        "cyjvbkx"
+      ],
+      "summary": "Cream soda trend mentioned"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coffee_shop_trends",
+      "evidence": [
+        "cyo7gdi"
+      ],
+      "summary": "Liquid syrup in coffee"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coke_mention",
+      "evidence": [
+        "d0c2wyl"
+      ],
+      "summary": "Coke mention found"
+    },
+    {
+      "label": "tea_preference",
+      "evidence": [
+        "d0g8i1m"
+      ],
+      "summary": "Tetley preferred over Typhoo"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "cherry_coke_popularity",
+      "evidence": [
+        "cz1vxlm"
+      ],
+      "summary": "Cherry Coke mentioned"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "competitor_mention",
+      "evidence": [
+        "czc15t3"
+      ],
+      "summary": "Bud Light mentioned"
+    },
+    {
+      "label": "alcoholic_drinks",
+      "evidence": [
+        "42rcg3"
+      ],
+      "summary": "Alcoholic drinks recommended"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coca_cola_pairing",
+      "evidence": [
+        "d0129j9"
+      ],
+      "summary": "Coca-Cola pairs well with pork"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coke_customization",
+      "evidence": [
+        "d1k6k7n"
+      ],
+      "summary": "Sparkling water in Coke"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "vanilla_trend",
+      "evidence": [
+        "cyq1pnr"
+      ],
+      "summary": "Vanilla extract mentioned"
+    },
+    {
+      "label": "coconut_trend",
+      "evidence": [
+        "cyshw2v"
+      ],
+      "summary": "Coconut flavor added"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_soda_trend",
+      "evidence": [
+        "czazgv5"
+      ],
+      "summary": "Reduced soda consumption"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coke_mention",
+      "evidence": [
+        "czr9if5"
+      ],
+      "summary": "Coke mentioned in post"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "frozen_yogurt_trend",
+      "evidence": [
+        "d12rhcf"
+      ],
+      "summary": "Frozen fruit yogurt"
+    },
+    {
+      "label": "coffee_popularity",
+      "evidence": [
+        "d13lp47"
+      ],
+      "summary": "Coffee is popular"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '20-25', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "cola_demand",
+      "evidence": [
+        "cytkgix"
+      ],
+      "summary": "Cola is popular"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coca_cola_pr_flop",
+      "evidence": [
+        "czhs8w3"
+      ],
+      "summary": "Coca Cola's New Coke was a PR flop"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "soda_consumption",
+      "evidence": [
+        "d1gddnq"
+      ],
+      "summary": "Soda consumption mentioned"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '30-35', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "soda_preference",
+      "evidence": [
+        "40c86e"
+      ],
+      "summary": "Favorite soda type"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coca_cola_interest",
+      "evidence": [
+        "41p1ji"
+      ],
+      "summary": "Coca-Cola Freestyle Machine recipes"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "tea_preference",
+      "evidence": [
+        "d0qesdl"
+      ],
+      "summary": "Non-iced tea preference"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coke_preference",
+      "evidence": [
+        "czmucsj"
+      ],
+      "summary": "Teens prefer coke over alcohol"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '60-65', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '60-65', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '60-65', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', 'unknown', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', 'unknown', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "soda_consumption_down",
+      "evidence": [
+        "cza9c0q"
+      ],
+      "summary": "Soda consumption is decreasing"
+    },
+    {
+      "label": "pepsi_mention",
+      "evidence": [
+        "czbtumw"
+      ],
+      "summary": "Pepsi mentioned as mix with rum"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "beers_consumed",
+      "evidence": [
+        "czr2j6k"
+      ],
+      "summary": "Drinks 35 beers daily"
+    },
+    {
+      "label": "pepsi_deal",
+      "evidence": [
+        "czth8fr"
+      ],
+      "summary": "Pepsi gas deal exists"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '50-55', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '70-75', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '70-75', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '10-15', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '10-15', 'unknown')": [
+    {
+      "label": "free_coke_promo",
+      "evidence": [
+        "czp7b9d"
+      ],
+      "summary": "Free Coke promo at McDonald's"
+    }
+  ],
+  "('AskReddit', '75-80', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '75-80', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '55-60', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '55-60', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '65-70', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '65-70', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '45-50', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '45-50', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '40-45', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '40-45', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '5-10', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('AskReddit', '5-10', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "exotic_coffee",
+      "evidence": [
+        "47ajhf",
+        "d0e2jcz"
+      ],
+      "summary": "Kopi Luwak coffee made from feces"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '20-25', 'male')": [
+    {
+      "label": "coca_cola_mention",
+      "evidence": [
+        "cyk7dm0"
+      ],
+      "summary": "Coca-Cola mentioned"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '20-25', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '60-65', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', 'unknown', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "competitor_move",
+      "evidence": [
+        "44o956"
+      ],
+      "summary": "Quaker Oats competitor move"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '10-15', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '10-15', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '75-80', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '55-60', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '45-50', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('todayilearned', '0-5', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('LifeProTips', 'unknown', 'unknown')": [
+    {
+      "label": "hangover_remedies",
+      "evidence": [
+        "4641av"
+      ],
+      "summary": "Drink water before sleep"
+    },
+    {
+      "label": "drinking_habits",
+      "evidence": [
+        "3zf3gy",
+        "czkbl5l"
+      ],
+      "summary": "Drinks with friends"
+    }
+  ],
+  "('LifeProTips', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "soda_size_limit",
+      "evidence": [
+        "czam06u"
+      ],
+      "summary": "Limit soda size"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '20-25', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '35-40', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "dr_pepper_mention",
+      "evidence": [
+        "d0p8rdt"
+      ],
+      "summary": "Dr. Pepper mentioned"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '30-35', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '60-65', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', 'unknown', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', 'unknown', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '50-55', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '70-75', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '70-75', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '55-60', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '45-50', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '45-50', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '40-45', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('politics', '5-10', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "alkaline_water",
+      "evidence": [
+        "43u687"
+      ],
+      "summary": "Alkaline water filter"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '30-35', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', 'unknown', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', 'unknown', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '50-55', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '70-75', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '70-75', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '10-15', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '10-15', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '75-80', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '55-60', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '55-60', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '40-45', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('news', '5-10', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('sweden', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coke_preference",
+      "evidence": [
+        "d0bo93v"
+      ],
+      "summary": "Coke preferred over Sprite"
+    },
+    {
+      "label": "alcohol_consumption",
+      "evidence": [
+        "16366"
+      ],
+      "summary": "Alcohol consumed to numb feelings"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '35-40', 'male')": [
+    {
+      "label": "home_brewed_wine",
+      "evidence": [
+        "46ivfd"
+      ],
+      "summary": "Home brewed wine gift"
+    }
+  ],
+  "('tifu', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "coke_mention",
+      "evidence": [
+        "47wa2r"
+      ],
+      "summary": "Coke mentioned in post"
+    }
+  ],
+  "('tifu', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', 'unknown', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', 'unknown', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('tifu', '70-75', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '10-15', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('europe', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('loseit', '25-30', 'male')": [
+    {
+      "label": "water_goals",
+      "evidence": [
+        "4com7v"
+      ],
+      "summary": "Users hitting water goals"
+    }
+  ],
+  "('loseit', '25-30', 'female')": [
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "cyqovzu",
+        "cytfur0",
+        "44yjbf",
+        "czvpaev",
+        "d00gszt"
+      ],
+      "summary": "Low calorie diets"
+    },
+    {
+      "label": "weight_loss_journey",
+      "evidence": [
+        "cykawq3",
+        "3zmy2w",
+        "cz0rljj",
+        "44yjbf"
+      ],
+      "summary": "Weight loss progress"
+    },
+    {
+      "label": "healthy_lifestyle",
+      "evidence": [
+        "cykawq3",
+        "3zmy2w",
+        "cz2dng4",
+        "44yjbf"
+      ],
+      "summary": "Healthy lifestyle changes"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "d09fwiq",
+        "d0ehkd1",
+        "d0o99gh"
+      ],
+      "summary": "Users track calories"
+    },
+    {
+      "label": "water_intake",
+      "evidence": [
+        "d093ixs",
+        "d0jx8i9"
+      ],
+      "summary": "Users focus on water"
+    },
+    {
+      "label": "healthy_drinks",
+      "evidence": [
+        "d0kxi7e"
+      ],
+      "summary": "Tea is a popular choice"
+    },
+    {
+      "label": "balanced_diet",
+      "evidence": [
+        "d0o99gh",
+        "d0sds5f"
+      ],
+      "summary": "Users aim for balance"
+    },
+    {
+      "label": "sugar_free_trend",
+      "evidence": [
+        "49l0tg"
+      ],
+      "summary": "Reducing sugar intake"
+    },
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "4azx4r",
+        "4bvmk3"
+      ],
+      "summary": "Tracking calories"
+    },
+    {
+      "label": "healthy_eating_trend",
+      "evidence": [
+        "d0votx2",
+        "d10y2l3"
+      ],
+      "summary": "Preparing healthy meals"
+    }
+  ],
+  "('loseit', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('loseit', '20-25', 'female')": [
+    {
+      "label": "water_importance",
+      "evidence": [
+        "d0qowug"
+      ],
+      "summary": "Water is essential"
+    },
+    {
+      "label": "healthy_snacks",
+      "evidence": [
+        "d0qowug",
+        "4ab6nw"
+      ],
+      "summary": "Nuts and yogurt are healthy"
+    },
+    {
+      "label": "low_calorie_options",
+      "evidence": [
+        "4ab6nw",
+        "d1dt157"
+      ],
+      "summary": "Low calorie options are preferred"
+    }
+  ],
+  "('loseit', '35-40', 'male')": [
+    {
+      "label": "low_calorie_drinks",
+      "evidence": [
+        "3zzcqx"
+      ],
+      "summary": "Cutting calories from drinks"
+    },
+    {
+      "label": "water_preference",
+      "evidence": [
+        "3zzcqx"
+      ],
+      "summary": "Drinking water instead of Coke"
+    }
+  ],
+  "('loseit', '35-40', 'female')": [
+    {
+      "label": "busy_lifestyles",
+      "evidence": [
+        "426fu2"
+      ],
+      "summary": "Busy schedules hinder healthy habits"
+    }
+  ],
+  "('loseit', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('loseit', '30-35', 'female')": [
+    {
+      "label": "low_calorie_goals",
+      "evidence": [
+        "3z6y7c"
+      ],
+      "summary": "Dieter aims for 1500-1600 calories"
+    },
+    {
+      "label": "macro_ratio_debate",
+      "evidence": [
+        "3z6y7c"
+      ],
+      "summary": "Debating ideal macro ratios"
+    }
+  ],
+  "('loseit', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('loseit', '15-20', 'female')": [
+    {
+      "label": "emotional_eating",
+      "evidence": [
+        "43iare"
+      ],
+      "summary": "Emotional eating is a concern"
+    },
+    {
+      "label": "low_calorie_diets",
+      "evidence": [
+        "48xafa",
+        "d0o3bss"
+      ],
+      "summary": "Low calorie diets are discussed"
+    },
+    {
+      "label": "binge_eating",
+      "evidence": [
+        "43iare"
+      ],
+      "summary": "Binge eating is mentioned"
+    }
+  ],
+  "('loseit', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('loseit', 'unknown', 'male')": [
+    {
+      "label": "soda_avoidance",
+      "evidence": [
+        "43r27w",
+        "49x10e"
+      ],
+      "summary": "Users avoid soda for weight loss"
+    }
+  ],
+  "('loseit', 'unknown', 'female')": [
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "45whvx"
+      ],
+      "summary": "Calorie counting aids weight loss"
+    }
+  ],
+  "('loseit', 'unknown', 'unknown')": [
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "14001",
+        "15175",
+        "19006",
+        "14360"
+      ],
+      "summary": "Users track calories"
+    },
+    {
+      "label": "water_intake",
+      "evidence": [
+        "15175"
+      ],
+      "summary": "Drinking water helps"
+    },
+    {
+      "label": "exercise_importance",
+      "evidence": [
+        "15175",
+        "18498",
+        "19006",
+        "14360"
+      ],
+      "summary": "Exercise aids weight loss"
+    },
+    {
+      "label": "sugar_awareness",
+      "evidence": [
+        "14360"
+      ],
+      "summary": "Users aware of sugar content"
+    },
+    {
+      "label": "portion_control",
+      "evidence": [
+        "14001",
+        "14360"
+      ],
+      "summary": "Users practice portion control"
+    },
+    {
+      "label": "dietary_changes",
+      "evidence": [
+        "19535",
+        "19006",
+        "14360"
+      ],
+      "summary": "Users make dietary changes"
+    }
+  ],
+  "('loseit', '40-45', 'male')": [
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "40vyia"
+      ],
+      "summary": "User tracks calories"
+    }
+  ],
+  "('technology', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '60-65', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '60-65', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('technology', '10-15', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '25-30', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '15-20', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('australia', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '25-30', 'male')": [
+    {
+      "label": "vegan_demand",
+      "evidence": [
+        "414aba",
+        "47gt2m",
+        "49ewaj"
+      ],
+      "summary": "Vegan options in demand"
+    },
+    {
+      "label": "plant_based_protein",
+      "evidence": [
+        "cyn8jys",
+        "47aa62"
+      ],
+      "summary": "Plant-based protein sources"
+    },
+    {
+      "label": "sustainable_living",
+      "evidence": [
+        "cyn8jys",
+        "49ewaj"
+      ],
+      "summary": "Sustainable living trends"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '25-30', 'female')": [
+    {
+      "label": "vegan_trend",
+      "evidence": [
+        "czwllk8",
+        "czb9nus",
+        "czjfr7z",
+        "d0e4kjw"
+      ],
+      "summary": "Vegan diet and lifestyle"
+    },
+    {
+      "label": "plant_based",
+      "evidence": [
+        "czwllk8",
+        "d0e4kjw"
+      ],
+      "summary": "Plant-based diet benefits"
+    },
+    {
+      "label": "gluten_free",
+      "evidence": [
+        "d17ga64"
+      ],
+      "summary": "Gluten-free diet importance"
+    },
+    {
+      "label": "non_dairy",
+      "evidence": [
+        "czjfr7z"
+      ],
+      "summary": "Non-dairy creamer preference"
+    },
+    {
+      "label": "vegan_recipes",
+      "evidence": [
+        "d1bu138"
+      ],
+      "summary": "Vegan recipes are popular"
+    }
+  ],
+  "('vegan', '20-25', 'male')": [
+    {
+      "label": "vegan_lifestyle",
+      "evidence": [
+        "cynfb99",
+        "czjy9m2",
+        "czraett",
+        "47gjdf"
+      ],
+      "summary": "Vegan diet and lifestyle trends"
+    },
+    {
+      "label": "plant_based",
+      "evidence": [
+        "d04m7ei"
+      ],
+      "summary": "Plant-based arguments and views"
+    },
+    {
+      "label": "vegan_awareness",
+      "evidence": [
+        "44x7zo",
+        "47gjdf"
+      ],
+      "summary": "Vegan awareness and education trends"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '20-25', 'female')": [
+    {
+      "label": "vegan_cheese",
+      "evidence": [
+        "49r4up"
+      ],
+      "summary": "Vegan cheese is popular"
+    },
+    {
+      "label": "vegan_lifestyle",
+      "evidence": [
+        "4739ai"
+      ],
+      "summary": "Vegan lifestyle is trending"
+    },
+    {
+      "label": "plant_based_recipes",
+      "evidence": [
+        "42fpkc",
+        "441hww"
+      ],
+      "summary": "Plant-based recipes are shared"
+    },
+    {
+      "label": "plant_based_diet",
+      "evidence": [
+        "4bl4qt"
+      ],
+      "summary": "Veganism for weight loss"
+    }
+  ],
+  "('vegan', '20-25', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegan', '15-20', 'female')": [
+    {
+      "label": "vegan_ice_cream",
+      "evidence": [
+        "43byrz"
+      ],
+      "summary": "Vegan strawberry cheesecake ice cream"
+    }
+  ],
+  "('vegan', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '60-65', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '10-15', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('unitedkingdom', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '10-15', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '55-60', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '45-50', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('science', '40-45', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '30-35', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '50-55', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '50-55', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('ireland', '45-50', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('nutrition', '25-30', 'male')": [
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "d0ywv1r"
+      ],
+      "summary": "Consuming low calorie drinks"
+    },
+    {
+      "label": "no_sugar_trend",
+      "evidence": [
+        "d02vvr1"
+      ],
+      "summary": "Eating less food for weight loss"
+    }
+  ],
+  "('nutrition', '25-30', 'female')": [
+    {
+      "label": "nut_butter_digest",
+      "evidence": [
+        "d0v8fpe"
+      ],
+      "summary": "Nut butters are hard to digest"
+    }
+  ],
+  "('nutrition', '20-25', 'male')": [
+    {
+      "label": "fruit_till_noon",
+      "evidence": [
+        "3zadyr"
+      ],
+      "summary": "Fruit only diet trend"
+    },
+    {
+      "label": "flavor_addition",
+      "evidence": [
+        "42u8v4"
+      ],
+      "summary": "Healthy flavor addition methods"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [
+        "czqsrb7",
+        "d0wz325"
+      ],
+      "summary": "no trends detected"
+    }
+  ],
+  "('nutrition', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('nutrition', '35-40', 'male')": [
+    {
+      "label": "sugar_concerns",
+      "evidence": [
+        "cyybpua"
+      ],
+      "summary": "Ditch sugar for health"
+    }
+  ],
+  "('nutrition', '15-20', 'male')": [
+    {
+      "label": "water_importance",
+      "evidence": [
+        "d05r0cy"
+      ],
+      "summary": "Drink more water"
+    }
+  ],
+  "('nutrition', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('nutrition', 'unknown', 'unknown')": [
+    {
+      "label": "low_calorie_trend",
+      "evidence": [
+        "45bxmi"
+      ],
+      "summary": "Low calorie cooking sprays trend"
+    }
+  ],
+  "('running', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    },
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', 'unknown', 'unknown')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '55-60', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '45-50', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('running', '40-45', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('keto', '25-30', 'male')": [
+    {
+      "label": "keto_diet_popularity",
+      "evidence": [
+        "48p5u6",
+        "49xd6o",
+        "4c0nix"
+      ],
+      "summary": "Keto diet is popular"
+    },
+    {
+      "label": "bacon_consumption",
+      "evidence": [
+        "d0tr8x0"
+      ],
+      "summary": "Bacon is a staple food"
+    },
+    {
+      "label": "coffee_consumption",
+      "evidence": [
+        "d13nwyw"
+      ],
+      "summary": "Coffee is a common drink"
+    }
+  ],
+  "('keto', '25-30', 'female')": [
+    {
+      "summary": "no trends detected",
+      "evidence": [],
+      "reasoning": ""
+    }
+  ],
+  "('keto', '20-25', 'male')": [
+    {
+      "label": "low_carb_demand",
+      "evidence": [
+        "49ku48"
+      ],
+      "summary": "Keto dieters seek low carb options"
+    },
+    {
+      "label": "electrolyte_supplementation",
+      "evidence": [
+        "49ku48"
+      ],
+      "summary": "Keto dieters use electrolyte supplements"
+    },
+    {
+      "label": "sugar_free_preference",
+      "evidence": [
+        "49ku48"
+      ],
+      "summary": "Keto dieters prefer sugar free products"
+    },
+    {
+      "label": "meal_replacement_interest",
+      "evidence": [
+        "cyw64a8"
+      ],
+      "summary": "Keto dieters consider meal replacements"
+    }
+  ],
+  "('keto', '20-25', 'female')": [
+    {
+      "summary": "no trends detected",
+      "evidence": [],
+      "reasoning": ""
+    }
+  ],
+  "('keto', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('keto', '35-40', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('keto', '30-35', 'male')": [
+    {
+      "label": "low_carb_concerns",
+      "evidence": [
+        "d0x8c2d"
+      ],
+      "summary": "Low carb diets may affect thyroid"
+    }
+  ],
+  "('keto', '30-35', 'female')": [
+    {
+      "label": "low_carb_trend",
+      "evidence": [
+        "418aw7",
+        "d08tfyq",
+        "4a9tlf"
+      ],
+      "summary": "Low carb diet trend"
+    },
+    {
+      "label": "health_concerns",
+      "evidence": [
+        "418aw7",
+        "4a9tlf"
+      ],
+      "summary": "Health concerns on keto"
+    }
+  ],
+  "('keto', '15-20', 'male')": [
+    {
+      "label": "intermittent_fasting",
+      "evidence": [
+        "d0r5tog"
+      ],
+      "summary": "Fasting all day"
+    }
+  ],
+  "('keto', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('keto', 'unknown', 'unknown')": [
+    {
+      "label": "keto_diet",
+      "evidence": [
+        "cyv72ht",
+        "cz9r0ve",
+        "czlcokx",
+        "46t6nb",
+        "47i1l6",
+        "4bthq5",
+        "d1ioj83"
+      ],
+      "summary": "Keto diet discussed"
+    },
+    {
+      "label": "low_carb",
+      "evidence": [
+        "47i1l6"
+      ],
+      "summary": "Low carb mentioned"
+    },
+    {
+      "label": "fast_food",
+      "evidence": [
+        "4bthq5"
+      ],
+      "summary": "Fast food options discussed"
+    }
+  ],
+  "('keto', '50-55', 'male')": [
+    {
+      "label": "sugar_concerns",
+      "evidence": [
+        "d192dpi"
+      ],
+      "summary": "Concerns about sugar in foods"
+    }
+  ],
+  "('keto', '40-45', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('alcohol', '25-30', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('alcohol', '20-25', 'male')": [
+    {
+      "label": "online_alcohol_purchases",
+      "evidence": [
+        "49en3g"
+      ],
+      "summary": "Interest in buying alcohol online"
+    },
+    {
+      "label": "rum_preferences",
+      "evidence": [
+        "4496wd"
+      ],
+      "summary": "Seeking rum recommendations"
+    },
+    {
+      "label": "no_coca_cola_trends",
+      "evidence": [],
+      "summary": "No trends detected"
+    }
+  ],
+  "('vegetarian', '25-30', 'male')": [
+    {
+      "label": "plant_based_diets",
+      "evidence": [
+        "cyjedlh",
+        "42zrw1",
+        "4597mq"
+      ],
+      "summary": "Users adopting plant-based diets"
+    },
+    {
+      "label": "animal_welfare",
+      "evidence": [
+        "cyjedlh",
+        "42zrw1",
+        "d09kqls",
+        "d1gd39z"
+      ],
+      "summary": "Concern for animal welfare"
+    }
+  ],
+  "('vegetarian', '25-30', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegetarian', '20-25', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegetarian', '35-40', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegetarian', '30-35', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegetarian', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegetarian', '15-20', 'female')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('vegetarian', 'unknown', 'unknown')": [
+    {
+      "label": "soda_supports_meat",
+      "evidence": [
+        "43wwvq"
+      ],
+      "summary": "Soda supports meat industry"
+    }
+  ],
+  "('fastfood', '25-30', 'male')": [
+    {
+      "label": "competitor_health",
+      "evidence": [
+        "486tqo"
+      ],
+      "summary": "Taco Bell promotes healthy menu items"
+    }
+  ],
+  "('fastfood', '25-30', 'female')": [
+    {
+      "label": "mint_flavor_demand",
+      "evidence": [
+        "44pg5s"
+      ],
+      "summary": "Demand for mint flavor in drinks"
+    }
+  ],
+  "('fastfood', '20-25', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ],
+  "('fastfood', '15-20', 'male')": [
+    {
+      "label": "no_trends",
+      "evidence": [],
+      "summary": "no trends detected"
+    }
+  ]
+}
