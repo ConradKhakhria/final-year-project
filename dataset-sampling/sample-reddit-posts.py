@@ -24,10 +24,15 @@ def read_lines_zst(path):
                 buf = lines[-1]
 
 def sample_worker(args):
+    import time
     path, k = args
     heap = []
     count = 0
+    last_report = time.time()
+    print(f"[{os.getpid()}] Sampling from {path}")
+
     for raw in read_lines_zst(path):
+        count += 1
         try:
             obj = json.loads(raw.decode('utf-8'))
         except:
@@ -38,7 +43,12 @@ def sample_worker(args):
         else:
             if r > heap[0][0]:
                 heapq.heapreplace(heap, (r, obj))
-        count += 1
+        if count % 100000 == 0:
+            now = time.time()
+            print(f"[{os.getpid()}] {count:,} lines processed ({int(now - last_report)}s since last report)")
+            last_report = now
+
+    print(f"[{os.getpid()}] Finished {path} with {count:,} total lines, {len(heap)} samples.")
     return heap
 
 def merge_heaps(heaps, k):
