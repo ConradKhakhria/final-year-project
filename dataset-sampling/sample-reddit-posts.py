@@ -50,8 +50,8 @@ def merge_heaps(heaps, k):
 
 if __name__ == "__main__":
     input_paths = [
-        "reddit_data/RC_2025-03.zst",
-        "reddit_data/RS_2025-03.zst"
+#        "reddit_data/reddit/comments/RC_2025-03.zst",
+        "reddit_data/reddit/submissions/RS_2025-03.zst"
     ]
     total_sample = 100_000
 
