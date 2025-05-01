@@ -580,7 +580,7 @@ if __name__ == "__main__":
         model_cfg = model_configs[model_names]
 
         for dataset_name, dataset_filename in datasets.items():
-            reddit_df = pd.read_parquet(config.CODE_DIR / "data" / dataset_filename)
+            reddit_df = pd.read_parquet(config.DATASET_DIR / dataset_filename)
             reddit_df["date_posted"] = pd.to_datetime(reddit_df["created_utc"], unit="s")
 
             for selection in ["irrelevant"]:
