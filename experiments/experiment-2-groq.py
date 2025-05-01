@@ -245,12 +245,7 @@ if __name__ == "__main__":
 
     for group in ["relevant", "irrelevant"]:
         for period in ["current", "historical"]:
-            df_path = (
-                Path.home() / "UCL" / "FYP" / "results"
-                / "overall-results-historical-and-current-data"
-                / f"expt2-{group}-subreddits-{period}-data" / "mistral"
-                / "demographic-inferences.parquet"
-            )
+            df_path = config.DATASET_DIR / f"combined-filtered-reddit-data.parquet"
             df = experiment.load_df(df_path)
 
             trends, summaries = experiment.run(df)
