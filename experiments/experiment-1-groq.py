@@ -7,8 +7,9 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import *
 
-import config
-import dataset
+import src.config as config
+import src.dataset as dataset
+import src.model as model
 
 
 class Experiment1:
@@ -21,13 +22,10 @@ class Experiment1:
         self.X, self.y = self.get_Xy(self.dataset)
 
         # Directories
-        self.base_dir = Path.home() / "UCL" / "FYP" / "code"
-        self.output_directory = self.base_dir / "groq-results" / "experiment-1"
+        self.output_directory = config.RESULTS_DIR / "groq-results" / "experiment-1"
         self.output_directory.mkdir(parents=True, exist_ok=True)
 
-        api_key = (self.base_dir / "groq-access-token.txt").read_text().strip()
-        self.client = Groq(api_key=api_key)
-
+        self.api_key = (config.CODE_DIR / "groq-access-token.txt").read_text().strip()
         self.pre_prompt = (self.base_dir / "pre-prompts" / pre_prompt).read_text()
 
 
@@ -38,9 +36,7 @@ class Experiment1:
     # ===== Preprocessing ===== #
 
     def get_age_range_midpoints(self, age_ranges: List[str]) -> Dict[str, float]:
-        """
-        Returns a dict mapping each age range to its midpoint
-        """
+        """Returns a dict mapping each age range to its midpoint"""
         midpoints = {}
 
         for r in age_ranges:
@@ -50,9 +46,7 @@ class Experiment1:
 
 
     def get_Xy(self, dl: dataset.DatasetLoader) -> tuple:
-        """
-        Returns the correct X and y vectors
-        """
+        """Returns the correct X and y vectors"""
         X, y_age = dl.get_Xy("test", "age")
         _, y_gender = dl.get_Xy("test", "gender")
 
@@ -63,27 +57,15 @@ class Experiment1:
 
     # ===== Experiment ===== #
 
-    def batch_to_prompt(self, batch: np.ndarray) -> List[dict]:
-        """
-        Turns a list of posts into a single prompt
-        """
-        user_message = ""
-
-        for i, post in enumerate(batch):
-            user_message += f"[input {i + 1}]: {post}\n"
-
-        return [
-            { "role": "system", "content": self.pre_prompt },
-            { "role": "user", "content": user_message}
-        ]
+    def batch_to_prompt(self, batch: np.ndarray) -> str:
+        """Turns a list of posts into a single prompt"""
+        return "\n".join(f"[input {i + 1}]: {post}" for i, post in enumerate(batch))
 
 
     def create_evaluation(
         self, y_pred_df: pd.DataFrame, y_true_df: pd.DataFrame, label: str
     ) -> dict:
-        """
-        Creates a numeric evaluation
-        """
+        """Creates a numeric evaluation"""
         valid_idxs = y_pred_df[label].notnull()
 
         if label == "age":
@@ -125,6 +107,11 @@ class Experiment1:
         returns:
         For each of age and gender, a dictionary with an evaluation
         """
+        model_client = model.ModelClientGroq(
+            model_id=model_name,
+            api_key=self.api_key
+        )
+
         # 1. Make predictions
         predictions = []
 
@@ -132,21 +119,13 @@ class Experiment1:
             print(f"computing batch {batch_start // batch_size} of {len(self.X) // batch_size}")
             batch = self.X[batch_start : batch_start + batch_size]
             messages = self.batch_to_prompt(batch)
-            completion = self.client.chat.completions.create(
-                model=model_name,
-                messages=messages,
-                temperature=0.2,
-                max_completion_tokens=500
+            json_output, _ = model_client.process_structured_batch(
+                batch=batch,
+                pre_prompt=self.pre_prompt,
+                default_object={ "age": None, "gender": None },
+                max_new_tokens=500
             )
-
-            # Parse output
-            try:
-                json_string = completion.choices[0].message.content
-                predictions.extend(json.loads(json_string))
-            except:
-                config.debug("Failed to decode json")
-                predictions.extend([{ "age": None, "gender": None } for _ in range(batch_size)])
-
+            predictions.extend(json_output)
 
         # 2. Evaluate predictions
         y_pred_df = pd.DataFrame(predictions)
