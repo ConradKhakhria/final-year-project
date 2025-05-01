@@ -4,15 +4,21 @@ import json
 import random
 import heapq
 import multiprocessing as mp
-
+from multiprocessing import Queue, Process
 import zstandard as zstd
 import pandas as pd
 
-def read_lines_zst(path):
+SAMPLE_SIZE = 100_000
+NUM_WORKERS = mp.cpu_count()
+ZST_PATH = "reddit_data/reddit/submissions/RS_2025-03.zst"
+QUEUE_MAXSIZE = 10000
+
+def read_lines_zst(path, out_queue, sentinel, verbose=True):
     with open(path, 'rb') as f:
         dctx = zstd.ZstdDecompressor(max_window_size=2**31)
         with dctx.stream_reader(f) as reader:
             buf = b''
+            count = 0
             while True:
                 chunk = reader.read(2**27)
                 if not chunk:
@@ -20,21 +26,23 @@ def read_lines_zst(path):
                 buf += chunk
                 lines = buf.split(b'\n')
                 for line in lines[:-1]:
-                    yield line
+                    out_queue.put(line)
+                    count += 1
+                    if verbose and count % 100000 == 0:
+                        print(f"[Producer] {count:,} lines queued")
                 buf = lines[-1]
+    for _ in range(NUM_WORKERS):
+        out_queue.put(sentinel)
 
-def sample_worker(args):
-    import time
-    path, k = args
+def worker(worker_id, in_queue, sentinel, k, return_dict):
     heap = []
     count = 0
-    last_report = time.time()
-    print(f"[{os.getpid()}] Sampling from {path}")
-
-    for raw in read_lines_zst(path):
-        count += 1
+    while True:
+        line = in_queue.get()
+        if line is sentinel:
+            break
         try:
-            obj = json.loads(raw.decode('utf-8'))
+            obj = json.loads(line.decode('utf-8'))
         except:
             continue
         r = random.random()
@@ -43,33 +51,39 @@ def sample_worker(args):
         else:
             if r > heap[0][0]:
                 heapq.heapreplace(heap, (r, obj))
+        count += 1
         if count % 100000 == 0:
-            now = time.time()
-            print(f"[{os.getpid()}] {count:,} lines processed ({int(now - last_report)}s since last report)")
-            last_report = now
-
-    print(f"[{os.getpid()}] Finished {path} with {count:,} total lines, {len(heap)} samples.")
-    return heap
+            print(f"[Worker {worker_id}] {count:,} processed")
+    return_dict[worker_id] = heap
 
 def merge_heaps(heaps, k):
-    merged = []
-    for heap in heaps:
-        merged.extend(heap)
-    merged.sort(key=lambda x: x[0], reverse=True)
-    return [x[1] for x in merged[:k]]
+    combined = []
+    for h in heaps.values():
+        combined.extend(h)
+    combined.sort(key=lambda x: x[0], reverse=True)
+    return [x[1] for x in combined[:k]]
 
 if __name__ == "__main__":
-    input_paths = [
-#        "reddit_data/reddit/comments/RC_2025-03.zst",
-        "reddit_data/reddit/submissions/RS_2025-03.zst"
+    manager = mp.Manager()
+    q = mp.Queue(maxsize=QUEUE_MAXSIZE)
+    sentinel = b"__SENTINEL__"
+
+    return_dict = manager.dict()
+
+    producer = Process(target=read_lines_zst, args=(ZST_PATH, q, sentinel))
+    workers = [
+        Process(target=worker, args=(i, q, sentinel, SAMPLE_SIZE, return_dict))
+        for i in range(NUM_WORKERS)
     ]
-    total_sample = 100_000
 
-    pool = mp.Pool(processes=len(input_paths))
-    heaps = pool.map(sample_worker, [(p, total_sample) for p in input_paths])
-    pool.close()
-    pool.join()
+    producer.start()
+    for w in workers:
+        w.start()
 
-    sampled = merge_heaps(heaps, total_sample)
-    df = pd.DataFrame(sampled)
-    df.to_parquet("sampled_reddit.parquet", compression='brotli')
+    producer.join()
+    for w in workers:
+        w.join()
+
+    final_sample = merge_heaps(return_dict, SAMPLE_SIZE)
+    df = pd.DataFrame(final_sample)
+    df.to_parquet("sampled_reddit.parquet", compression="brotli")
