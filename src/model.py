@@ -319,3 +319,7 @@ class ModelClientGroq(BaseModelClient):
                 failed_to_parse.append(text_output)
 
         return results, failed_to_parse
+
+
+    def __del__(self):
+        pass
