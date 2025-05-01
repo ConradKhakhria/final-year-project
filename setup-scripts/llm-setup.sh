@@ -23,17 +23,7 @@ echo "[INFO] Installing Python requirements..."
 # Install PyTorch + CUDA 12.1 build
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 # Install vLLM and its core dependencies
-pip install transformers datasets pandas vllm
-
-# === ENVIRONMENT VARIABLES ===
-echo "[INFO] Setting up environment variables..."
-# Replace <your-huggingface-token-here> manually or script it
-echo 'export HF_TOKEN="<your-huggingface-token-here>"' >> ~/.bashrc
-echo 'export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True' >> ~/.bashrc
-
-# Immediate export for current session
-export HF_TOKEN="<your-huggingface-token-here>"
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+pip install transformers datasets pandas vllm groq
 
 # Create necessary directories
 mkdir -p ~/.cache/huggingface ~/.tmp ~/data ~/results
