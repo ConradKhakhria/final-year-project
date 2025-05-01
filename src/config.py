@@ -2,6 +2,9 @@ import datetime
 import os
 from pathlib import Path
 
+# Controls how much output is generated
+DEBUG = True
+
 
 RELEVANT_SUBREDDITS = [
     "food", "soda", "alcohol", "fastfood", "australia", "europe", "ireland",
@@ -10,16 +13,10 @@ RELEVANT_SUBREDDITS = [
     "LifeProTips", "technology", "tifu", "todayilearned", "science"
 ]
 
-# control
 IRRELEVANT_SUBREDDITS = [
     "leagueoflegends", "pcmasterrace", "StarWars", "Android", "legaladvice"
 ]
 
-
-DEBUG = True
-SMALL_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-#LARGE_MODEL = "mistralai/Mistral-Nemo-Instruct-2407"
-LARGE_MODEL = SMALL_MODEL
 
 # directories
 CACHE_DIR = Path.home() / ".cache"
@@ -36,16 +33,12 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 # Some helper functions
 
 def output(msg: str, msg_type: str = "output"):
-    """
-    Prints a message with a timestamp 
-    """
+    """Prints a message with a timestamp """
     print(f"[{msg_type} {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]: {msg}")
 
 
 def debug(msg: str):
-    """
-    Prints the debug message, if DEBUG == True
-    """
+    """Prints the debug message, if DEBUG == True"""
 
     global DEBUG
 
