@@ -587,6 +587,8 @@ class Experiment2:
 
         demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
+        return
+
         # === Stage 2: mini reports ===
         pre2 = config.CODE_DIR / "pre-prompts" / "expt2-stage-2.txt"
         self.batch_model.load_pre_prompt(pre2)
@@ -654,7 +656,7 @@ if __name__ == "__main__":
     }
 
     datasets = {
-        "historical": "combined-filtered-reddit-data.parquet",
+#        "historical": "combined-filtered-reddit-data.parquet",
         "current": "2025-combined-filtered-reddit-data.parquet"
     }
 
