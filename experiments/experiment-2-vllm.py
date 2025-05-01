@@ -7,14 +7,17 @@ import pandas as pd
 from pathlib import Path
 import sys
 import torch
-from typing import Any, Dict, Iterator, List, Literal, Optional, Tuple, no_type_check
+from typing import Any, Dict, List, Literal, Tuple
 
-import config
-import dataset
-import model
+import src.config as config
+import src.dataset as dataset
+import src.model as model
 
 
 MAX_PROMPT_TOKENS = 4000
+
+# Governs the phase of the experiment
+EVALUATE_ALL_MODELS = False
 
 
 class Experiment2:
@@ -37,8 +40,7 @@ class Experiment2:
     def select_test_df(
         self, relevance: Literal["relevant", "irrelevant"], num_samples: int | None = None
     ) -> pd.DataFrame:
-        """
-        Selects the testing df
+        """Selects the testing df
 
         args:
         - relevance: whether to select the relevant or irrelevant subreddits
@@ -72,18 +74,20 @@ class Experiment2:
         1. age is split into 5-year groupings
         2. if gender isn't strictly male or female, it is None
         """
+        # Temporarily sort by length for faster batching
         prompts_with_idx: List[Tuple[int, str]] = [
             (i, self.row_to_string(row)) for i, row in test_df.reset_index(drop=True).iterrows()
         ]
         prompts_with_idx.sort(key=lambda p: len(p[1]))
-        orig_indices: List[int] = [idx for idx, _ in prompts_with_idx]
-        sorted_prompts: List[str] = [p for _, p in prompts_with_idx]
+        orig_indices = [idx for idx, _ in prompts_with_idx]
+        sorted_prompts = [p for _, p in prompts_with_idx]
 
-        json_output, failed_to_parse = self.batch_model.process_structured_batch(
+        pre_prompt = (config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt").read_text()
+        json_output, failed_to_parse = self.model_client.process_structured_batch(
             batch=sorted_prompts,
+            pre_prompt=pre_prompt,
             structure_header="{",
-            default_object={"age": None, "gender": None},
-            max_new_tokens=max_new_tokens
+            default_object={ "age": "unknown", "gender": "unknown" }
         )
 
         filename = f"failed-to-parse-stage-1-{self.model_name}.txt"
@@ -91,7 +95,7 @@ class Experiment2:
             json.dump(failed_to_parse, f)
 
         inference_temp = pd.DataFrame.from_records(json_output)
-        inference_temp["orig_idx"] = orig_indices  # map back to original rows
+        inference_temp["orig_idx"] = orig_indices
 
         # Re-order to original ordering
         inference_df = (
@@ -103,21 +107,21 @@ class Experiment2:
 
         # Post-processing
         def format_age(age: Any) -> str:
-            if isinstance(age, str) and age in bins:
+            if age in age_ranges:
                 return age
             else:
                 return "unknown"
 
 
         def format_gender(gender: Any) -> str:
-            if isinstance(gender, str):
-                gender = gender.lower()
-                if gender in ['male', 'female']:
-                    return gender
-            return "unknown"
+            if gender in genders:
+                return gender
+            else:
+                return "unknown"
 
 
-        bins = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(110)])
+        age_ranges = np.array([f"{5*(i // 5)}-{5*((i // 5) + 1)}" for i in range(110)])
+        genders = ["male", "female"]
 
         inference_df["predicted_age"] = inference_df["predicted_age"].apply(format_age)
         inference_df["predicted_gender"] = inference_df["predicted_gender"].apply(format_gender)
@@ -139,9 +143,11 @@ class Experiment2:
         max_new_tokens: int,
         prompts_per_batch: int = 16
     ) -> dict:
+        pre_prompt = (config.CODE_DIR / "pre-prompts" / "expt2-stage-2.txt").read_text()
+
         stage_2_reports: dict = {}
 
-        prompt_meta: List[Tuple[str, str, str]] = []   # (sub, age, gender) per prompt
+        prompt_segment = []
         prompt_texts: List[str] = []
 
         # build prompts for vLLM
@@ -157,7 +163,7 @@ class Experiment2:
                 continue
 
             for prompt in self.slice_to_truncated_prompts(df_slice):
-                prompt_meta.append((sub, age, gender))
+                prompt_segment.append((sub, age, gender))
                 prompt_texts.append(prompt)
 
         # send to vLLM
@@ -165,26 +171,27 @@ class Experiment2:
         failed_to_parse: List[str] = []
 
         for batch_prompts in self.batch(prompt_texts, prompts_per_batch):
-            parsed_batch, batch_failures = self.batch_model.process_structured_batch(
+            parsed_batch, batch_failures = self.model_client.process_structured_batch(
                 batch=batch_prompts,
+                pre_prompt=pre_prompt,
                 structure_header="[",
-                default_object={"default object!": None},
-                max_new_tokens=max_new_tokens,
+                default_object={ "failed-to-parse": True },
+                max_new_tokens=max_new_tokens
             )
 
             for o in parsed_batch:
-                if o:
+                if o.get("failed-to-parse", False):
                     parsed_outputs.append(o)
 
             failed_to_parse.extend(batch_failures)
-            
+
         # Record failures
         filename = f"failed-to-parse-stage-2-{self.model_name}.txt"
         with open(config.RESULTS_DIR / filename, "w") as f:
             json.dump(failed_to_parse, f)
 
         # aggregate
-        for (sub, age, gender), obj in zip(prompt_meta, parsed_outputs):
+        for (sub, age, gender), obj in zip(prompt_segment, parsed_outputs):
             key = (sub, age, gender)
             bucket = stage_2_reports.setdefault(
                 key,
@@ -197,116 +204,30 @@ class Experiment2:
                 },
             )
 
-            valid = (
-                isinstance(obj, list)
-                and all(
-                    isinstance(e, dict)
-                    and set(e.keys()) == {"label", "evidence", "summary"}
-                    for e in obj
-                )
-            )
-
-            if not valid or obj == []:
-                bucket["errors"] += 1
-            else:
-                # drop placeholder object when no trends
+            if isinstance(obj, list) and obj and all(
+                isinstance(entry, dict) and set(entry) == {"label", "evidence", "summary"}
+                for entry in obj
+            ):
                 if not (len(obj) == 1 and obj[0]["label"] == "no_trends"):
                     bucket["reports"].extend(obj)
+            else:
+                bucket["errors"] += 1
 
             bucket["chunk_size"] += 1
+
 
         return stage_2_reports
 
 
     # ===== Stage 3 ===== #
 
+    def _report_to_string(report: dict, idx: int) -> str:
+        s = f"[REPORT {idx+1}]\n - trend summary: {report['summary']}"
 
-#    @config.debug_function
-#    def hierarchical_summarisation(
-#        self,
-#        group: tuple,
-#        reports: List[dict],
-#        max_new_tokens: int,
-#        batch_size: int,
-#    ) -> Tuple[str, int]:
-#        """
-#        Uses the large model to produce a final report summarising consumer trends
-#        identified in the reports
-#
-#        args:
-#        - group: the demographic group that the trend reports are derived from
-#        - reports: a list of reports made by the LLM
-#        - max_new_tokens: the max number of new tokens the LLM can generate
-#        - batch_size: the number of reports to combine at each iteration
-#
-#        returns:
-#            A tuple containing the final report and the number of errors encountered
-#            during summarisation
-#        """
-#        age_range, gender = group
-#
-#        if reports == []:
-#            config.debug(f"For some reason we got 0 reports for {group}")
-#            return ("no reports supplied as input", 1)
-#
-#        query_header = (
-#            "METADATA\n"
-#            f" - the inferred age range of the posters is {age_range}\n"
-#            f" - the inferred gender of the posters is {gender}"
-#        )
-#
-#        layers = 1
-#        failed_output_counter = 0
-#        layer_failure_rates: List[float] = []
-#
-#        current_reports_count = len(reports)
-#        previous_reports_count = 2*len(reports)
-#
-#        original_len = len(reports)
-#
-#        while 0 < current_reports_count < previous_reports_count:
-#            config.debug(f"Creating a new layer from {len(reports)} reports: layer = {layers}")
-#            new_reports = []
-#
-#            report_strings = []
-#            layer_failure_rates.append(0.0)
-#
-#            for i, r in enumerate(reports):
-#                try:
-#                    report_strings.append(self.report_to_string(r, index=i))
-#                except:
-#                    config.debug(f"This failed: {r}")
-#                    layer_failure_rates[-1] += 1.0
-#
-#            layer_failure_rates[-1] /= original_len
-#
-#            prompt = query_header + "\n".join(report_strings)
-#            new_report_json = self.batch_model.process_structured_batch(
-#                [prompt],
-#                structure_header="[",
-#                default_object={"trends": [], "failed-output": True},
-#                max_new_tokens=max_new_tokens
-#            )
-#
-#            for r in new_report_json:
-#                new_reports.extend(r['trends'])
-#                failed_output_counter += int(r.get("failed-output", False))
-#
-#            reports = new_reports
-#            layers += 1
-#
-#            previous_reports_count = current_reports_count
-#            current_reports_count = len(reports)
-#
-#        try:
-#            final_reports = "\n".join([self.report_to_string(r, index=i) for i, r in enumerate(reports)])
-#        except:
-#            final_reports = "\n".join([str(r) for r in reports])
-#
-#            for i, rate in enumerate(layer_failure_rates):
-#                final_reports += f"layer {i + 1} failed {rate}% of the time\n"
-#
-#        return final_reports, failed_output_counter
+        if report.get("reasoning"):
+            s += f"\n - reasoning: {report['reasoning']}"
+
+        return s + f"\n - evidence: {report['evidence']}\n"
 
 
     def hierarchical_summarisation(
@@ -317,6 +238,8 @@ class Experiment2:
         max_new_tokens: int,
         safety_margin: int = 32,
     ) -> Tuple[str, int]:
+        pre_prompt = (config.CODE_DIR / "pre-prompts" / "expt2-stage-2.txt")
+
         age_range, gender = group
         tok = self.batch_model.tokenizer
         ctx_len = tok.model_max_length
@@ -326,60 +249,69 @@ class Experiment2:
             f" - the inferred age range of the posters is {age_range}\n"
             f" - the inferred gender of the posters is {gender}\n"
         )
+
         header_len = len(tok(header, add_special_tokens=False)["input_ids"])
         max_prompt_tokens = ctx_len - max_new_tokens - safety_margin
 
-        def rep_to_str(r: Dict[str, str], idx: int) -> str:
-            s = f"[REPORT {idx+1}]\n - trend summary: {r['summary']}"
-            if r.get("reasoning"):
-                s += f"\n - reasoning: {r['reasoning']}"
-            s += f"\n - evidence: {r['evidence']}\n"
-            return s
-
-        parse_fail_strings: List[str] = []
+        parse_fail_strings = []
         parse_fail_count = 0
         current = reports[:]
 
-        # ---- iterative compression until one report left -------------------
-        while len(current) > 1:
-            # chunk so prompt ≤ context window
-            chunks, chunk, tok_len = [], [], header_len
-            for idx, rep in enumerate(current):
-                rep_txt = rep_to_str(rep, idx)
+        current_len = len(current)
+        prev_len = current_len * 2
+
+        while 0 < current_len < prev_len:
+            chunks = []
+            chunk = []
+            tok_len = header_len
+
+            for i, rep in enumerate(current):
+                rep_txt = self._report_to_string(rep, i)
                 rep_tok = len(tok(rep_txt, add_special_tokens=False)["input_ids"])
+
                 if tok_len + rep_tok > max_prompt_tokens:
                     chunks.append(chunk)
-                    chunk, tok_len = [], header_len
+                    chunk = []
+                    tok_len = header_len
+
                 chunk.append(rep)
                 tok_len += rep_tok
             if chunk:
                 chunks.append(chunk)
 
-            new_reports: List[Dict[str, str]] = []
-            for ch in chunks:
-                prompt = header + "".join(rep_to_str(r, i) for i, r in enumerate(ch))
+            new_reports = []
+            for c in chunks:
+                prompt = header + "".join(self._report_to_string(r, i) for i, r in enumerate(c))
 
-                parsed, failures = self.batch_model.process_structured_batch(
+                parsed, failures = self.model_client.process_structured_batch(
                     batch=[prompt],
-                    structure_header="[",     # list schema
-                    default_object=[],        # fallback is empty list
-                    max_new_tokens=max_new_tokens,
+                    pre_prompt=pre_prompt,
+                    structure_header="[",
+                    default_object={ "failed-to-parse": True },
+                    max_new_tokens=max_new_tokens
                 )
 
                 parse_fail_strings.extend(failures)
                 parse_fail_count += len(failures)
 
-                obj = parsed[0] if parsed else []
-                if isinstance(obj, list) and obj:        # success
-                    new_reports.extend(obj)
-                else:                                    # empty or malformed
-                    parse_fail_count += 1
+                if len(parsed) > 0:
+                    obj = parsed[0]
 
-            current = [
-                {"summary": t, "evidence": "", "reasoning": ""}
-                if isinstance(t, str) else t
-                for t in new_reports
-            ]
+                    if obj.get("failed-to-parse", False):
+                        parse_fail_count += 1
+                    else:
+                        new_reports.extend(obj)
+
+            current = []
+
+            for t in new_reports:
+                if isinstance(t, str):
+                    current.append({"summary": t, "evidence": "", "reasoning": ""})
+                else:
+                    current.append(t)
+
+            prev_len = current_len
+            current_len = len(current)
 
             # exit if compression produced no new reports
             if not current:
@@ -391,23 +323,18 @@ class Experiment2:
             with open(fail_file, "w") as f:
                 json.dump(parse_fail_strings, f)
 
-        final_report = (
-            current[0]
-            if current
-            else {"summary": "no data", "evidence": "", "reasoning": ""}
-        )
+        if current:
+            final_report = current[0]
+        else:
+            final_report = { "summary": "no data", "evidence": "", "reasoning": "" }
+
         return json.dumps(final_report, ensure_ascii=False, indent=2), parse_fail_count
         
-
-
-
 
     # ===== Data Processing ===== #
 
     def batch(self, iterable, n):
-        """
-        Simple batching function
-        """
+        """Simple batching function"""
 
         l = len(iterable)
 
@@ -416,8 +343,7 @@ class Experiment2:
 
 
     def row_to_string(self, row: pd.core.series.Series) -> str:
-        """
-        Converts a row into a string summarising the post.
+        """Converts a row into a string summarising the post.
 
         This function adds descriptions based on the data inside the row
         """
@@ -431,8 +357,7 @@ class Experiment2:
 
 
     def posts_to_string(self, df: pd.DataFrame) -> str:
-        """
-        Turns a chunk of posts into a prompt string
+        """Turns a chunk of posts into a prompt string
 
         args:
         - df: a dataframe containing a selection of posts as well as inferred
@@ -451,9 +376,7 @@ class Experiment2:
 
 
     def report_to_string(self, report: Dict[str, str], index: int | None = None) -> str:
-        """
-        Turns a report object into a string
-        """
+        """Turns a report object into a string"""
         query  = f"[REPORT NUMBER {index + 1}]\n" if index else ""
         query += f" - trend summary: {report['summary']}"
         
@@ -466,30 +389,29 @@ class Experiment2:
 
 
     def slice_to_truncated_prompts(self, df_slice: pd.DataFrame) -> List[str]:
-        """
-        Split one (subreddit, age, gender) slice into as many prompts as needed,
-        each strictly ≤ MAX_PROMPT_TOKENS tokens, using O(n) tokenization.
-        """
-        tok = self.batch_model.tokenizer
+        """Split one (subreddit, age, gender) slice into as many prompts as needed"""
+        tokeniser = self.batch_model.tokenizer
 
         # Prepare header
         start = df_slice.iloc[0]["date_posted"]
-        end   = df_slice.iloc[-1]["date_posted"]
-        sub   = df_slice["subreddit"].iloc[0]
+        end = df_slice.iloc[-1]["date_posted"]
+        sub = df_slice["subreddit"].iloc[0]
+
         header = (
             f"All supplied posts will be from r/{sub}. "
             f"They were posted between {start} and {end}\n"
         )
-        header_ids = tok(header, add_special_tokens=False)["input_ids"]
+        header_ids = tokeniser(header, add_special_tokens=False)["input_ids"]
         header_len = len(header_ids)
 
-        # Pre-tokenize each post
+        # Pre-tokenise each post
         post_texts = [self.row_to_string(row) for _, row in df_slice.iterrows()]
-        post_id_lens = [
-            len(tok(text, add_special_tokens=False)["input_ids"])
-            for text in post_texts
-        ]
-        sep_ids = tok("\n", add_special_tokens=False)["input_ids"]
+        post_id_lens = []
+
+        for text in post_texts:
+            post_id_lens.append(len(tokeniser(text, add_special_tokens=False)["input_ids"]))
+
+        sep_ids = tokeniser("\n", add_special_tokens=False)["input_ids"]
         sep_len = len(sep_ids)
 
         prompts = []
@@ -498,8 +420,8 @@ class Experiment2:
 
         for text, length in zip(post_texts, post_id_lens):
             add_len = length + (sep_len if current_texts else 0)
+
             if current_len + add_len > self.max_prompt_tokens:
-                # flush
                 prompts.append(header + "\n".join(current_texts))
                 current_texts = [text]
                 current_len = header_len + length
@@ -517,9 +439,7 @@ class Experiment2:
 
 
     def dump_report(self, reports: dict, file_path: Path):
-        """
-        Formats a report dict for stringification and writes to a JSON file
-        """
+        """Formats a report dict for stringification and writes to a JSON file"""
         reports_str_keys = { str(k) : v for k, v in reports.items() }
 
         with open(file_path, "w") as f:
@@ -530,6 +450,7 @@ class Experiment2:
 
     def run_experiment(
         self,
+        *,
         reddit_df: pd.DataFrame,
         experiment_sub_heading: str,
         which_subreddits: Literal["relevant", "irrelevant"],
@@ -548,7 +469,7 @@ class Experiment2:
         - reddit_df: the dataframe
         - experiment_sub_heading: the name of the parent directory to put results into
         - demographics_max_tokens: max tokens for demographic inference
-        - chunk_report_max_tokens: max tokens for mini‐reports
+        - chunk_report_max_tokens: max tokens for mini-reports
         - overall_report_max_tokens: max tokens for final reports
         - model_name / model_id: identifier for naming output folder and loading the model
         - num_samples: optional subsample size
@@ -560,25 +481,20 @@ class Experiment2:
         self.max_prompt_tokens = (model_context_window - chunk_report_max_tokens) // 2
 
         if self.max_prompt_tokens <= 0:
-                raise ValueError(f"Generation buffer exceeds context window ({model_context_window})")
+            raise ValueError(f"Generation buffer exceeds context window ({model_context_window})")
 
-        # 1) Load up vLLM with an increased max_seq_len
-        self.batch_model = model.BatchModel(
-            model_id,
-            max_model_len=model_context_window
+        api_key = (config.CODE_DIR / "hf-access-token.txt").read_text()
+        self.model_client = model.ModelClientVLLM(
+            model_id=model_id,
+            api_key=api_key
         )
 
-        # Prepare output directory
         output_path = config.RESULTS_DIR / experiment_sub_heading / model_name
         output_path.mkdir(parents=True, exist_ok=True)
 
-        # Pull the right slice of the data
         test_df = self.select_test_df(which_subreddits, num_samples=num_samples)
 
-        # === Stage 1: demographic inference ===
-        pre1 = config.CODE_DIR / "pre-prompts" / "expt1-zero-shot.txt"
-        self.batch_model.load_pre_prompt(pre1)
-
+        # Stage 1
         demographic_df = self.generate_demographic_inferences(
             test_df,
             max_new_tokens=demographics_max_tokens,
@@ -587,12 +503,7 @@ class Experiment2:
 
         demographic_df.to_parquet(output_path / "demographic-inferences.parquet")
 
-        return
-
-        # === Stage 2: mini reports ===
-        pre2 = config.CODE_DIR / "pre-prompts" / "expt2-stage-2.txt"
-        self.batch_model.load_pre_prompt(pre2)
-
+        # Stage 2
         stage_2_reports = self.summarise_posts(
             demographic_df,
             subreddits=self.subreddit_selection[which_subreddits],
@@ -604,21 +515,21 @@ class Experiment2:
 
         self.dump_report(stage_2_reports, output_path / "experiment-2-stage-2-reports.json")
 
-        # === Stage 3: hierarchical summarisation ===
-        pre3 = config.CODE_DIR / "pre-prompts" / "expt2-stage-3.txt"
-        self.batch_model.load_pre_prompt(pre3)
+        # Stage 3
+        summarised_reports = {}
 
-        summarised_reports: dict = {}
         subs = self.subreddit_selection[which_subreddits]
-        ages = np.array([f"{i}-{i+5}" for i in range(0,100,5)] + ["unknown"])
-        genders = ["male","female","unknown"]
+        ages = np.array([f"{i}-{i + 5}" for i in range(0, 100, 5)] + ["unknown"])
+        genders = ["male", "female", "unknown"]
 
         for age, gender in itertools.product(ages, genders):
-            reports: List[dict] = []
+            reports = []
+
             for sub in subs:
                 for r in stage_2_reports.get((sub, age, gender), {}).get("reports", []):
                     if isinstance(r, str):
                         r = {"summary": r, "evidence": [], "reasoning": ""}
+
                     reports.append({"subreddit": sub, **r})
 
             if not reports:
@@ -656,26 +567,31 @@ if __name__ == "__main__":
     }
 
     datasets = {
-#        "historical": "combined-filtered-reddit-data.parquet",
+        "historical": "combined-filtered-reddit-data.parquet",
         "current": "2025-combined-filtered-reddit-data.parquet"
     }
 
-    model_name = "mistral"
-    model_cfg = model_configs[model_name]
+    if EVALUATE_ALL_MODELS:
+        model_names = list(model_configs.keys())
+    else:
+        model_names = ["mistral"]
 
-    for dataset_name, dataset_filename in datasets.items():
-        reddit_df = pd.read_parquet(config.CODE_DIR / "data" / dataset_filename)
-        reddit_df["date_posted"] = pd.to_datetime(reddit_df["created_utc"], unit="s")
+    for model_name in model_names:
+        model_cfg = model_configs[model_names]
 
-        for selection in ["irrelevant"]:
-            expt.run_experiment(
-                reddit_df=reddit_df,
-                experiment_sub_heading=f"expt2-{selection}-subreddits-{dataset_name}-data",
-                which_subreddits=selection,
-                demographics_max_tokens=30,
-                chunk_report_max_tokens=500,
-                overall_report_max_tokens=100,
-                model_name=model_name,
-                model_id=model_cfg['model_id'],
-                model_context_window=model_cfg['context_window']
-            )
+        for dataset_name, dataset_filename in datasets.items():
+            reddit_df = pd.read_parquet(config.CODE_DIR / "data" / dataset_filename)
+            reddit_df["date_posted"] = pd.to_datetime(reddit_df["created_utc"], unit="s")
+
+            for selection in ["irrelevant"]:
+                expt.run_experiment(
+                    reddit_df=reddit_df,
+                    experiment_sub_heading=f"expt2-{selection}-subreddits-{dataset_name}-data",
+                    which_subreddits=selection,
+                    demographics_max_tokens=30,
+                    chunk_report_max_tokens=500,
+                    overall_report_max_tokens=100,
+                    model_name=model_name,
+                    model_id=model_cfg['model_id'],
+                    model_context_window=model_cfg['context_window']
+                )
