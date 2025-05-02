@@ -1,5 +1,6 @@
 \documentclass{report}
 
+\usepackage{abstract}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{appendix}
@@ -19,6 +20,9 @@
 \usepackage{todonotes}
 \usepackage{xcolor}
 \usepackage[a4paper,margin=1in]{geometry}
+
+\renewcommand{\abstractnamefont}{
+\normalfont\Huge\bfseries}
 
 % define listing styles
 \lstdefinestyle{pythonstyle}{
@@ -53,7 +57,7 @@ labelsep=none % no extra colon or dash
 
 \addbibresource{references.bib}
 
-\title{Automated Demographic Segmentation and Sentiment Analysis using LLMs}
+\title{\textbf{Automated Demographic Segmentation and Sentiment Analysis using LLMs}}
 \author{Conrad Khakhria}
 \date{November 2024}
 
@@ -68,11 +72,11 @@ labelsep=none % no extra colon or dash
 \maketitle
 
 \begin{abstract}
-This thesis investigates the use of large language models (LLMs) for consumer trend prediction across demographically-segmented social media data. This is motivated by the ability of LLMs to process, reason about, and draw detailed conclusions about vast amounts of complex, unstructured text data. This thesis attempts to determine therefore whether LLMs are able to determine new consumer trends from social media posts while automatically deducing which demographic segments the users who made each post belongs to.
+This thesis presents original research, which develops a large language model-based approach to consumer trend prediction from automatically demographically-segmented social media data. It which demonstrates empirically that LLMs can successfully identify emerging consumer trends from social media posts while simultaneously inferring the demographic segments of the users who authored them.
 
-The subject of this thesis naturally divides the research into two categories: that of automated demographic segmentation, and that of consumer trend prediction. Although the data used for each component will be the same (i.e. unsegmented text-based social media posts), the methodology for each will be profoundly different. Demographic segmentation is a well-explored area of research and industry practice, and the performance of a machine learning-based approach is easily evaluated as vast amounts of rich, labelled demographic data is readily available. For example, the \textit{Sentiment140}dataset consists of 1.6 million tweets, each with demographic segment labels. Standard evaluation methods for machine learning classification algorithms can be used with data like this to directly evaluate the performance of LLM-based demographic segmentation. Trend prediction, on the other hand, is less straightforward: predictions of consumer trends are most valuable when they are novel, and the novelty and usefulness for business applications of a consumer trend prediction cannot be evaluated with statistical error metrics. An analysis of the results of trend predictions by LLMs will be by nature qualitative.
+This thesis naturally divides the research into two categories: that of automated demographic inference, and that of consumer trend prediction. Automated demographic inference is a classification problem, and this thesis evaluates the performance of the LLM-based approach with standard classification metrics. Evaluating consumer trend prediction, on the other hand, is less straightforward. The power of LLMs lies in their ability to produce text-based solutions to a wide range of different problems, and although this gives them a significant degree of flexibility to solve problems involving reading comprehension and complex inferences, their output becomes impossible to evaluate with standard statistical error metrics. This thesis therefore analyses the performance of LLM-based consumer trend prediction qualitatively.
 
-The thesis consists of three investigations, each original investigations into new LLM-based approaches problems in business analytics. The research strucutre will be as follows:
+The thesis consists of three investigations into new LLM-based approaches to problems in business analytics.
 
 \begin{enumerate}
 \item \textbf{Experiment 1: Automated Demographic Segmentation}
@@ -88,109 +92,68 @@ This study directly tests the ability of large language models to predict consum
 This study will apply the models used in experiments 1 \& 2 to current social media post data. This will produce a prediction of a future consumer trend.
 \end{enumerate}
 
-This thesis presents the following original contributions to science:
+\todo{Add AI thing}
+\todo{Add where code can be obtained}
 
-\begin{itemize}
-\item Given how new large language models are as a technology, little research has been conducted into the ability of LLMs to conduct demographic segmentation. Experiment 1 provides empirical data on how accurately LLMs can infer demographic information on social media data.
-
-\item There is currently very little research into the effectiveness of LLM-based approaches to consumer trend prediction. Experiment 2 will provide an early format investigation into the effectiveness of this approach.
-
-\item There is debate among researchers about the ability of LLMs to generate novel ideas, and in particular whether they have the ability to outpace humans in this regard. Experiments 2 and 3 directly investigate this question, and in particular with a focus on deriving both novel and useful conclusions from a specific set of unstructured text data.
-\end{itemize}
 \end{abstract}
 
 \tableofcontents
+\listoffigures
+\listoftables
 
 
 \chapter{Introduction}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-\textit{This chapter presents an overview of the thesis by discussing the motivation behind the research problem, as well as its objectives, experiments, and structure. The chapter begins with information on demographic segmentation and consumer trend prediction, an appraisal of their importance for businesses who sell consumer goods, and a brief discussion of the state-of-the-art in the field with reference to machine learning. The chapter then outlines the research objectives, experiments, scientific contributions, and structure of the thesis.}
+\textit{This chapter presents an overview of the thesis by discussing the motivation behind the research problem, as well as its objectives, experiments, and structure. The chapter begins with information on demographic segmentation and consumer trend prediction, an appraisal of their importance for businesses who sell consumer goods, and a brief discussion of the state-of-the-art in the field with reference to machine learning. The chapter concludes with a description of the structure of the thesis.}
 \end{adjustwidth}
 
-\section{Aims and Objectives}
+\section{Aims and Motivations}
 
-Analytics from social media are one of the richest and most widely-used data sources that have emerged in recent years, with data such as watch time, click-through rate, and share rate used heavily in business applications ranging from marketing to product development\cite{chaffey2019digital}. However, it is comparatively more difficult to extract insights from social media data itself, as text-based social media posts have little structure and are highly contextual. Although techniques do exist for detecting specific information from text data, such as inferred sentiment (i.e. whether the text is written in a positive, negative, or neutral tone)\cite{liu2022sentiment}, extracting broader insights accurately from text is still a difficult task. As such, social media posts are an untapped resource: with enormous numbers of peoples thoughts and opinions being publicly broadcast constantly, social media posts contain a wealth of information about consumer attitudes which could in principle be applied directly to a wide range of business decisions.
+Social media analytics are one of the richest and most widely-used data sources that have emerged in recent years, with data such as watch time, click-through rate, and share rate used heavily in business applications ranging from marketing to product development \cite{chaffey2019digital}. However, while data such as those are easily obtained, it is comparatively more difficult to extract insights from social media data itself as text-based social media posts have little structure and are highly contextual. Although techniques do exist for detecting specific information from text data, such as inferred sentiment (i.e. whether the text is written in a positive, negative, or neutral tone) \cite{liu2022sentiment}, extracting broader insights accurately from text is still a difficult task. As such, social media posts are still largely an untapped source of insight: with enormous numbers of peoples thoughts and opinions being broadcast constantly, social media posts contain a wealth of information about consumer attitudes which could in principle be applied directly to a wide range of business decisions.
 
-Furthermore, combining analytics with granular demographic data has proven to be foundational in identifying nuanced consumer behaviors, enabling firms to tailor strategies that align with specific subgroup preferences\cite{wedel2000market}. This demographic segmentation enhances the precision of trend forecasting and improves the efficacy of targeted marketing interventions.
+Furthermore, combining analytics with granular demographic data has proven to be foundational in identifying nuanced consumer behaviors, enabling firms to tailor strategies that align with specific subgroup preferences \cite{wedel2000market}. Demographic segmentation enhances the precision of trend forecasting and improves the efficacy of targeted marketing interventions.
 
-Large language models (LLMs) are machine learning models which can process vast amounts of unstructured text data, drawing on large amounts of existing knowledge to make complex inferences about text\cite{NEURIPS2020_1457c0d6}. Despite being a relatively new technology, LLMs have been applied to tasks ranging from simple reading comprehension tasks to relevant document retrieval\cite{lewis2020retrieval} and code generation\cite{chen2021evaluating}. Their ability to synthesise and draw complex conclusions from text data opens the door for new kinds of automated consumer trend prediction, with inferences being produced in the form of text-based summaries rather than numerical analytics.
+Large language models (LLMs) are machine learning models which draw on vast amounts of existing knowledge to make complex inferences about text \cite{NEURIPS2020_1457c0d6}. Despite being a relatively new technology, LLMs have been applied to tasks ranging from simple reading comprehension to retrieving documents based on descriptions \cite{lewis2020retrieval} and code generation \cite{chen2021evaluating}. Their ability to synthesise and draw complex conclusions from text data opens the door for new kinds of automated consumer trend prediction, with inferences being produced in the form of text-based summaries rather than numerical analytics.
 
-The main objective of this research is to determine the efficacy of LLM-based consumer trend prediction, in particular in terms of the accuracy and detail as well as the novelty of the inferences generated. The study is divided across two 
+The fundamental focus of this work is to empirically determine the effectiveness an LLM-based approach to automated demographic segmentation and consumer trend prediction. In particular, this work evaluates the LLM-based demographic inference by treating it as a standard machine learning inference problem, and evaluates LLM-based consumer trend prediction qualitiatively, in terms of the accuracy and usefulness of the model's output.\todo{"output"?}
 
+\todo{What to put here?}
 
 \section{Research Objectives}
 
+This work has three primary objectives, each addressed by one of the experiments:
 \begin{itemize}
-\item The main objective of this research is to determine whether large language models can be used to significantly improve upon existing techniques for consumer trend prediction, providing faster and more in-depth insights into upcoming consumer trends.
+    \item \textbf{Experiment 1: Automated Demographic Segmentation}
 
-\item Whereas existing ML approaches have a strong ability to predict consumer behaviour in a classification setting, this is very narrow, limited to selecting between pre-defined options expressed in the classification/regression setting (check that this is true but it seems obvious)
+    The goal of this experiment is to produce an empirical, numeric evaluation of the performance of LLM-based inference of demographic characteristics from social media posts. The performance is evaluated with standard machine learning classification metrics, and is compared directly to the performance of `traditional' machine learning-based approaches to the same problem.
 
-\item This research therefore evaluates the ability of large language models to produce not just accurate but also novel, and open-ended, insights into future consumer trends. We will compare how they perform against traditional algorithms used in both supervised and unsupervised learning problems, as they apply to future consumer trend prediction
+    \item \textbf{Experiment 2: Large Language Model Historical Consumer Trend Prediction}
 
-\item This research also attempts to use LLMs for the inference of demographic characteristics from social media posts. This would allow for the prediction of future consumer trends across an incredibly fine-grained range of different demographic groups, without the possible limitation of either data quality or range of demographic characteristics actively recorded by social media platforms.
+    This experiment evaluates the ability of LLMs to extract future consumer trends from social media data, segmented across different demographic groups. Although related research investigates LLM-based consumer trend prediction across a range of domains, none so far have utilised a fully LLM-driven pipeline to detect consumer trends across inferred demographic groupings.
 
-\item This study therefore both compares LLMs to traditional methods for inference of demographic information from social media data, as well as establishing whether they can infer these data in greater detail or to a wider range of characteristics than is otherwise currently possible
+    \item \textbf{Experiment 3: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
 
+    This experiment applies the approach used in Experiment 2 current social media data, to predict a true future consumer trend. Instead of producing `predictions' of historical events which can be verified directly, this experiment provides a real-world\todo{"real world"?} example of future consumer trend prediction.
 \end{itemize}
 
-\section{Experiments}
-
-\begin{enumerate}
-\item Automated demographic segmentation.
-
-\begin{itemize}
-\item The first experiment aims to observe whether LLMs can infer demographic characteristics, e.g. age, sex, location, about posters from their social media posts.
-
-\item This is original research: existing research into demographic inference with AI focuses on much more narrow settings, for example "Customer profiling, segmentation, and sales prediction using AI in direct marketing" which uses unsupervised learning for categorisation (thus unlabelled) and boosting trees for classification (thus less rich).
-
-\item This experiment treats demographic segmentation as a classifiaction problem, comparing LLMs to traditioanl classification algorithms. We will compare the capabilities of LLMs, handling largely un-preprocessed data, to those of the traditional algorithms such as the SVM and boosting and basic deep learning, combined with techniques from 'classical' NLP such as TF-IDF.
-\end{itemize}
-
-
-
-
-
-\item Large language model historical consumer trend prediction.
-
-\begin{itemize}
-\item This study investigates whether LLMs can predict future consumer trends, across different demographics, from demographically-segmented social media post data.
-
-\item Although there is a wide body of research in predicting consumer trends using more traditional approaches in machine learning, this is the first research I am aware of that attempts to do this with LLMs using social media data.
-
-\item Where existing research applies ML in comparatively simpler settings, such as time series forecasting for sales, this research leverages the unique potential of LLMs to produce novel output outside of a given structure. This means that, in principle, we will be able not just to extrapolate existing trends or sales volume for existing products, but identify consumer behaviour and desires for entirely new kinds of products and services.
-\end{itemize}
-
-
-\item Application of LLM-segmented consumer trend prediction to current soical media data
-
-
-\begin{itemize}
-\item This study combines the approaches from the previous two experiments and applies them to current social media data, attempting to predict an actual future consumer trend.
-
-\item This experiment will produce results which, unconventionally, cannot be directly evaluated at this time. Although the methodology will have been evaluated in the previous two sections, the predictions produced from current social media data can only be assessed in the future.
-
-\item The primary focus of this experiment is to provide a real-world example of how a consumer trend prediction by an LLM would look, outside of a contrived research setting.
-
-\end{itemize}
-
-\end{enumerate}
 
 \section{Scientific Contributions}
 
-This work contributes to existing research across multiple fields in the following ways:
-
+This thesis presents the following original\todo{"original"?} contributions to science:
 
 \begin{enumerate}
-\item Comparison of LLM-based approaches to traditional methods in natural langauge processing (NLP). The first part of this research applies LLMs to a classification problem, in the form of demographic segmentation, where it is directly benchmarked against more traditional approaches in ML classification and NLP. The performance of each approach will be compared directly with standard classification metrics such as accuracy, precision, recall, and f1 score.
+    \item \textbf{Empirical evaluation of LLM-based demographic inference}
 
-\item Empirically evaluates LLM performance in complex reading comprehension tasks. Both the demographic segmentation and consumer trend prediction are, ultimately, complex reading comprehension tasks. This research therefore provides insight into the ability of LLMs to derive complex insights from potentially information-sparse data.
+    Experiment 1 provides empirical data on how accurately LLMs can infer demographic information on social media data, and compares their performance to that of standard machine learning classification algorithms.
 
-\item Establishes a new approach to consumer trend prediction. Traditional approaches to consumer trend prediction rely heavily on human insight, either in the form of direct human interpretation of written information, or carefully hand-crafted features when machine learning approaches are employed. This new approach to consumer trend prediction is therefore significantly more scalable, potentially eliminating the need for human work in general. Furthermore, this approach may combine the predictive accuracy of machine learning approaches with the unstructured open-endedness of human interpretation.
+    \item \textbf{Evaluation of LLM-based consumer trend prediction}
 
-\item Direct empirical study into the ability of LLMs to produce novel conlusions. LLMs are a relatively new technology, and there is significant academic debate about whether they are able to derive novel conclusions, across a range of different settings. The latter part of this dissertation addresses this question directly, with LLMs being tasked with deriving future consumer trends in a conceptual, rather than numerical, setting.
+    Experiment 2 demonstrates empirically that LLMs can predict consumer trends, segmented across different demographic groups, using social media data.
 
-\item Produces an original and current prediction of a future consumer trend. The third empirical investigation in this dissertation applies the techniques evaluated in the previous two to current social media data, with the aim of producing a real prediction of a future consumer trend. \todo{as far as I can tell} There are no consumer trend predictions generated in this way in academic literature, and this will therefore provide an important result which can be evaluated in the future.
+    \item \textbf{Evaluation of novel conclusion generation by LLMs}
+
+    Experiment 2 and 3 directly investigate the ability of LLMs to produce conclusions in terms of their novelty, as well as their accuracy.
 \end{enumerate}
 
 \section{Thesis Structure}
@@ -198,262 +161,165 @@ This work contributes to existing research across multiple fields in the followi
 This thesis is organised as follows:
 
 \begin{itemize}
-\item \textbf{Chapter 2: Background and Literature Review}
-
-Relevant academic literature about both related research as well as the underlying technological and conceptual underpinnings of this thesis are reviewed, providing the background necessary for understanding this research. This includes an introduction to supervised and unsupervised machine learning, generative machine learning, as well as LLMs themselves. A review of literature in social media data mining is also presented. Furthermore, this section also reviews existing research into demographic segemntation and consumer trend prediction, both with 'manual' and machine learning-based approaches.
-
-\item \textbf{Chapter 3: Automated Demographic Segmentation}
-
-This chapter provides a direct evaluation of the ability of LLMs to infer demographic characteristics from social media post data. This experiment is treated as a classification problem, and the LLMs are directly benchmarked against traditional machine learning approaches to classification in NLP problems. Standard classification metrics such as accuracy, precision, recall, and f1 score are used to evaluate the performance of the LLM-based approach.
-
-\item \textbf{Chapter 4: Large Language Model Historical Consumer Trend Prediction}
-
-This experiment evaluates whether LLMs can predict 'future' consumer trends from social media data. A historical consumer trend is chosen, and social media data from up to the time that this trend manifests is given to an LLM as input for predicting the trend. In this study, the LLM is tasked both with predicting all future consumer trends indicated by the social media data, as well as being asked directly whether the social media data it encounters suggests that the specific consumer trend is likely to develop.
-
-\item \textbf{Chapter 5: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
-
-This study combines the approaches used in both chapters 3 and 4, applying LLMs to current, unlabelled social media post data to predict actual future consumer trends across different inferred demographic groups. The results of this study are directed towards an actual future event, and therefore cannot immediately be directly evaluated. However, this section does contain a detailed comparison of results obtained using different language models, as well as data from different social media platforms and sub-groups therein.
-
-\item \textbf{Chapter 6: Conclusion and Future Work}
-
-The final chapter of this thesis provides an overall conclusion of this research, summarising and interpreting the results obtained. This is followed by recommendations of future research to be undertaken following this.
-
+    \item \textbf{Chapter 2: Background and Literature Review}
+    
+    This chapter presents the relevant theoretical background underpinning this research. This includes introductions to demographic segmentation and consumer trend prediction, as well as an overview of machine learning, natural language processing (NLP) and model evaluation and selection.
+    
+    \item \textbf{Chapter 3: Automated Demographic Segmentation}
+    
+    This chapter presents a direct evaluation of the ability of LLMs to infer demographic characteristics from social media post data. The evaluation is made with standard machine learning classification metrics, which are used to compare this approach to standard NLP approaches to the same task.
+    
+    \item \textbf{Chapter 4: Large Language Model Historical Consumer Trend Prediction}
+    
+    This experiment empirically evaluates the ability of LLMs to predict a consumer trend. A historical consumer trend is chosen, and the LLM is prompted to detect consumer trends indicated by social media posts made before the development of the chosen trend. The results of this experiment are evaluated for factual accuracy and the quality of evidence reported by the LLM.
+    
+    \item \textbf{Chapter 5: Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
+    
+    This study applies the methodology from Chapter 4 to a set of recent social media posts. The aim of this experiment is not to evaluate the factual accuracy of the consumer trends detected, but to observe the nature of the reports that are generated.
+    
+    
+    \item \textbf{Chapter 6: Conclusion and Future Work}
+    
+    The final chapter of this thesis provides an overall conclusion of this research, summarising and interpreting the results obtained. This is followed by recommendations of future research to be undertaken.
 \end{itemize}
-
-
 
 
 \chapter{Background and Literature Review} \label{sec:lit-review}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-\textit{This chapter presents background information relevant to the thesis, both in terms of the subjects of the research and the methodology that will be employed. In particular, the first part of this chapter will present the state of existing research and practice in both demographic segementation (automated and manual) as well as consumer trend prediction, and the second will give a broad overview of machine learning, in particular large language models and data mining.}
+\textit{This chapter presents background information relevant to the thesis, both in terms of the subjects of the research and the methodology that will be employed. In particular, the first part of this chapter presents an introduction to both demographic segementation as well as consumer trend prediction, and the second gives a broad overview of machine learning, and natural language processing}
 \end{adjustwidth}
-
-This thesis consists of three experiments, with the final experiment being largely derived in methodology from the first two. Each of the experiments share a significant knowledge base (in particular with regards to LLMs), but there are a range of significant differences, in particular in terms of the problem setting.
-
-The first part of this chapter is the \textit{Application Domain}, which explores the state of the art in both automated demographic inference as well as data-driven consumer trend prediction. The second part is the \textit{Method Development}, which outlines the technologies and concepts that are fundamental both to much of the existing research covered in the \textit{Application Domain section}, as well as to the experiments presented in this thesis.
-
 
 \section{Application Domain}
 
 \subsection{Demographic Inference}
 
-\begin{itemize}
-\item Automatic inference of author demographic characteristics from textual data has become a significant area of research in natural language processing (NLP) in recent decades, with applications across domains ranging from marketing and social meida personalisation to legal investigations\cite{burger-etal-2011-discriminating}. Early research in the mid-2000s showed that text derived from personal blogs contains subtle demographic signals, which can be detected with meaningful accuracy with simple NLP algorithms\cite{blog-authorship-corpus}. Since then, the rise in social media and significant advanced in machine learning, in particular deep learning, have led to an explosion in the range of data sources and approaches to demographic inference that have been studied.
+Automatic inference of author demographic characteristics from textual data has become a significant area of research in natural language processing (NLP) in recent decades, with applications across domains ranging from marketing and social meida personalisation to legal investigations \cite{burger-etal-2011-discriminating}. Early research in the mid-2000s showed that text derived from personal blogs contains subtle demographic signals, which can be detected with meaningful accuracy with simple NLP algorithms \cite{blog-authorship-corpus}. Since then, the rise of social media combined with significant advancements in machine learning, in particular deep learning, have led to an explosion in the range of data sources and approaches to demographic inference that have been studied.
 
-\item Demographic inference from text is typically treated as a typical supervised learning problem, either in the classification setting for categorical variables (e.g. gender or ethnic background) or the regression setting for continuous variables (e.g. age). Early work in demographic inference applied existing classification and regression techniques directly, using feature engineering approaches to transform arbitrary-length text data into fixed-size vectors representing certain quantities about the text. For example in 2011, Burger et al. use multi-hot encoding over $n$-grams, for different values of $n$, and use the resulting feature-mapped vectors as input to classification models such as Support Vector Machine and Naive Bayes classifiers\cite{burger-etal-2011-discriminating}. Other studies have used similar approaches which employ different encodings, such as Bag of Words representation\cite{Chen2021ComparativeDemographicAttribute}, which counts the number of appearances of individual words, or term frequency-inverse document frequency (TF-IDF) weighting\cite{wang-etal-2016-improving}, which better captures the significance of certain words in a body of text. These approaches, which rely heavily on feature engineering, often achieve accuracy scores ranging between 50\% to over 70\% when predicting age and gender. Studies in the early 2010s found that the inclusion of user profile metadata, such as usernames and descriptions, were able to increase the accuracy of predictions significantly: in 2013, for example, Liu and Ruths found that the inclusion of usernames yielded a 20\% increase in the accuracy of gender prediction compared to a standard NLP baseline\cite{liu-2013-whats-in-a-name}.
+Demographic inference from text is typically treated as a supervised learning problem, either in the classification setting for categorical variables, such as gender or ethnic background, or the regression setting for continuous variables such as age. Early work in demographic inference applied existing classification and regression techniques directly, using feature engineering approaches to transform arbitrary-length text data into fixed-size vectors representing certain quantities about the text. For example in 2011, Burger et al. use multi-hot encoding over n-grams to encode Twitter posts, and use the resulting feature-mapped vectors as input to classification models such as Support Vector Machine and Naive Bayes classifiers, and were able to predict gender with accuracy scores ranging from 67.8\% to 92\% \cite{burger-etal-2011-discriminating}. Other studies apply different encoding schemes such as Bag of Words representation \cite{Chen2021ComparativeDemographicAttribute}, which counts the number of appearances of individual words, or term frequency-inverse document frequency (TF-IDF) weighting \cite{wang-etal-2016-improving}, which better captures the significance of certain words in a body of text. These approaches, which rely heavily on feature engineering, often achieve accuracy scores ranging between 50\% to over 70\% when predicting age and gender. Studies in the early 2010s found that the inclusion of user profile metadata, such as usernames and descriptions, were able to increase the accuracy of predictions significantly: in 2013, for example, Liu and Ruths found that the inclusion of usernames yielded a 20\% increase in the accuracy of gender prediction compared to a standard NLP baseline \cite{liu-2013-whats-in-a-name}.
 
-\item By the mid-2010s, researchers began to apply to deep learning models to demographic inference problems. Early deep learning-oriented research focused on convolutional neural networks (CNNs) which automatically select features based on clusters of adjacent words\cite{Ruder-2016-cnns-for-text-classification} and recurrent neural networks (RNNs) which automatically extract features by traversing through input strings directly\cite{kim-etal-2017-demographic}.
+By the mid-2010s, researchers began to apply to deep learning models to demographic inference problems. Early deep learning-oriented research focused on convolutional neural networks (CNNs) which automatically select features based on clusters of adjacent words \cite{Ruder-2016-cnns-for-text-classification} and recurrent neural networks (RNNs) which automatically extract features by traversing through input strings directly \cite{kim-etal-2017-demographic}.
 
-\item 2017 saw the advent of transformers, which are deep learning models that model relationships between all elements in an input sequence using self-attention mechanisms\cite{vaswani-2017-attention-is-all-you-need}. By transforming recurrent deep learning optimisation from a sequential to a parallel problem, transformers allow for vastly more complicated, and more powerful, models to be trained in a reasonable amount of time. In 2019 Google introduced BERT, a pre-trained transformer model trained on an enormous body of publicly-available text, which can achieve state-of-the-art results across a range of different machine learning domains under fine-tuning\cite{devlin-etal-2019-bert}. Since then, models in the BERT family have been used to achieve significantly improved results in age and gender classification problems: in 2022, for example, Klein et al. used RoBERTa, a pre-trained model based on BERT\cite{liu2019roberta}, to achieve an exceptionally high $F_1$ score of 0.914 in classifying the exact ages of Twitter users\cite{klein2022reportage}.
+2017 saw the advent of transformers, which are deep learning models that model relationships between all elements in an input sequence using \textit{self-attention} \cite{vaswani-2017-attention-is-all-you-need}. By transforming recurrent deep learning optimisation from a sequential to a parallel problem, transformers allow for vastly more complicated, and more powerful, models to be trained with feasible computing power\todo{"feasible"?}. In 2019 Google introduced BERT, a pre-trained transformer model trained on an enormous body of publicly-available text, which can achieve state-of-the-art results across a range of different machine learning domains under fine-tuning \cite{devlin-etal-2019-bert}. Since then, models in the BERT family have been used to achieve significantly improved results in age and gender classification problems: in 2022, for example, Klein et al. used RoBERTa, a pre-trained model based on BERT \cite{liu2019roberta}, to achieve an exceptionally high $F_1$ score of 0.914 in classifying the exact ages of Twitter users \cite{klein2022reportage}.
 
-\item A promising emerging direction in demographic inference, and the technique which this thesis studies, is the use of LLMs for few-shot prediction, i.e. where the model is given a very small number of examples on which to base its predictions, or zero-shot prediction where the model is simply given the prediction task and the input\cite{NEURIPS2020_1457c0d6}. LLMs like GPT-3 and Llama are trained on vast amounts of text data derived from the internet, and thus they can implicitly capture associations between language use and demographics. For example, AlNuaimi et al. achieved an accuracy score of 0.76 in gender prediction with zero-shot LLM inference based on people's names alone\cite{alnuaimi2024enriching}. Given the novelty of LLMs, however, research into demographic inference using LLMs is limited, which leaves an opportunity for new approaches that leverage their generalisation abilities. This thesis aims to explore that opportunity and provide an empirical evaluation of use of few-shot and zero-shot LLM prompting to infer demographic characteristics directly from user-generated text.
-\end{itemize}
+A promising emerging direction in demographic inference, and the technique which this thesis studies, is the use of LLMs for zero-shot and few-shot prediction of demographic characteristics. In zero-shot prediction, the LLM is simply given a description of the task to complete in natural language, and in few-shot prediction this description is accompanied by a small number of examples of inputs and their corresponding correct outputs \cite{NEURIPS2020_1457c0d6}. LLMs like GPT-3 and Llama are trained on vast amounts of text data derived from the internet, and thus they can implicitly capture associations between language use and demographics. For example, AlNuaimi et al. were able to predict gender with 76\% accuracy using zero-shot LLM inference based on people's names alone \cite{alnuaimi2024enriching}. Given the novelty of LLMs, however, research into demographic inference using LLMs is limited, which leaves an opportunity for new approaches that leverage their strong ability to generalise across tasks. This thesis explores this ability, and providse an empirical evaluation of use of few-shot and zero-shot LLM prompting to infer demographic characteristics directly from user-generated text.
+
 
 \subsection{Consumer Trend Prediction}
 
-The rise of social media has provided an unparalleled source of rich, real-time data from which to derive insights relating to consumer trends. Existing approaches to consumer trend prediction extract signals in social media posts, ranging from sales volume forecasting\cite{Asur2010predicting} consumer sentiment detection\cite{liu2022sentiment}.
+The rise of social media has provided an unparalleled source of rich, real-time data from which to derive insights relating to consumer trends. Existing approaches to consumer trend prediction extract signals in social media posts, ranging from sales volume forecasting \cite{Asur2010predicting} consumer sentiment detection \cite{liu2022sentiment}. As with demographic segmentation, the field of consumer trend prediction has been revolutionised by recent developments in deep learning and NLP in terms of the accuracy of trend prediction as well as the range of information that can be inferred\todo{"inferred"?}.
 
-Traditional approaches to consumer trend prediction have focused on quantitative metrics, applying statistical models to relatively small amounts of data to make predictions. An example of a popular and well-studied task is time-series forecasting, which attempt to project future values in time series data, for example the sales volume of a particular product each week, into the future. Techniques like ARIMA and exponential smoothing, which can capture periodic variation (across years, months, or weeks) as well as general trends have been used widely for decades to project future values consumer interest indicators, such as sales volume\cite{hyndman2018forecasting}. Although these models are able to capture detailed periodic patterns, they often struggle with abrupt shifts, and cannot account directly for variables like changes in consumer sentiment.
+Traditional approaches to consumer trend prediction have focused on quantitative metrics, applying statistical models to relatively small amounts of data to make predictions. An example of a popular and well-studied task is time-series forecasting, which attempt to project future values in time series data, for example the sales volume of a particular product each week, into the future. Techniques like ARIMA and exponential smoothing, which can capture periodic variation (across years, months, or weeks) as well as general direction trends, have been used widely for decades to project future values consumer interest indicators such as sales volume \cite{hyndman2018forecasting}. Although these models are able to capture detailed periodic patterns, they often struggle with abrupt shifts, and cannot account directly for variables like changes in consumer sentiment.
 
-Diffusion models, most notably the Bass model, have been used for decades to predict adoption trajectories of new products. The Bass diffusion model, for instance, forecasts how many customers will adopt a new product over time based on parameters for innovation and imitation\cite{bass1969new}. Such models can capture the life cycle of a trend (i.e. introduction, growth, maturity, decline) in a theoretical framework, and have been applied to estimate peak adoption of innovations. 
+Diffusion models, most notably the Bass model, have been used for decades to predict adoption trajectories of new products. The Bass diffusion model, for instance, forecasts how many customers will adopt a new product over time based on parameters for innovation and imitation\todo{??} \cite{bass1969new}. Such models can capture the life cycle of a trend (i.e. introduction, growth, maturity, decline) in a theoretical framework, and have been applied to estimate the rate of adoption of new products.
 
-The rise of machine learning in recent decades has provided a wide range of powerful techniques that expand on this work. Unlike the earlier statistical models, machine learning approaches can use large amounts of data to learn complex, non-linear trends, and capture detailed insights about consumers more accurately\cite{shmueli2011predictive}. In particular, natural language processing (NLP) approaches allow for rich data to be extracted from text data directly, which maeans that social media posts can be used as a source of real-time information-rich data. A pioneering example is Asur and Huberman’s Twitter-based model, which showed that a simple linear regression on the volume of Twitter mentions for a movie could predict its box office revenue more accurately than Hollywood’s own tracking polls\cite{Asur2010predicting}. The study found that the rate of tweets about a particular movie was the most significant predictor of its early success, and the sentiment scores about the movie proved most significant for long-term popularity. Subsequent studies have extended this idea to other domains: notably in the same year, machine learning models proved capable of accurately predicting short-term moves in the stock market using Twitter data\cite{bollen2011twitter}.
+The rise of machine learning in recent decades has provided a wide range of powerful techniques that expand on this work. Unlike the earlier statistical models, machine learning approaches can use large amounts of data to learn complex, non-linear trends, and capture detailed insights about consumers more accurately \cite{shmueli2011predictive}. In particular, NLP approaches allow for rich data to be extracted from text data directly, which means that social media posts can be used as a source of real-time information-rich data. A pioneering example is Asur and Huberman’s Twitter-based model, which showed that simply applying linear regression to the volume of Twitter mentions\todo{language? seems approx. technical but also sloppy} for a movie could predict its box office revenue more accurately than Hollywood’s own tracking polls \cite{Asur2010predicting}. The study found that the rate of tweets about a particular movie was the most significant predictor of its early success, and that sentiment scores about the movie proved most significant for long-term popularity. Subsequent studies have extended this idea to other domains: notably in the same year, machine learning models proved capable of accurately predicting short-term moves in the stock market using Twitter data \cite{bollen2011twitter}.
 
-One of the most prevalent applications of NLP to social media data is sentiment analysis, in which machine learning models automatically infer the attitude (i.e. positive, negative, or neutral) of a body of text\cite{liu2022sentiment}. Sentiment analysis has proven to be a source of invaluable insight for brand monitoring, with businesses tracking the perception of their brand based on inferred sentiment from social media data\cite{benedetto2016big}.
+One of the most prevalent applications of NLP to social media data is sentiment analysis, in which machine learning models automatically infer the attitude (i.e. positive, negative, or neutral) of a body of text \cite{liu2022sentiment}. Sentiment analysis has proven to be a source of invaluable insight for brand monitoring, with businesses tracking the perception of their brand based on inferred sentiment from social media data \cite{benedetto2016big}.
 
-The development of LLMs in recent years represents an enormous leap in the capabilities of NLP approaches. These models are trained to follow instructions and produce text-based output, which provides enormous flexibility in the range of tasks they can be applied to\cite{NEURIPS2020_1457c0d6}. Research has shown that LLMs are capable of very strong performance when applied tasks such as sentiment analysis\cite{zhang2023enhancing} and summarisation of news and social media\cite{zhao2024revolutionizing}. However, given the novelty of LLMs, LLM-based approaches to consumer trend forecasting have not been explored in full, and there is still limited understanding of how well these models can generalize from unstructured textual signals to actionable market-level predictions.
+The development of LLMs in recent years represents an enormous leap in the capabilities of NLP approaches. Many of these models are trained to follow instructions and produce text-based output, which provides enormous flexibility in the range of tasks they can be applied to \cite{NEURIPS2020_1457c0d6}. Research has shown that LLMs are capable of very strong performance when applied tasks such as sentiment analysis\cite{zhang2023enhancing} and summarisation of news and social media \cite{zhao2024revolutionizing}. However, given the novelty of LLMs, LLM-based approaches to consumer trend forecasting have not been explored in full, and there is still limited understanding of how well these models can generalize from unstructured textual signals to actionable market-level predictions.
 
 \section{Method Development}
 
-This section discusses the fundmentals of supervised and unsupervised learning, covering fundamental algorithms such as linear regression and decision trees. It then goes into depth on concepts in natural language processing, and in particular large language models. Following this is an overview of the evaluation metrics that will be used for the first experiment of this thesis, which is in the classification setting. [also maybe data mining].
-
 \subsection{Machine Learning}
 
-\subsubsection{Supervised and Unsupervised Learning}
+Machine learning can be broadly categorised into three distinct sub-fields: supervised learning, unsupervised learning, and reinforcement learning \cite{jordan2015machine}. This dissertation focuses exclusively on supervised and unsupervised learning.
 
+Algorithms in the \textit{supervised learning} setting are given pairs of inputs and their corresponding outputs, and use them to learn how to predict the corresponding output for novel input examples \cite{bishop2006pattern}. In machine learning literature, the input values are called \textit{features} and are often denoted $x$, and the corresponding output values are called \textit{labels} and are denoted $y$. The $i$'th feature and corresponding label is written as the pair $(x_i, y_i)$. Supervised learning algorithms therefore aim to learn an estimator $f$, which can produce predictions:
+\[
+    f(x_i) \approx y_i.
+\]
+Because supervised learning algorithms are trained using the correct values $y_i$ corresponding to their inputs $x_i$, it is possible to construct a \textit{loss function}\todo{write better}.A \textit{loss function}, also known as an \textit{objective function}, is a function representing the inaccuracy of a prediction, which is minimised to produce an accurate predictor. \textit{Optimisation} of the loss function refers to the process of finding the estimator $f$ which makes the value of the loss function as low as possible, corresponding to $f$ being as accurate an estimator as possible.
 
-
-\begin{itemize}
-\item Machine learning can be broadly divided into three main categories: that of supervised learning, unsupervised learning, and reinforcement learning. Of these, supervised and unsupervised learning relate directly to the methodology and background research of this work.
-
-\item Supervised learning problems are ones in which 'input' data points, or \textit{features}, are provided with corresponding 'output' data points, or \textit{labels}, and the algorithm is tasked with creating a model which can predict the label for novel data points that it has not yet encountered. These labels can either be continues values, in the \textit{regression} setting, or discrete, in the \textit{classification} setting.
-
-\item A classic supervised learning problem is with the MNIST dataset, a set of 70,000 hand-written digits commonly used as a benchmark for image recognition \cite{lecun1998gradient}.
-
-\item This dissertation focuses primarily on classification problems, rather than regression. Linear regression will be briefly introduced, primarily to motivate logistic regression, a simple binary classification algorithm.
-
-\item Unsupervised learning problems, in contrast, provide only features, and algorithms are tasked with detecting patterns within the data. Two common types of unsupervised learning algorithm are \textit{dimensionality reduction}, in which they select the most 'important' components of the data points in a dataset, or \textit{clustering}, in which they determine distinct groupings of points in a dataset, either of a specified number or not.
-
-\item Following the supervised learning algorithms presented in this section will be a number of fundamental unsupervised learning algorithms, both dimensionality reduction and clustering.
-
-\end{itemize}
+The two primary categories of supervised learning are \textit{regression}, in which the labels $y_i$ are continuous values and \textit{classification} in which the labels $y_i$ are members of a finite set of possible classes.
 
 \subsubsection{Linear Regression}
 
-\begin{itemize}
-\item Linear regression, and in particular least-squares regression, is the most studied family of regression models in statistics and machine learning. Least-squares linear regression models attempt to find a linear function $f(x) = w \cdot x + b$ to predict labels $y$ from input features $x$ by minimising the \textit{residual sum of squares} (RSS) loss function between predicted labels $f(x_i)$ and true values $y_i$:
+\textit{Linear regression}, and in particular \textit{least-squares regression}, is the most widely-studied family of regression models in statistics and machine learning. Least-squares linear regression models attempt to find a linear function $f(x) = w \cdot x + b$ to predict labels $y$ from input features $x$ by minimising the \textit{residual sum of squares} (RSS) loss function between predicted labels $f(x_i)$ and true values $y_i$ \cite{hastie2009elements}:
 \begin{align}
-f^* &= \arg\min_f \sum_{i=1}^N \left( y_i - f(x_i) \right)^2. \notag \\
-&= \arg\min_{w, b} \sum_{i=1}^N (y_i - w \cdot x_i - b)^2, \label{eq:ols-rss-error}
+f^* = \arg\min_f \sum_{i=1}^N \left(f(x_i) 
+ - y_i \right)^2.\label{eq:ols-rss-error}
 \end{align}
-
-\item (by convention, $x_i$ is often considered to contain a constant dimension always equal to $1$, thus allowing the $b$ parameter to be included in $w$. Thus, $f(x_i) = w \cdot x_i$).
-
-\item There are multiple ways to find the optimal model $f^*$. For example, in \textit{ordinary least-squares} regression, admits the following analytical solution:
-\begin{equation}
-w = (\textbf{X}^\top \textbf{X})^{-1} \textbf{X}^\top y,
-\end{equation}
-where $\textbf{X}$ is the \textit{design matrix} whose rows are the input vectors and $y$ is the output vector whose elements are the corresponding labels.
-
-\item More common is the use of numerical methods, and in particular gradient methods, for efficiently obtaining a well-performing model $w$. A gradient method-based approach to optimising a least-squares linear model will, from some starting point $w_0$, change the parameter iteratively in the direction that causes the RSS error to decrease as quickly as possible, either for a fixed number of iterations or until the method has converged on or close to a minimum possible error.
-
-\end{itemize}
 
 
 \subsubsection{Logistic Regression}
 
-\begin{itemize}
-\item Logistic Regression adapts linear regression models to the task of binary classification, i.e. classification where the labels can take on one of exactly two possible values. This is achieved by passing the output of a normal linear regression model through a \textit{logistic unit} (logit) function $\sigma$, which 'squeezes' it to be between $0$ and $1$:
+\textit{Logistic Regression} adapts linear regression models to the task of binary classification, i.e. classification where the labels can take on one of exactly two possible values \cite{hastie2009elements}. It works by passing the output of a normal linear model through a \textit{logistic unit} (or \textit{logic}) function $\sigma$, which constrains it to be between $0$ and $1$:
 \begin{equation}
-f(x) = \sigma(w \cdot x)
+f(x) = \sigma(w \cdot x + b) \in [0, 1]
 \end{equation}
-The classification is taken to be whichever of the two extremities the prediction is closest to.
-
-\item The most common logit function is the \textit{logistic sigmoid} function:
+The classification is then taken to be whichever of the two extremities the prediction is closest to. The most common logit function is the \textit{logistic sigmoid} function:
 \begin{equation}
 \sigma(z) = \frac{1}{1 + e^{-z}},
 \end{equation}
-which constrains values $z \in \mathbb{R}$ as follows:
-
-\begin{center}
-\begin{tikzpicture}
-\begin{axis}[
-axis lines = middle,
-xlabel = {$z$},
-ylabel = {$\sigma(z)$},
-samples = 100,
-domain = -6:6,
-ymin = 0, ymax = 1.1,
-enlargelimits=true,
-xtick={-6,-3,0,3,6},
-ytick={0,0.5,1},
-grid = major
-]
-\addplot [blue, thick] {1/(1 + exp(-x))};
-\end{axis}
-\end{tikzpicture}
-\end{center}
-
-With this function, distance from 0 can be understood as being analagous to 'certainty' that a particular value $x$ is firmly categorised as either 0 or 1. In particular, the logistic sigmoid function $\sigma(z)$ represents the \textit{probability} that $z$ is categorised as 1 rather than 0:
+With this function, distance from 0 can be understood as being analagous to 'certainty' that a particular value $x$ is firmly categorised as either 0 or 1 \cite{hastie2009elements}. In particular, the logistic sigmoid function $\sigma(z)$ represents the \textit{probability} that $z$ is categorised as 1 rather than 0:
 \begin{equation}
-\sigma(w \cdot x) = P(y=1 \; | \; x).
+\sigma(w \cdot x + b) = P(y=1 \; | \; x).
 \end{equation}
 
-\item Given that this probability is defined in terms of the linear function $w \cdot x$, we get that the line $w \cdot x = 0$ itself represents the set of points $x$ for which the probability of classification $y=1$ is exactly $\frac{1}{2}$. This is known as the \textit{decision boundary}, and the prediction made by a logistic regression model is effectively given by which side of the decision boundary a point $\sigma(w \cdot x_i)$ falls on.
+Given that this probability is defined in terms of the linear function $w \cdot x + b$, we get that the line $w \cdot x + b = 0$ itself represents the set of points $x$ for which the probability of classification $y=1$ is exactly $\frac{1}{2}$ \cite{hastie2009elements}. This is known as the \textit{decision boundary}, and the prediction made by a logistic regression model is effectively given by which side of the decision boundary a point $\sigma(w \cdot x_i + b)$ falls on.
 
-\item Logistic regression models are optimised differently to normal linear regression models, on account of the non-linear logit function. A common approach is via Maximum Likelihood Estimation (MLE), which by taking the log-likelihood leads to the following loss function:
+
+\subsubsection{Regularisation and Hyperparameters}
+
+Linear regression models, including least-squares linear regression and logistic regression, are often adapted to include a \textit{regularisation term}, which directly controls the complexity of the model \cite{hastie2009elements}. The regularisation term in linear regression models is simply the squared norm of the weight vector, $\lVert w \rVert^2$. Controlling the magnitude of the weight vector controls the `complexity' of the model, for balancing \textit{overfitting}, when the model fits too closely to the data itself rather than the underlying pattern, and \textit{underfitting} where the model doesn't develop a great enough degree of complexity. Often, the strength of regularisation is controlled via the inclusion of a \textit{regularisation parameter}, usually denoted either $\lambda$ or equivalently $\frac{1}{C}$, with the overall loss function becoming \cite{hastie2009elements}:
 \begin{equation}
-\mathcal{L}(x, y \;;\; w) = -\sum_{i=1}^N [y_i \log(\sigma(w \cdot x_i)) + (1-y_i) \log(\sigma (w \cdot x_i))].
+    \mathcal L(\,f; \;\mathcal S\,) = \sum_{i=1}^n (f(x_i) - y_i)^2 + \lambda \lVert w \rVert^2,
 \end{equation}
-Unlike OLS regression, this loss function does not admit a closed-form analytical solution. It is however convex, and thus can be optimised using gradient descent with respect to $w$.
+where $\mathcal S$ is the entire dataset $\mathcal S = \{(x_i, y_i)\}_{i=1}^n$.
+$\lambda$ is an example of a \textit{hyperparameter}, which is a parameter that affects the learning process of a model \cite{hastie2009elements}. This is distinct from a \textit{parameter}, which is one of the values governing the behaviour of the model itself. In the case of least-squares linear regression, the parameters are the vector $w$ and the scalar $b$.
 
-\end{itemize}
 
-\subsubsection{Kernelised SVM and Decision Trees} \label{sec:lr-svm-decision-trees}
+\subsubsection{Support Vector Machine}
 
-\begin{itemize}
-\item The previous examples have been of algorithms that use a linear model. In the regression setting, this means that the data is assumed to follow a linear trend, and in the binary classifications setting it assumes that the two categories of data can be separated with a linear decision boundary. The following presents two significantly different approaches to classification of non-linear data.
+The \textit{Support Vector Machine} (SVM) is a binary classification algorithm which, similarly to logistic regression, fits a linear decision boundary $w \cdot x_i + b = 0$ between two categories of data \cite{hastie2009elements}. This algorithm is distinguished from least-squares based linear models, as the model $f$ is not obtained by optimising the least-squares loss. Instead, SVM models are obtained by maximising the \textit{margin}, which is defined as the distance between the actual labels $y_i$ and the discriminant boundary, with the constraint that each label $y_i$ must be classified correctly by the discriminant boundary \cite{hastie2009elements}. 
 
-\item The Support Vector Machine (SVM) is a binary classification algorithm which, similarly to logistic regression, fits a linear decision boundary $w \cdot x_i + b = 0$ between two categories of data. This algorithm is distinguished from least-squares based regression/classification approaches in terms of the loss function that it uses for fitting this line (or hyperplane, in multiple dimensions): instead of minimising the RSS loss, an SVM model is optimised by maximising the \textit{margin}, that is, the distance between the actual data points and the discriminant boundary, with the constraints that the points must correctly classified, i.e. on the right side of the distcriminant boundary.
-
-\item This maximisation problem results in this loss function:
+This, however, means that the dataset must actually be \textit{linearly separable}, otherwise no disciminant boundary can be fit. This is solved by the \textit{soft-margin SVM}, which allows misclassified points but penalises them in the loss function \cite{hastie2009elements}. The soft-margin SVM works by including the error of misclassified points with the \textit{hinge loss}:
 \begin{equation}
-\mathcal{L}(x, y \; ; \; w, b) = \frac{1}{2} \|w \|^2 + C \sum_{i=1}^N \xi_i,
+    \xi_i = \max(0, 1 - y_i (w \cdot x_i + b)).
+\end{equation}
+As with regularised least-squares regression, the regularisation parameter—in this case, the trade-off between maximising the margin and penalising misclassification error—is governed by the $C$ hyperparameter. The soft-margin SVM loss function is written:
+\begin{equation}
+    \mathcal L(f; \mathcal S) = \frac{1}{2} \lVert w \rVert^2 + C \sum_{i=1}^n \xi_i.
 \end{equation}
 
-where $C$ controls the trade-off between maximising the margin and allowing for mis-classifications, and $\xi_i = \max(0, 1 - y_i (w \cdot x_i + b))$ is the \textit{hinge loss}, which grows with distance from the margin only if a point $x_i$ is classified on the incorrect side of the discriminant boundary:
 
-\begin{center}
-\begin{tikzpicture}
-\begin{axis}[
-axis lines = middle,
-xlabel = {Model Output ($w \cdot x + b$)},
-xlabel style={at={(axis description cs:0.5,-0.1)}, anchor=north}, % Moves xlabel below the axis
-ylabel = {Hinge Loss},
-samples = 100,
-domain = -2:2,
-ymin = 0, ymax = 2,
-enlargelimits=true,
-xtick={-2,-1,0,1,2},
-ytick={0,0.5,1,1.5,2},
-grid = major,
-legend pos=north east
-]
-% Hinge loss for y = 1
-\addplot [blue, thick] {max(0, 1 - x)};
-\end{axis}
-\end{tikzpicture}
-\end{center}
+\subsubsection{Decision Trees and CART}
 
-\item The SVM can be adapted to non-linear data by expressing the algorithm with a \textit{kernel}, which is an inner product $\kappa (x_i, x_j)$ between two input points $x_i$ and $x_j$ which implicitly maps them into a new feature space to create a non-linear discriminant boundary. For example, a quadratic discriminant boundary can be obtained with the kernel
-\begin{align}
-\kappa(x_i, x_j) &= (x_i \cdot x_j + 1)^2 \notag \\
-&= (x_i \cdot x_j)^2 + 2(x_i \cdot x_j) + 1.
-\end{align}
+A distinct paradigm of supervised learning is \textit{decision tree learning}. Instead of fitting a linear function to either approximate a continuous function or decide between two categories of discrete labels, decision tree learning algorithms build a tree where nodes represent discriminants between different sections of the input space and leaves contain predictions of the corresponding label values \cite{hastie2009elements}.
 
-Common kernels include:
-\begin{enumerate}
-\item \textbf{Linear Kernel:} $\kappa(x_i, x_j) = x_i \cdot x_j$ (Equivalent to linear SVM)
-\item \textbf{Polynomial Kernel:} $\kappa(x_i, x_j) = (x_i \cdot x_j + c)^d$ (which will fit to polynomials of degree $d$)
-\item \textbf{Radial Basis Function (RBF) Kernel:} $\kappa(x_i, x_j) = \exp\left(-\gamma \|x_i - x_j\|^2\right)$
-\item \textbf{Sigmoid Kernel:} $\kappa(x_i, x_j) = \tanh(\alpha x_i \cdot x_j + c)$
-\end{enumerate}
+The most commonly used decision tree algorithm is the \textit{Classification and Regression Tree (CART)} algorithm, which recursively partitions the input space into sections and then assigns a prediction to each section by taking the mode of all data points $y_i$ within it \cite{hastie2009elements}. In particular, at each iteration, an existing partition is divided into two sub-partitions, which become the children of the partition's node in the decision tree. This is done by choosing the split that minimises the \textit{Gini impurity}, a measure of how often a randomly chosen sample from within a partition would be misclassified if it were to be assigned a random label \cite{hastie2009elements}.
 
-The RBF kernel is of particular interest, as it is a \textit{universal approximator}, i.e. it is capable of approximating any function \cite{wang2004svm-universal-approximator}. This is because it implicitly maps data points into an infinite-dimensional feature space, meaning that the RBF-kernelised SVM can fit a discriminant boundary to any continuous function.
-
-\todo[inline]{check if this is a correct use of 'universal approximator'}
-
-\item Decision tree learning is a paradigm of machine learning which is distinct from linear methods like least-squares regression or the SVM. Instead of fitting a linear function to either approximate a continuous function or decide between two categories of discrete labels, decision tree learning algorithms build a tree where nodes represent discriminants between different sections of the input space and leaves contain predictions of the corresponding label values.
-
-\item The most commonly used decision tree algorithm is the Classification and Regression Tree (CART), which recursively partitions the input space into sections and then assigns a prediction to each section by taking the mode of all data points $y_i$ within it. In particular, at each iteration a partition is divided into two sub-partitions, i.e. children of the partition's node in the tree, by choosing the split that minimises the \textit{Gini impurity}, a measure of how often a randomly chosen sample from within a partition would be misclassified if it were to be assigned a random label.
-
-\item CART learning is capable of producing accurate approximations of non-linear functions in both the regression and classification setting, and is one of the most widely used machine learning techniques that doesn't use linear models.
-\end{itemize}
+CART learning is capable of producing accurate approximations of non-linear functions in both the regression and classification setting, and is one of the most widely used machine learning techniques that doesn't use linear models.
 
 
-\subsubsection{Ensemble Learning and Random Forests}
+\subsubsection{Ensemble Learning and Random Forest}
 
-\begin{itemize}
-\item Ensemble learning is a technique for improving the quality of machine learning models by training multiple instances of the same model, often over distinct subsets of the training data, and selecting a prediction based on the combined results. By aggregating the results of multiple learners (often called `weak learners'), ensemble methods can produce significantly better-performing models with can reduce both bias and variance \cite{dietterich-2000-ensemble}.
+Ensemble learning is a technique for improving the quality of machine learning models by training multiple instances of the same model, often over distinct subsets of the training data, and selecting a prediction based on the combined results\cite{hastie2009elements}. By aggregating the results of multiple learning algorithms (often called \textit{weak learners}), ensemble methods can produce significantly better-performing models with can reduce both bias and variance \cite{dietterich-2000-ensemble}.
 
-\item There are a variety of different ways to aggregate the output of the weak learners into a single prediction. An example is 'bagging', or `bootstrap aggregating', in which a dataset of length $n$ is split into $m$ non-disjoint training sets of length $n'$, each of which is used to train the $m$ weak learners\cite{Breiman1996Bagging}. The output of this ensemble model is then taken to be the majority vote of the weak learners predictions, in the case of classification, and the average of the weak learners predictions in the case of regression.
+There are a variety of different ways to aggregate the output of the weak learners into a single prediction. An example is \textit{bagging}, also known as \textit{bootstrap aggregating}, in which a dataset of length $n$ is split into $m$ non-disjoint training sets of length $n'$, each of which is used to train the $m$ weak learners \cite{Breiman1996Bagging}. The output of this ensemble model is then taken to be the majority vote of the weak learners predictions in the classification setting and the average of the weak learners' predictions in the regression setting.
 
-\item One particularly popular ensemble learning algorithm is the \textit{Random Forest} algorithm, in which decision trees (often CART trees) are used as weak learners in bagging\cite{Breiman2001RandomForest}. Decision trees are particularly good weak learners, as they can encode large amounts of information highly non-linearly, and although this can lead to overfitting when used individually, the corresponding variance reduction of bagging means that the ensemble models can produce models with low-bias \textit{and} low-variance.
-\end{itemize}
+One popular ensemble learning algorithm is the \textit{Random Forest} algorithm, in which decision trees (often CART trees) are used as weak learners for bagging \cite{Breiman2001RandomForest}. Decision trees are particularly good weak learners, as they can encode large amounts of information highly non-linearly. Although this can lead to overfitting when used individually, the corresponding variance reduction of bagging means that the ensemble models can produce models with low-bias \textit{and} low-variance.
 
 
-\subsubsection{Multiclass Classification} \label{seec:lr-multiclass}
+\subsubsection{Multiclass Classification}
 
-\begin{itemize}
-\item With the exception of the decision tree-based learning models, every classification approach that has been discussed so far has specifically targeted binary classification. It is often difficult or, as in the case of most linear models, impossible to extend them directly for classification of more than two categories. To adapt these models for use in classification problems with more than two categories, therefore, there are two standard strategies: one-versus-rest (OvR) classification, and one-versus-one (OvO) classification\cite{bishop2006pattern}.
+With the exception of the decision tree-based learning models, every classification approach that has been discussed so far has specifically targeted binary classification. It is often difficult or, as in the case of most linear models, impossible to extend them directly for classification of more than two categories. To adapt these models for use in classification problems with more than two categories, therefore, there are two standard strategies: \textit{one-versus-rest} (OvR) classification, and \textit{one-versus-one} (OvO) classification \cite{bishop2006pattern}.
 
-In a $k$-class classification problem, one-versus-rest classification works by training one classifier, $f_i$ for each of the $k$ output classes\cite{bishop2006pattern}. For a given input $x$, each classifier predicts whether $x$ is an instance of class $i$ or not. The overall prediction is made by selecting whichever output $f_i(x)$ has the highest score, i.e.
+In a $k$-class classification problem, one-versus-rest classification works by training one classifier, $f_i$ for each of the $k$ output classes \cite{bishop2006pattern}. For a given input $x$, each classifier predicts whether $x$ is an instance of class $i$ or not. The overall prediction is made by selecting whichever output $f_i(x)$ has the highest score:
 \[
 f(x) = \arg\max_i f_i(x).
 \]
-
 One-versus-one classification, in contrast, works by training a classifier for every pair of classes\cite{bishop2006pattern}. This involves producing subsets of the training data for each pair of classification categories $(i, j)$, and then training each classifier $f_{ij}$ to determine whether a given input $x$ is a member of class $i$ or $j$. The overall predictions are usually made via majority vote.
 
-\item Both OvR and OvO classification are widely used in practice. However, being heuristic methods rather than true statistical estimators, and the choice of one or the other largely depends on the characteristics of the dataset. OvR classification, for example, requires training only $k$ classifiers rather than $\frac{k (k + 1)}{2}$, but it often performs worse in highly overlapping datasets\cite{bishop2006pattern}\todo{find better source}.
-\end{itemize}
+Both OvR and OvO classification are widely used in practice. However, they are heuristic methods rather than true statistically-grounded estimators, and the choice of one or the other largely depends on the characteristics of the dataset. OvR classification, for example, requires training only $k$ classifiers rather than $\frac{k (k - 1)}{2}$, but it often performs worse in highly overlapping datasets \cite{bishop2006pattern}.
+
 
 \subsubsection{Deep Learning}
 
-\begin{itemize}
-\item Deep learning is a sub-field in machine learning concerned with `deep' neural networks. A neural network is a type of machine learning model which passes inputs through layers of smaller predictive units to produce a final output\cite{goodfellow2016deep}. The intermediate smaller predictive units are generally linear models whose outputs are then passed into non-linear `activation functions', such as the logistic sigmoid function. Because of the strucutral flexibility inherent to neural networks, they can be used in regression tasks, where the final prediction is made by having a single predictive unit in the final layer (the `output layer'), or natural $k$-class classification by having $k$ predictive units in the final layer, similar to OvR classification.
+Deep learning is a sub-field in machine learning concerned with `deep' neural networks. A neural network is a type of machine learning model which passes inputs through layers of smaller predictive units to produce a final output\cite{goodfellow2016deep}. The intermediate smaller predictive units are generally linear models whose outputs are then passed into non-linear `activation functions', such as the logistic sigmoid function. Because of the strucutral flexibility inherent to neural networks, they can be used in regression tasks, where the final prediction is made by having a single predictive unit in the final layer (the `output layer'), or natural $k$-class classification by having $k$ predictive units in the final layer, similar to OvR classification.
 
-\item Given that a single linear estimator is expressed as:
+Given that a single linear estimator is expressed as:
 \[
 f(x) = w \cdot x + b,
 \]
@@ -463,11 +329,9 @@ f^{(l)}(x) = \sigma (\mathbf W^{(l)}f^{(l - 1)} + b^{(l)}),
 \]
 where $f^{(l - 1)}$ is the output from the previous layer and $\sigma$ is the non-linear activation function.
 
-\item By passing input through multiple layers of non-linear units, neural networks can approximate complex, highly non-linear functions. In particular, it has been shown that feedforward neural networks with a single hidden layer and appropriate activation functions are \textbf{universal function approximators} \cite{cybenko1989approximation}, as are SVMs with the RBF kernel. However, neural networks are typically more computationally efficient than equivalently expressive RBF SVMs, as they parameterise non-linearity through a compact set of learned weights and hierarchical representations, rather than relying on a potentially large number of support vectors to encode the function.
+By passing input through multiple layers of non-linear units, neural networks can approximate complex, highly non-linear functions. In particular, it has been shown that feedforward neural networks with a single hidden layer and appropriate activation functions are \textbf{universal function approximators} \cite{cybenko1989approximation}, as are SVMs with the RBF kernel. However, neural networks are typically more computationally efficient than equivalently expressive RBF SVMs, as they parameterise non-linearity through a compact set of learned weights and hierarchical representations, rather than relying on a potentially large number of support vectors to encode the function.
 
-\item Neural network optimisation does not have a closed-form analytical solution, unlike OLS linear regression. Instead, neural networks are trained using numerical optimisation methods, typically variants of gradient descent \cite{goodfellow2016deep}. The dominant approach for computing gradients in these models is the \textit{backpropagation} algorithm, which efficiently applies the chain rule of calculus to compute the derivatives of the loss function with respect to each network parameter. Gradients are computed starting at the output layer and propagated backwards through the network: the gradient at each layer is calculated in terms of the gradients from the layer ahead, allowing the full gradient of the loss with respect to all weights and biases to be obtained.
-
-\end{itemize}
+Neural network optimisation does not have a closed-form analytical solution, unlike OLS linear regression. Instead, neural networks are trained using numerical optimisation methods, typically variants of gradient descent \cite{goodfellow2016deep}. The dominant approach for computing gradients in these models is the \textit{backpropagation} algorithm, which efficiently applies the chain rule of calculus to compute the derivatives of the loss function with respect to each network parameter. Gradients are computed starting at the output layer and propagated backwards through the network: the gradient at each layer is calculated in terms of the gradients from the layer ahead, allowing the full gradient of the loss with respect to all weights and biases to be obtained.
 
 
 \subsubsection{Unsupervised, Self-Supervised and Generative Learning}
@@ -856,6 +720,8 @@ The selected relevevant subreddits were:
 
 \section{Experiment}
 
+\todo{This requires a brief preamble about the demographics which are particularly concerned with weight loss, to give a point of comparison for the results. We can then just say "ooh look well maybe it's the fault of the demographic model, who knows"}
+
 Unlike Experiment 1, this experiment is not a straightforward machine learning problem which can be evaluated with existing metrics. Instead, we prompt the LLM to produce written output which must be analysed for its accuracy and quality of reasoning. Therefore, although the resulting analysis will be less numerically `robust', it will in fact be easy to directly observe the quality of the model's output.
 
 The consumer trend prediction system consists of a number of stages, each using LLMs to transform text input in various ways. These stages are:
@@ -966,7 +832,7 @@ One significant limitation with this experiment is the risk of bias introduced b
 \chapter{Application of LLM-segmented Consumer Trend Prediction to Current Social Media Data}
 
 \begin{adjustwidth}{0.5in}{0.5in}
-\textit{This study applies the methodology from the previous two experiments to current social media data. This will produce predictions of future consumer trends which will be used to }
+\textit{This study applies the methodology from the previous two experiments to current social media data. This will produce predictions of future consumer trends which will be used to \todo{woah}}
 \end{adjustwidth}
 
 \section{Introduction}
